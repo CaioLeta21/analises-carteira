@@ -8,15 +8,11 @@ Site estático com três páginas:
 
 Os dados se atualizam **todo dia depois do fechamento**, por um GitHub Action que grava `public/data/*.json`. O Cloudflare Pages publica sozinho a cada mudança.
 
-## Como entregar para o Claude Code
+## Onde está no ar
 
-1. Descompacte esta pasta e crie um repositório no GitHub com ela (privado ou público).
-2. Abra o Claude Code dentro da pasta.
-3. Cole este pedido:
-
-   > Leia o CLAUDE.md e os arquivos em docs/. Depois execute o plano de docs/05-plano.md, uma etapa por vez. Antes de cada etapa, diga o que vai fazer; no fim de cada uma, rode os testes e me mostre o resultado.
-
-O Claude Code vai validar as fontes de dados ao vivo, configurar o GitHub Action, publicar no Cloudflare Pages e terminar a página Minha carteira.
+- Site: https://ativos.letabuild.com (Cloudflare Pages, projeto `ativos-letabuild`, publica a
+  pasta `public/` a cada push na `main`; endereço provisório `ativos-letabuild.pages.dev`).
+- Dados: GitHub Action `Atualizar dados`, todo dia às 23:30 UTC (20:30 em Brasília).
 
 ## Estrutura
 
@@ -48,10 +44,36 @@ npm run e2e                          # testa as quatro páginas no navegador
 npm run dados                        # busca nas fontes ao vivo (precisa de internet)
 ```
 
+## Quando o Action falhar
+
+O GitHub manda e-mail. O site continua no ar com os dados do dia anterior: nada é publicado
+quando uma checagem falha. Para resolver:
+
+1. **Leia o log.** Em Actions → Atualizar dados → a execução vermelha → passo "Buscar dados".
+   A mensagem diz o ativo e o motivo, por exemplo:
+   - `CHECAGENS FALHARAM ... retorno de 2026-11 fora do limite`: a fonte mandou um preço
+     estranho (desdobramento não ajustado, erro de digitação da fonte) ou o mercado mexeu muito.
+   - `nenhuma fonte respondeu`: o Yahoo (ou o Banco Central) caiu ou mudou o formato.
+   - `não tem o fechamento de AAAA-MM (âncora)`: a fonte apagou dados antigos do ativo.
+   - `dados velhos`: algum ativo parou de ser negociado ou a fonte travou.
+2. **Teste a fonte isolada**, na sua máquina:
+   ```bash
+   python -c "from pipeline import fontes; from datetime import date; print(fontes.yahoo('ITUB3.SA', date(2026,10,1), date.today())[0][-3:])"
+   ```
+3. **Se for instabilidade da fonte**, rode o Action de novo (Actions → Atualizar dados → Run
+   workflow) depois de algumas horas. Ele também roda sozinho no dia seguinte.
+4. **Se for dado errado de verdade**, não desligue a checagem. Confira o mês contra a cotação
+   oficial (B3, Nasdaq) e, se a fonte estiver errada, abra uma issue descrevendo o ativo, o mês
+   e os números das duas fontes. Correção de histórico é feita à mão, num commit separado, com a
+   evidência em `dados/correcoes/` (veja `docs/03-dados.md`).
+5. **Dado ruim que já foi publicado:** `git revert` do commit `dados: ...` do Action.
+
 ## Estado atual
 
-- Histórico até **out/2026**, conferido contra o cálculo original (`tests/dados.test.js`).
-- Pipeline testado com fontes falsas. **As chamadas às APIs reais ainda não foram rodadas**: é a etapa 2 do plano.
-- As três páginas funcionam com os dados do histórico e passam no teste de ponta a ponta, com a política de segurança (CSP) ligada.
+- Histórico de 2004 a out/2026, conferido mês a mês contra a cotação oficial da B3 em 04/nov/2026
+  (correções em `dados/correcoes/`).
+- Fontes ao vivo validadas; o Action roda todo dia e grava os dados.
+- Quatro páginas no ar, com política de segurança (CSP), acessibilidade (axe, WCAG AA) e
+  nenhuma requisição externa conferidas pelo teste de ponta a ponta.
 
 Não é recomendação de investimento.
