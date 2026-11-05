@@ -70,3 +70,13 @@ test('backup com senha: ida e volta e senha errada', async () => {
   await assert.rejects(() => Cripto.importar(txt, 'errada'), /Senha errada/);
   assert.deepStrictEqual(await Cripto.importar(await Cripto.exportar(cs), null), cs);
 });
+
+test('restaurar backup substitui só a carteira de exemplo intocada', () => {
+  const ex = Modelo.novaCarteira(), b = { ...Modelo.novaCarteira('Do backup'), intocada: undefined };
+  assert.deepStrictEqual(Modelo.idsParaSubstituir([ex], [b]), [ex.id]);
+  const editada = { ...ex }; delete editada.intocada;
+  assert.deepStrictEqual(Modelo.idsParaSubstituir([editada], [b]), []);
+  assert.deepStrictEqual(Modelo.idsParaSubstituir([ex, b], [b]), []);
+  assert.deepStrictEqual(Modelo.idsParaSubstituir([ex], [ex]), []);
+  assert.deepStrictEqual(Modelo.idsParaSubstituir([ex], []), []);
+});

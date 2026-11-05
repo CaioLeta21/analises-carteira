@@ -42,7 +42,14 @@
     const agora = new Date().toISOString();
     return { versao: 1, id: 'c_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36), nome: nome || 'Minha carteira',
       criadaEm: agora, atualizadaEm: agora, modo: 'categorias', patrimonio: 1000000,
-      categorias: { rfbr: 40, rfex: 15, ouro: 5, alt: 5, rvex: 25, rvbr: 10 }, ativos: [] };
+      categorias: { rfbr: 40, rfex: 15, ouro: 5, alt: 5, rvex: 25, rvbr: 10 }, ativos: [], intocada: true };
+  }
+
+  /* Ao restaurar um backup: a carteira de exemplo criada na primeira visita, se for a única e
+     nunca tiver sido editada, sai para não ficar ao lado das restauradas. Devolve os ids a apagar. */
+  function idsParaSubstituir(existentes, restauradas) {
+    if (!restauradas.length || existentes.length !== 1 || !existentes[0].intocada) return [];
+    return restauradas.some((c) => c.id === existentes[0].id) ? [] : [existentes[0].id];
   }
 
   /* ---------- CSV (separador vírgula ou ponto e vírgula; decimal com vírgula ou ponto) */
@@ -147,7 +154,7 @@
     return { pesos: Object.fromEntries(CHAVES.map((k) => [k, total ? soma[k] / total : 0])), total, linhas };
   }
 
-  const api = { CATEGORIAS, CHAVES, categoriaDe, categoriaPadrao, novaCarteira, numeroBR, lerCSV, escreverCSV, MODELO_CSV, precosAtuais, valorar, pesosPorCategoria };
+  const api = { CATEGORIAS, CHAVES, categoriaDe, categoriaPadrao, novaCarteira, idsParaSubstituir, numeroBR, lerCSV, escreverCSV, MODELO_CSV, precosAtuais, valorar, pesosPorCategoria };
   root.CarteiraModelo = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

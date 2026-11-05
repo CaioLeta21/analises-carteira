@@ -46,6 +46,18 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     await p.waitForTimeout(600); await p.reload(); await p.waitForTimeout(1000);
     ok(await p.$$eval('#corpo tr', (r) => r.length) === 7, 'carteira continua salva depois de recarregar');
 
+    // backup com senha, restaurado num navegador novo: a carteira de exemplo sai
+    await p.fill('#senha', 'teste123');
+    const [dl] = await Promise.all([p.waitForEvent('download'), p.click('#exportar')]);
+    const arqBackup = path.join(require('os').tmpdir(), 'backup-e2e.json'); await dl.saveAs(arqBackup);
+    const ctx2 = await b.newContext({ viewport: { width: 1280, height: 1000 } });
+    const p2 = await ctx2.newPage(); p2.on('request', (r) => { if (!r.url().startsWith(BASE) && !r.url().startsWith('blob:') && !r.url().startsWith('data:')) externos.push(r.url()); });
+    await p2.goto(BASE + '/carteira/'); await p2.waitForTimeout(1000);
+    await p2.fill('#senha', 'teste123'); await p2.setInputFiles('#importar', arqBackup); await p2.waitForTimeout(1500);
+    ok(await p2.$$eval('#sel option', (o) => o.length) === 1, 'backup restaurado substitui a carteira de exemplo');
+    ok(await p2.$$eval('#corpo tr', (r) => r.length) === 7, 'backup restaurado traz as posições');
+    await ctx2.close();
+
     const cel = await b.newPage({ viewport: { width: 390, height: 900 }, colorScheme: 'dark' });
     for (const pg of ['/', '/acoes-etfs/', '/simulador/', '/carteira/']) {
       await cel.goto(BASE + pg); await cel.waitForTimeout(1000);

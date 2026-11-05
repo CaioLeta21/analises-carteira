@@ -35,7 +35,8 @@
 
   /* ---------- salvar com atraso (evita gravar a cada tecla) */
   let timer = null;
-  function mudou() {
+  function mudou(edicao = true) {
+    if (edicao) delete atual.intocada;
     $('status').textContent = 'Salvando…';
     clearTimeout(timer);
     timer = setTimeout(async () => {
@@ -53,8 +54,8 @@
     s.value = atual.id;
   }
   $('sel').addEventListener('change', () => { atual = carteiras.find((c) => c.id === $('sel').value); montar(); });
-  $('nova').addEventListener('click', async () => { const c = await Arm.salvar(Mod.novaCarteira('Carteira ' + (carteiras.length + 1))); carteiras.unshift(c); atual = c; montar(); });
-  $('duplicar').addEventListener('click', async () => { const c = await Arm.salvar({ ...structuredClone(atual), id: Mod.novaCarteira().id, nome: atual.nome + ' (cópia)' }); carteiras.unshift(c); atual = c; montar(); });
+  $('nova').addEventListener('click', async () => { const c = await Arm.salvar({ ...Mod.novaCarteira('Carteira ' + (carteiras.length + 1)), intocada: undefined }); carteiras.unshift(c); atual = c; montar(); });
+  $('duplicar').addEventListener('click', async () => { const c = await Arm.salvar({ ...structuredClone(atual), id: Mod.novaCarteira().id, nome: atual.nome + ' (cópia)', intocada: undefined }); carteiras.unshift(c); atual = c; montar(); });
   $('renomear').addEventListener('click', () => { const n = prompt('Novo nome da carteira:', atual.nome); if (n && n.trim()) { atual.nome = n.trim().slice(0, 80); preencherSeletor(); mudou(); } });
   $('apagar').addEventListener('click', async () => {
     if (!confirm('Apagar "' + atual.nome + '" deste navegador? Não dá para desfazer.')) return;
@@ -72,8 +73,8 @@
     $('painel-categorias').hidden = modo !== 'categorias';
     $('painel-ativos').hidden = modo !== 'ativos';
   }
-  $('aba-categorias').addEventListener('click', () => { aba('categorias'); mudou(); });
-  $('aba-ativos').addEventListener('click', () => { aba('ativos'); mudou(); });
+  $('aba-categorias').addEventListener('click', () => { aba('categorias'); mudou(false); });
+  $('aba-ativos').addEventListener('click', () => { aba('ativos'); mudou(false); });
 
   /* ---------- modo categorias */
   function montarCategorias() {
@@ -142,6 +143,7 @@
     const f = $('importar').files[0]; if (!f) return;
     try {
       const lista = await Cri.importar(await f.text(), $('senha').value || null);
+      for (const id of Mod.idsParaSubstituir(await Arm.listar(), lista)) await Arm.apagar(id);
       for (const c of lista) await Arm.salvar(c);
       carteiras = (await Arm.listar()).sort((a, b) => b.atualizadaEm.localeCompare(a.atualizadaEm));
       atual = carteiras[0]; montar();
