@@ -56,7 +56,8 @@
     const S = series(M);
     const ids = (ordem || M.ativos.map((a) => a.id)).filter((id) => S.info[id]);
     const fim = S.fim;
-    const P = periodos(fim);
+    // janela que começa antes do histórico começa no primeiro mês com dados
+    const P = periodos(fim).map((p) => (p.inicio < S.meses[0] ? { ...p, inicio: S.meses[0] } : p));
     const inicioDe = (id, base) => (S.info[id].inicio > base ? S.info[id].inicio : base);
 
     const base100 = [];
@@ -109,7 +110,7 @@
       fim, periodos: P, info: S.info, ids,
       datasets: {
         base100: tab(base100), precos_mensais: tab(precos), retornos: tab(retornos),
-        retornos_25a: tab(longo(somaMeses(fim, -300))), retornos_15a: tab(longo(somaMeses(fim, -180))),
+        retornos_25a: tab(longo(P[0].inicio)), retornos_15a: tab(longo(somaMeses(fim, -180))),
         retornos_divo: tab(longo('2015-11')), retornos_10a: tab(longo(ini10)), retornos_5a: tab(longo(somaMeses(fim, -60))),
         cambio: tab(cambio),
       },
