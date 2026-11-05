@@ -13,7 +13,7 @@ Três cartões com links para as páginas e a data dos dados.
 
 ### 2. Ações e ETFs (`/acoes-etfs/`)
 - Gráfico de "quanto valeria cada 100", barras de retorno anual e tabela de risco.
-- Filtros: período (25 anos, 15 anos, desde o DIVO11, 10 anos, 5 anos), moeda (dólar ou
+- Filtros: período (desde o IPO do Google, 20 anos, 15 anos, desde o DIVO11, 10 anos, 5 anos), moeda (dólar ou
   real), escala (linear ou logarítmica), ativos (um a um, ou ações e ETFs em grupo).
 - O endereço guarda os filtros (`#periodo=10a&moeda=BRL&escala=log`).
 - "Adicionar ativo": qualquer um dos 169 do catálogo (busca por código ou nome). A escolha fica

@@ -1,6 +1,6 @@
 /* Carrega public/data/*.json e deriva as tabelas usadas pelas páginas.
    Mesma lógica de reference/compute2_original.py, agora no navegador, para que
-   as janelas (5, 10, 15 e 25 anos) andem sozinhas com os dados novos.
+   as janelas (5, 10, 15 e 20 anos) andem sozinhas com os dados novos.
    Funciona no navegador (window.Dados) e no Node (require) para os testes. */
 (function (root) {
   'use strict';
@@ -33,7 +33,8 @@
 
   function periodos(fim) {
     return [
-      { id: '25a', rotulo: 'de 25 anos', inicio: somaMeses(fim, -300) },
+      { id: 'ipo', rotulo: 'desde o IPO do Google', inicio: '2004-08' },
+      { id: '20a', rotulo: 'de 20 anos', inicio: somaMeses(fim, -240) },
       { id: '15a', rotulo: 'de 15 anos', inicio: somaMeses(fim, -180) },
       { id: 'divo', rotulo: 'desde o lançamento do DIVO11', inicio: '2015-11' },
       { id: '10a', rotulo: 'de 10 anos', inicio: somaMeses(fim, -120) },
@@ -110,7 +111,7 @@
       fim, periodos: P, info: S.info, ids,
       datasets: {
         base100: tab(base100), precos_mensais: tab(precos), retornos: tab(retornos),
-        retornos_25a: tab(longo(P[0].inicio)), retornos_15a: tab(longo(somaMeses(fim, -180))),
+        retornos_longo: tab(longo('2004-08')), retornos_20a: tab(longo(somaMeses(fim, -240))), retornos_15a: tab(longo(somaMeses(fim, -180))),
         retornos_divo: tab(longo('2015-11')), retornos_10a: tab(longo(ini10)), retornos_5a: tab(longo(somaMeses(fim, -60))),
         cambio: tab(cambio),
       },

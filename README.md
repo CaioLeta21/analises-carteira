@@ -2,7 +2,7 @@
 
 Site estático com três páginas:
 
-- **Ações e ETFs** (`/acoes-etfs/`): retorno de ações brasileiras e americanas, ETFs, bitcoin e CDI, em dólar e em real, em cinco janelas (25 anos, 15 anos, desde o DIVO11, 10 anos, 5 anos).
+- **Ações e ETFs** (`/acoes-etfs/`): retorno de ações brasileiras e americanas, ETFs, bitcoin e CDI, em dólar e em real, em seis janelas (desde o IPO do Google em ago/2004, 20 anos, 15 anos, desde o DIVO11, 10 anos, 5 anos).
 - **Simulador** (`/simulador/`): o usuário mexe nas categorias da carteira e vê volatilidade, quedas e retorno em 20 anos.
 - **Minha carteira** (`/carteira/`): o usuário monta a própria carteira, por categoria ou por ativo (digitando ou subindo um CSV), e guarda **só no navegador dele**. O dono do site não tem como ver.
 

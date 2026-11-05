@@ -26,7 +26,7 @@ test('tabelas batem com o pipeline original (out/2026)', () => {
     perto(r.queda_max_usd, +o.queda_max_usd, 0.06, r.ativo + ' queda');
     perto(r.ret_ano_usd, +o.ret_2026_usd, 0.06, r.ativo + ' ano');
   }
-  for (const [ds, arq] of [['retornos_25a', 'retornos_longo.csv'], ['retornos_divo', 'retornos_divo.csv'], ['retornos_5a', 'retornos_5a.csv'], ['retornos_15a', 'retornos_15a.csv']]) {
+  for (const [ds, arq] of [['retornos_longo', 'retornos_longo.csv'], ['retornos_divo', 'retornos_divo.csv'], ['retornos_5a', 'retornos_5a.csv'], ['retornos_15a', 'retornos_15a.csv']]) {
     const R = ref(arq);
     for (const r of D.datasets[ds].rows) {
       const o = R[r.ativo];
