@@ -1,8 +1,8 @@
 /* Tokens visuais compartilhados pelas páginas. Claro e escuro seguem o sistema. */
 :root{
   color-scheme:light;
-  --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  --font-serif:Georgia,"Times New Roman",serif;
+  --font-sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --font-serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
   --color-bg:#f7f7f5;--color-panel:#ffffff;--color-fg:#1b1b1a;--color-fg-muted:#5f5e5a;--color-border-line:#e3e2dd;
   --color-accent:#1F3864;--color-ok:#1f7a45;--color-warn:#8a5a00;--color-bad:#c43c3b;
   --fs-title:28px;--fs-heading:18px;--fs-body:15px;--fs-caption:13px;--fw-medium:600;
@@ -31,3 +31,5 @@ body{background:var(--color-bg);color:var(--color-fg);font-family:var(--font-san
 
 :focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
 .tw:focus-visible,.tablewrap:focus-visible{outline-offset:0}
+.rodape{max-width:1200px;margin:0 auto;padding:0 20px 32px;font-size:var(--fs-caption)}
+.rodape a{color:var(--color-fg-muted)}

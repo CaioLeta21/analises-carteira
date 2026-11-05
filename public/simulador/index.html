@@ -10,8 +10,8 @@
   /* layout: barra de cenários no topo; três colunas (controles · pizza · métricas); gráficos de 20 anos embaixo */
   --bg:#f4f6fa; --panel:#ffffff; --ink:#16233b; --muted:#5d6b82; --line:#dde3ee; --accent:#1F3864; --accent-soft:#e3e9f5;
   --good:#2f8f5b; --warn:#c98a16; --bad:#c2453d;
-  --font-body:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  --font-display:Georgia,"Times New Roman",serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --font-display:"IBM Plex Serif",Georgia,"Times New Roman",serif;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark){
@@ -88,14 +88,26 @@ td.neg{color:var(--bad)}
 .nav{max-width:1240px;margin:0 auto;padding:14px 20px 0;display:flex;gap:16px;flex-wrap:wrap;font-size:13px}
 .nav a{color:var(--muted);text-decoration:none}.nav a[aria-current="page"]{color:var(--ink);font-weight:600}
 .saveline{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.rodape{max-width:1240px;margin:0 auto;padding:0 20px 32px;font-size:13px}.rodape a{color:var(--muted)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
+<link rel="stylesheet" href="/assets/css/fontes.css">
 <link rel="icon" href="/assets/icones/icone.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/icones/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/assets/icones/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#1F3864">
 <meta name="apple-mobile-web-app-title" content="Ativos">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Ativos · letabuild">
+<meta property="og:title" content="Simulador de carteira: risco e retorno em 20 anos">
+<meta property="og:description" content="Mexa nas categorias da carteira e veja volatilidade, quedas e retorno em 20 anos de dados mensais, em reais e em dólar.">
+<meta property="og:url" content="https://ativos.letabuild.com/simulador/">
+<meta property="og:image" content="https://ativos.letabuild.com/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 <nav class="nav" aria-label="Páginas"><a href="/">Início</a><a href="/acoes-etfs/">Ações e ETFs</a><a href="/simulador/" aria-current="page">Simulador</a><a href="/carteira/">Minha carteira</a></nav>
@@ -187,6 +199,7 @@ td.neg{color:var(--bad)}
   </section>
 </div>
 
+<footer class="rodape"><a href="https://github.com/CaioLeta21/analises-carteira">Confira o código: nada sai do seu navegador.</a></footer>
 <script src="/assets/vendor/chart.v4.4.1.umd.js"></script>
 <script src="/assets/js/carteira-modelo.js"></script>
 <script src="/assets/js/carteira-armazenamento.js"></script>

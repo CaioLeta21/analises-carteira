@@ -96,6 +96,16 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     ok(await noAparelho() === 1, 'voltar para o navegador grava a carteira de novo');
     await ctx3.close();
 
+    // acabamento: 404, fontes próprias, imagem de compartilhamento
+    const pf = await ctx.newPage();
+    const r404 = await pf.goto(BASE + '/nao-existe/'); await pf.waitForTimeout(300);
+    ok(r404.status() === 404 && (await pf.title()).includes('não encontrada'), 'página 404');
+    await pf.goto(BASE + '/'); await pf.waitForTimeout(800);
+    ok(await pf.evaluate(async () => { await document.fonts.ready; return document.fonts.check('16px "IBM Plex Sans"') && [...document.fonts].some((f) => f.family.includes('IBM Plex Sans') && f.status === 'loaded'); }), 'fonte IBM Plex carregada do próprio site');
+    const og = await pf.$eval('meta[property="og:image"]', (m) => m.content);
+    ok((await p.request.get(BASE + new URL(og).pathname)).ok(), 'imagem de compartilhamento existe');
+    await pf.close();
+
     // instalável: manifesto e ícones
     const man = await (await p.request.get(BASE + '/manifest.webmanifest')).json();
     ok(man.start_url === '/carteira/' && man.icons.length >= 2, 'manifesto da Tela de Início');
