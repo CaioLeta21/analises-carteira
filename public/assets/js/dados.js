@@ -1,6 +1,6 @@
 /* Carrega public/data/*.json e deriva as tabelas usadas pelas páginas.
    Mesma lógica de reference/compute2_original.py, agora no navegador, para que
-   as janelas (5, 10 e 15 anos) andem sozinhas com os dados novos.
+   as janelas (5, 10, 15 e 25 anos) andem sozinhas com os dados novos.
    Funciona no navegador (window.Dados) e no Node (require) para os testes. */
 (function (root) {
   'use strict';
@@ -33,7 +33,7 @@
 
   function periodos(fim) {
     return [
-      { id: 'ipo', rotulo: 'desde o IPO do Google', inicio: '2004-08' },
+      { id: '25a', rotulo: 'de 25 anos', inicio: somaMeses(fim, -300) },
       { id: '15a', rotulo: 'de 15 anos', inicio: somaMeses(fim, -180) },
       { id: 'divo', rotulo: 'desde o lançamento do DIVO11', inicio: '2015-11' },
       { id: '10a', rotulo: 'de 10 anos', inicio: somaMeses(fim, -120) },
@@ -101,15 +101,15 @@
         multiplicador_10a_usd: 1 + r10, cagr_10a_brl: (mb ** (1 / anos) - 1) * 100, multiplicador_10a_brl: mb };
     });
 
-    const cambio = P.map((p) => ({ periodo: p.id, inicio: p.inicio, fim, usdbrl_inicio: S.fx[p.inicio], usdbrl_fim: S.fx[fim],
-      alta_dolar_pct: (S.fx[fim] / S.fx[p.inicio] - 1) * 100, perda_real_em_usd_pct: (S.fx[p.inicio] / S.fx[fim] - 1) * 100 }));
+    const cambio = P.map((p) => { const ini = p.inicio < S.meses[0] ? S.meses[0] : p.inicio; return { periodo: p.id, inicio: ini, fim, usdbrl_inicio: S.fx[ini], usdbrl_fim: S.fx[fim],
+      alta_dolar_pct: (S.fx[fim] / S.fx[ini] - 1) * 100, perda_real_em_usd_pct: (S.fx[ini] / S.fx[fim] - 1) * 100 }; });
 
     const tab = (rows) => ({ rows, columns: rows.length ? Object.keys(rows[0]) : [] });
     return {
       fim, periodos: P, info: S.info, ids,
       datasets: {
         base100: tab(base100), precos_mensais: tab(precos), retornos: tab(retornos),
-        retornos_longo: tab(longo('2004-08')), retornos_15a: tab(longo(somaMeses(fim, -180))),
+        retornos_25a: tab(longo(somaMeses(fim, -300))), retornos_15a: tab(longo(somaMeses(fim, -180))),
         retornos_divo: tab(longo('2015-11')), retornos_10a: tab(longo(ini10)), retornos_5a: tab(longo(somaMeses(fim, -60))),
         cambio: tab(cambio),
       },

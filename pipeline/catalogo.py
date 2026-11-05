@@ -4,7 +4,7 @@ Gerado em 04/nov/2026 a partir da composição do Ibovespa (B3), de ETFs da B3 e
 maiores ações americanas, do ouro e do ether. Os 16 ativos de config.ATIVOS ficam fora daqui.
 Cada ativo entrou só depois de validado contra uma segunda fonte (docs/03-dados.md, "Catálogo").
 
-categoria: a categoria da carteira (rfbr, rfex, ouro, alt, rvex, rvbr) usada como padrão.
+categoria: a categoria da carteira (rfbr, rfex, ouro, alt, rvex, rvbr, btc) usada como padrão.
 """
 
 CATALOGO = [
@@ -82,7 +82,7 @@ CATALOGO = [
     {"id": "BOVA11", "yahoo": "BOVA11.SA", "nome": "BOVA11 (Ibovespa)", "tipo": "etf", "mercado": "Brasil", "moeda": "BRL", "categoria": "rvbr"},
     {"id": "SMAL11", "yahoo": "SMAL11.SA", "nome": "SMAL11 (small caps)", "tipo": "etf", "mercado": "Brasil", "moeda": "BRL", "categoria": "rvbr"},
     {"id": "IVVB11", "yahoo": "IVVB11.SA", "nome": "IVVB11 (S&P 500 em reais)", "tipo": "etf", "mercado": "Brasil", "moeda": "BRL", "categoria": "rvex"},
-    {"id": "HASH11", "yahoo": "HASH11.SA", "nome": "HASH11 (cripto)", "tipo": "etf", "mercado": "Brasil", "moeda": "BRL", "categoria": "alt"},
+    {"id": "HASH11", "yahoo": "HASH11.SA", "nome": "HASH11 (cripto)", "tipo": "etf", "mercado": "Brasil", "moeda": "BRL", "categoria": "btc"},
     {"id": "GOLD11", "yahoo": "GOLD11.SA", "nome": "GOLD11 (ouro)", "tipo": "etf", "mercado": "Brasil", "moeda": "BRL", "categoria": "ouro"},
     {"id": "NASD11", "yahoo": "NASD11.SA", "nome": "NASD11 (Nasdaq-100 em reais)", "tipo": "etf", "mercado": "Brasil", "moeda": "BRL", "categoria": "rvex"},
     {"id": "ACWI11", "yahoo": "ACWI11.SA", "nome": "ACWI11 (ações globais em reais)", "tipo": "etf", "mercado": "Brasil", "moeda": "BRL", "categoria": "rvex"},
@@ -119,7 +119,7 @@ CATALOGO = [
     {"id": "GLD", "yahoo": "GLD", "nome": "GLD (SPDR Gold Shares)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "ouro"},
     {"id": "IAU", "yahoo": "IAU", "nome": "IAU (iShares Gold Trust)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "ouro"},
     {"id": "SLV", "yahoo": "SLV", "nome": "SLV (iShares Silver Trust)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "alt"},
-    {"id": "IBIT", "yahoo": "IBIT", "nome": "IBIT (iShares Bitcoin Trust ETF)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "alt"},
+    {"id": "IBIT", "yahoo": "IBIT", "nome": "IBIT (iShares Bitcoin Trust ETF)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "btc"},
     {"id": "URTH", "yahoo": "URTH", "nome": "URTH (iShares MSCI World ETF)", "tipo": "etf", "mercado": "Global", "moeda": "USD", "categoria": "rvex"},
     {"id": "VCSH", "yahoo": "VCSH", "nome": "VCSH (Vanguard Short-Term Corporate Bond)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "rfex"},
     {"id": "BIL", "yahoo": "BIL", "nome": "BIL (SPDR Bloomberg 1-3 Month T-Bill ETF)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "rfex"},
@@ -176,5 +176,5 @@ CATALOGO = [
     {"id": "ASML", "yahoo": "ASML", "nome": "ASML (ADR)", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "MELI", "yahoo": "MELI", "nome": "Mercado Livre", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "NU", "yahoo": "NU", "nome": "Nubank", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
-    {"id": "ETH", "yahoo": "ETH-USD", "nome": "Ether", "tipo": "cripto", "mercado": "Global", "moeda": "USD", "categoria": "alt"},
+    {"id": "ETH", "yahoo": "ETH-USD", "nome": "Ether", "tipo": "cripto", "mercado": "Global", "moeda": "USD", "categoria": "btc"},
 ]

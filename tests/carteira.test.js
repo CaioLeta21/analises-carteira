@@ -116,3 +116,20 @@ test('catálogo: preço atual, categoria padrão e CSV reconhecem os ativos', ()
   // catálogo de outro mês é ignorado (preço velho não entra)
   assert.strictEqual(Modelo.precosAtuais(M, { ...CAT, ultimo_mes: '1999-01' }).precos.PETR4, undefined);
 });
+
+test('bitcoin: categoria própria; antes de out/2014 a fatia rende o CDI, depois o bitcoin', () => {
+  assert.strictEqual(Modelo.categoriaPadrao(info.BTC), 'btc');
+  assert.strictEqual(Modelo.categoriaDe('Cripto'), 'btc');
+  const i0 = S.btc.findIndex((x) => x !== null);
+  assert.strictEqual(S.months[i0], '2014-10');
+  const cat = Motor.serieCategoria(S, 'btc');
+  assert.strictEqual(cat[i0 - 1], S.rfbr[i0 - 1]);
+  assert.strictEqual(cat[i0], S.btc[i0]);
+  // por ativo: BTC usa a própria série só a partir da série da categoria
+  const atuais = Modelo.precosAtuais(M);
+  const c = { modo: 'ativos', ativos: [{ codigo: 'BTC', quantidade: 1, categoria: 'btc', moeda: 'USD' }] };
+  const comp = Motor.componentes(c, S, Motor.retornosAtivos(M, S.months), Modelo, atuais);
+  const rr = Motor.retornosCarteira(comp, S.months.length);
+  assert.strictEqual(rr[S.months.indexOf('2012-03')], S.rfbr[S.months.indexOf('2012-03')]);
+  assert.ok(rr.every((x) => Number.isFinite(x)));
+});

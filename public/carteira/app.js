@@ -274,7 +274,7 @@
     }
     const br = Mod.CATEGORIAS.filter((c) => c.brasil).reduce((s, c) => s + pesos[c.k], 0);
     $('sb-br').style.cssText = 'width:' + br * 100 + '%;background:#2E6BB5'; $('sb-ex').style.cssText = 'width:' + (1 - br) * 100 + '%;background:#E07B39';
-    $('sl-br').textContent = 'Brasil ' + pct(br, 0); $('sl-ex').textContent = 'Exterior (inclui ouro) ' + pct(1 - br, 0);
+    $('sl-br').textContent = 'Brasil ' + pct(br, 0); $('sl-ex').textContent = 'Exterior (inclui ouro e bitcoin) ' + pct(1 - br, 0);
 
     const tiles = $('tiles'); tiles.replaceChildren();
     const comp = Mot.componentes(atual, SIM, retAtivos, Mod, atuais);

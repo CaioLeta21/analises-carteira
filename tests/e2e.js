@@ -29,6 +29,9 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     }
     await p.goto(BASE + '/acoes-etfs/'); await p.waitForTimeout(1000);
     ok((await p.$eval('#lede', (e) => e.textContent)).includes('dividendos reinvestidos'), 'comparador gera o texto de abertura');
+    ok((await p.$eval('h1', (e) => e.textContent)) === 'Ações, ETFs e bitcoin em dólar e em real', 'comparador: título sem o IPO do Google');
+    ok(await p.$eval('.lx-periodo[data-v="25a"]', (e) => e.getAttribute('aria-pressed') === 'true' || e.classList.contains('on') || e.classList.contains('ativo')), 'comparador abre na janela de 25 anos');
+    ok(/^Quanto valeria cada 100 aplicado em (out|nov)\/2001/.test(await p.$eval('#tit-evolucao', (e) => e.textContent)), 'janela de 25 anos começa em 2001');
     ok(await p.$$eval('[data-draw="linhas"] svg path', (x) => x.length) > 10, 'comparador desenha as linhas');
     for (const per of ['15a', 'divo', '10a', '5a']) { await p.click(`.lx-periodo[data-v="${per}"]`); await p.waitForTimeout(150); }
     ok((await p.$eval('#tit-evolucao', (e) => e.textContent)).startsWith('Quanto valeria'), 'títulos mudam com o período');
@@ -41,6 +44,10 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
 
     await p.goto(BASE + '/simulador/'); await p.waitForTimeout(1000);
     ok(/%$/.test(await p.$eval('#mVol', (e) => e.textContent)), 'simulador calcula a volatilidade');
+    const volSemBtc = await p.$eval('#mVol', (e) => e.textContent);
+    ok(await p.$('#r-btc') !== null, 'simulador tem a categoria bitcoin');
+    await p.fill('#n-btc', '10'); await p.dispatchEvent('#n-btc', 'change'); await p.waitForTimeout(200);
+    ok((await p.$eval('#mVol', (e) => e.textContent)) !== volSemBtc && !/NaN/.test(await p.$eval('.metrics', (e) => e.textContent)), 'bitcoin muda o risco simulado');
 
     await p.goto(BASE + '/carteira/'); await p.waitForTimeout(1000);
     await p.click('#aba-ativos');

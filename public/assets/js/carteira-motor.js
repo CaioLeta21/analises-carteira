@@ -49,18 +49,30 @@
       pior12m: p12, pior12mAte: p12i, mesesNegativos: rr.filter((x) => x < 0).length / N, anos, indice: ib };
   }
 
+  /* Série da categoria. Bitcoin: antes de out/2014 não há série confiável (sim.btc é null);
+     nesses meses a fatia rende o CDI, como no simulador. */
+  function serieCategoria(sim, k) {
+    if (k !== 'btc') return sim[k];
+    return sim.rfbr.map((r, i) => (sim.btc && sim.btc[i] != null ? sim.btc[i] : r));
+  }
+  /* Mesma regra para um ativo da categoria bitcoin (BTC, ETH...): antes da série da categoria, CDI. */
+  function mascarar(serie, sim, k) {
+    if (k !== 'btc' || !serie) return serie;
+    return serie.map((r, i) => (sim.btc && sim.btc[i] != null ? r : null));
+  }
+
   /* Monta os componentes a partir da carteira.
      sim: /data/simulador.json; retAtivos: saída de retornosAtivos; modelo: CarteiraModelo. */
   function componentes(carteira, sim, retAtivos, modelo, atuais) {
     if (carteira.modo === 'categorias') {
       const { pesos } = modelo.pesosPorCategoria(carteira, atuais);
-      return modelo.CHAVES.filter((k) => pesos[k] > 0).map((k) => ({ rotulo: k, peso: pesos[k], serie: null, reserva: sim[k] }));
+      return modelo.CHAVES.filter((k) => pesos[k] > 0).map((k) => ({ rotulo: k, peso: pesos[k], serie: null, reserva: serieCategoria(sim, k) }));
     }
     const linhas = modelo.valorar(carteira.ativos, atuais).filter((l) => l.valorBRL > 0);
-    return linhas.map((l) => ({ rotulo: l.codigo || l.nome, peso: l.valorBRL, serie: retAtivos[l.codigo] || null, reserva: sim[l.categoria] }));
+    return linhas.map((l) => ({ rotulo: l.codigo || l.nome, peso: l.valorBRL, serie: mascarar(retAtivos[l.codigo] || null, sim, l.categoria), reserva: serieCategoria(sim, l.categoria) }));
   }
 
-  const api = { retornosAtivos, retornosCarteira, metricas, componentes };
+  const api = { retornosAtivos, retornosCarteira, metricas, componentes, serieCategoria };
   root.CarteiraMotor = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

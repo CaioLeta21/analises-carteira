@@ -20,12 +20,17 @@ const CATS = [
   {k:'alt',  name:'Alternativos', color:'#8C8C8C', br:false},
   {k:'rvex', name:'Renda variável exterior', color:'#E07B39', br:false},
   {k:'rvbr', name:'Renda variável Brasil', color:'#D97AA5', br:true},
+  {k:'btc',  name:'Bitcoin', color:'#F7931A', br:false},
 ];
+// Antes de out/2014 não há série confiável do bitcoin: nesses meses a fatia dele rende o CDI.
+if (!S.btc) S.btc = S.rfbr.map(()=>null);
+const BTC_INI = S.months[S.btc.findIndex(x=>x!==null)] || null;
+S.btc = S.btc.map((x,i)=> x===null ? S.rfbr[i] : x);
 // Exemplos genéricos. "minha" é preenchida com a carteira salva neste navegador, se houver.
 const PRESETS = {
-  cons:{rfbr:70, rfex:15, ouro:5, alt:0, rvex:5, rvbr:5},
-  mod:{rfbr:45, rfex:15, ouro:8, alt:5, rvex:17, rvbr:10},
-  arr:{rfbr:25, rfex:10, ouro:10, alt:5, rvex:35, rvbr:15},
+  cons:{rfbr:70, rfex:15, ouro:5, alt:0, rvex:5, rvbr:5, btc:0},
+  mod:{rfbr:45, rfex:15, ouro:8, alt:5, rvex:17, rvbr:10, btc:0},
+  arr:{rfbr:25, rfex:10, ouro:10, alt:5, rvex:35, rvbr:15, btc:0},
 };
 const NOMES_PRESET = {cons:'Conservadora', mod:'Moderada', arr:'Arrojada', minha:'Minha carteira'};
 const MN = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -37,7 +42,7 @@ const sgn = (x, d=1) => (x>0?'+':x<0?'−':'') + fmt(Math.abs(x*100), d) + '%';
 let W = {...PRESETS.mod};
 let active = 'mod';
 
-function norm(w){ const t = CATS.reduce((a,c)=>a+w[c.k],0) || 1; const o={}; CATS.forEach(c=>o[c.k]=w[c.k]/t); return o; }
+function norm(w){ const t = CATS.reduce((a,c)=>a+(w[c.k]||0),0) || 1; const o={}; CATS.forEach(c=>o[c.k]=(w[c.k]||0)/t); return o; }
 
 function stats(wRaw){
   const w = norm(wRaw);
@@ -165,7 +170,7 @@ function render(){
   document.getElementById('sbBr').style.cssText = `width:${br*100}%;background:#2E6BB5`;
   document.getElementById('sbEx').style.cssText = `width:${(1-br)*100}%;background:#E07B39`;
   document.getElementById('slBr').textContent = 'Brasil ' + pct(br,0);
-  document.getElementById('slEx').textContent = 'Exterior (inclui ouro) ' + pct(1-br,0);
+  document.getElementById('slEx').textContent = 'Exterior (inclui ouro e bitcoin) ' + pct(1-br,0);
 
   const s = stats(W), H = REF.hoje, D = REF.D;
   const [L1, L2] = L();

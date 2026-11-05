@@ -33,7 +33,7 @@ const DZ = window.DZ = {
   cor: (t) => CA.corFixa[t] || dash.colors[CA.paleta[t] ?? 0],
 };
 DZ.swatch = (t) => { const c = DZ.cor(t), d = CA.traco[t]; if (!d) return c; const seg = d === '6 4' ? [4, 2] : [5, 2, 2, 2]; let x = 0; const st = seg.map((w, i) => { const r = (i % 2 ? 'transparent' : c) + ' ' + x + 'px ' + (x + w) + 'px'; x += w; return r; }); return 'repeating-linear-gradient(90deg,' + st.join(',') + ')'; };
-DZ.p = () => ({ moeda: dash.params().moeda || 'USD', escala: dash.params().escala || 'lin', periodo: dash.params().periodo || 'ipo', fora: new Set(String(dash.params().fora || '').split(',').filter(Boolean)) });
+DZ.p = () => ({ moeda: dash.params().moeda || 'USD', escala: dash.params().escala || 'lin', periodo: ({ ipo: '25a' })[dash.params().periodo] || dash.params().periodo || '25a', fora: new Set(String(dash.params().fora || '').split(',').filter(Boolean)) });
 DZ.vis = (t) => !DZ.p().fora.has(t);
 DZ.rows = (id) => dash.data(id).data;
 DZ.num = (x) => (x === '' || x == null || isNaN(Number(x))) ? null : Number(x);
@@ -55,7 +55,7 @@ DZ.tipShow = (el, tip, x, y, head, lines) => {
   tip.style.left = left + 'px'; tip.style.top = top + 'px';
 };
 const PER = Object.fromEntries(D.periodos.map((p) => [p.id, p]));
-const SRC = { ipo: 'retornos_longo', '15a': 'retornos_15a', divo: 'retornos_divo', '10a': 'retornos_10a', '5a': 'retornos_5a' };
+const SRC = { '25a': 'retornos_25a', '15a': 'retornos_15a', divo: 'retornos_divo', '10a': 'retornos_10a', '5a': 'retornos_5a' };
 
 // data de atualização
 const dref = new Date(M.data_ref + 'T12:00:00');
@@ -110,7 +110,7 @@ function gerarLede() {
   const neg = (s) => { const b = document.createElement('b'); b.textContent = s; el.appendChild(b); };
   const m = (r) => DZ.mult(r['multiplicador_' + k]);
   const estreia = (r) => (r.inicio > per.inicio ? ', desde ' + DZ.mes(r.inicio) : '');
-  const ini = p.periodo === 'ipo' ? 'Desde ago/2004, mês do IPO do Google,' : p.periodo === 'divo' ? 'Desde nov/2015, lançamento do DIVO11,' : 'De ' + DZ.mes(per.inicio) + ' a ' + DZ.mes(D.fim) + (M.parcial ? ' (parcial)' : '') + ',';
+  const ini = p.periodo === 'divo' ? 'Desde nov/2015, lançamento do DIVO11,' : 'De ' + DZ.mes(per.inicio) + ' a ' + DZ.mes(D.fim) + (M.parcial ? ' (parcial)' : '') + ',';
   const resumo = (r) => DZ.dec(r['cagr_' + k], 1) + '% a.a., ' + m(r) + estreia(r);
   txt(ini + ' em ' + (k === 'usd' ? 'dólar' : 'reais') + ' e com dividendos reinvestidos, os maiores retornos anuais foram de ');
   const top = L.filter((r) => r.ativo !== 'CDI').sort((a, b) => b['cagr_' + k] - a['cagr_' + k]).slice(0, 3);

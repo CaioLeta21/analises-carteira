@@ -10,13 +10,14 @@
     { k: 'alt', nome: 'Alternativos', cor: '#8C8C8C', brasil: false },
     { k: 'rvex', nome: 'Renda variável exterior', cor: '#E07B39', brasil: false },
     { k: 'rvbr', nome: 'Renda variável Brasil', cor: '#D97AA5', brasil: true },
+    { k: 'btc', nome: 'Bitcoin', cor: '#F7931A', brasil: false },
   ];
   const CHAVES = CATEGORIAS.map((c) => c.k);
   // Os mesmos exemplos do simulador (public/simulador/app.js, PRESETS).
   const EXEMPLOS = {
-    Conservadora: { rfbr: 70, rfex: 15, ouro: 5, alt: 0, rvex: 5, rvbr: 5 },
-    Moderada: { rfbr: 45, rfex: 15, ouro: 8, alt: 5, rvex: 17, rvbr: 10 },
-    Arrojada: { rfbr: 25, rfex: 10, ouro: 10, alt: 5, rvex: 35, rvbr: 15 },
+    Conservadora: { rfbr: 70, rfex: 15, ouro: 5, alt: 0, rvex: 5, rvbr: 5, btc: 0 },
+    Moderada: { rfbr: 45, rfex: 15, ouro: 8, alt: 5, rvex: 17, rvbr: 10, btc: 0 },
+    Arrojada: { rfbr: 25, rfex: 10, ouro: 10, alt: 5, rvex: 35, rvbr: 15, btc: 0 },
   };
 
   // nomes aceitos no CSV para cada categoria (sem acento, minúsculas)
@@ -24,9 +25,10 @@
     rfbr: ['rfbr', 'renda fixa brasil', 'renda fixa', 'rf brasil', 'cdi', 'tesouro', 'cdb', 'lci', 'lca', 'debenture', 'credito privado'],
     rfex: ['rfex', 'renda fixa exterior', 'rf exterior', 'bonds', 'treasury', 'treasuries'],
     ouro: ['ouro', 'gold'],
-    alt: ['alt', 'alternativos', 'alternativo', 'multimercado', 'hedge fund', 'hedge funds', 'cripto', 'criptomoedas', 'bitcoin', 'private equity', 'venture capital'],
+    alt: ['alt', 'alternativos', 'alternativo', 'multimercado', 'hedge fund', 'hedge funds', 'private equity', 'venture capital'],
     rvex: ['rvex', 'renda variavel exterior', 'acoes exterior', 'acoes eua', 'stocks', 'etf exterior', 'reits'],
     rvbr: ['rvbr', 'renda variavel brasil', 'acoes brasil', 'acoes', 'fii', 'fiis', 'fundos imobiliarios', 'etf brasil'],
+    btc: ['btc', 'bitcoin', 'cripto', 'criptomoedas', 'criptomoeda', 'criptoativos'],
   };
   const semAcento = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
   function categoriaDe(texto) {
@@ -41,7 +43,7 @@
     if (!info) return null;
     if (info.categoria && CHAVES.includes(info.categoria)) return info.categoria; // ativos do catálogo já dizem
     if (info.id === 'CDI') return 'rfbr';
-    if (info.tipo === 'cripto') return 'alt';
+    if (info.tipo === 'cripto') return 'btc';
     return info.mercado === 'Brasil' ? 'rvbr' : 'rvex';
   }
 
@@ -49,7 +51,7 @@
     const agora = new Date().toISOString();
     return { versao: 1, id: 'c_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36), nome: nome || 'Minha carteira',
       criadaEm: agora, atualizadaEm: agora, modo: 'categorias', patrimonio: 1000000,
-      categorias: { rfbr: 40, rfex: 15, ouro: 5, alt: 5, rvex: 25, rvbr: 10 }, ativos: [], intocada: true };
+      categorias: { rfbr: 40, rfex: 15, ouro: 5, alt: 5, rvex: 25, rvbr: 10, btc: 0 }, ativos: [], intocada: true };
   }
 
   /* Ao restaurar um backup: a carteira de exemplo criada na primeira visita, se for a única e
@@ -125,7 +127,7 @@
 
   const MODELO_CSV = 'codigo,nome,categoria,quantidade,valor,moeda\n' +
     'ITUB3,Itaú ON,rvbr,1000,,BRL\nDIVO11,ETF de dividendos,rvbr,500,,BRL\nQQQ,ETF Nasdaq-100,rvex,20,,USD\n' +
-    'BTC,Bitcoin,alt,0.05,,USD\n,Tesouro Selic 2029,rfbr,,250000,BRL\n,CDB Banco X,rfbr,,100000,BRL\n,Fundo multimercado Y,alt,,80000,BRL\n';
+    'BTC,Bitcoin,btc,0.05,,USD\n,Tesouro Selic 2029,rfbr,,250000,BRL\n,CDB Banco X,rfbr,,100000,BRL\n,Fundo multimercado Y,alt,,80000,BRL\n';
 
   /* Último preço de cada ativo conhecido, em reais. catalogo (opcional): /data/catalogo.json. */
   function precosAtuais(mercado, catalogo) {
