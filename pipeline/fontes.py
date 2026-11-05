@@ -114,8 +114,10 @@ def coingecko(moeda_id, inicio, fim):
              {"vs_currency": "usd", "from": _ts(inicio), "to": _ts(fim + dt.timedelta(days=1))}, headers)
     serie = {}
     for ms, preco in j.get("prices", []):
-        d = dt.datetime.fromtimestamp(ms / 1000, dt.timezone.utc).date().isoformat()
-        serie[d] = float(preco)  # o último ponto do dia UTC fica
+        t = dt.datetime.fromtimestamp(ms / 1000, dt.timezone.utc)
+        # o ponto das 00:00 UTC é o fechamento do dia anterior; senão fica o último ponto do dia
+        d = (t.date() - dt.timedelta(days=1) if t.hour == 0 and t.minute < 5 else t.date()).isoformat()
+        serie[d] = float(preco)
     if not serie:
         raise FonteErro(f"coingecko {moeda_id}: sem dados")
     return sorted(serie.items()), "USD"

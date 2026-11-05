@@ -60,7 +60,13 @@ flowchart LR
 `public/data/simulador.json`: `months`, `fx` (variação mensal do dólar) e uma lista de
 retornos mensais em reais para cada categoria (`rfbr`, `rfex`, `rvbr`, `rvex`, `ouro`, `alt`).
 
-`public/data/status.json`: data dos dados, se o mês é parcial, fonte usada por ativo.
+`public/data/status.json`: data dos dados, se o mês é parcial, fonte usada por ativo, quantos
+ativos do catálogo saíram hoje (`catalogo`) e os avisos do dia (`avisos`).
+
+`public/data/catalogo.json`: `ultimo_mes` (igual ao de `mercado.json`), `parcial` e a lista de
+ativos com `id`, `nome`, `tipo`, `mercado`, `moeda`, `categoria` (da carteira), `inicio` e `preco`
+(último preço, na moeda do ativo). A série de cada um fica em `public/data/catalogo/<ID>.json`:
+`{"id", "inicio", "fim", "precos": [...]}`, alinhada aos meses de `mercado.json` a partir de `inicio`.
 
 Mudança incompatível nesses arquivos exige subir `versao` e ajustar as páginas no mesmo commit.
 

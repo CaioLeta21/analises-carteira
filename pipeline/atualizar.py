@@ -23,7 +23,9 @@ import math
 import os
 import sys
 
+from . import catalogo_dados as CD
 from . import config
+from . import conferir as CONF
 from .fontes import FonteErro, bcb_sgs, buscar_ativo
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -183,20 +185,65 @@ def estender(H, hoje, buscar=buscar_ativo, bcb=bcb_sgs):
             "sim": sim, "fontes": fontes, "data_ref": data_ref}
 
 
-def promover(H, E, hoje):
-    """Grava no histórico os meses fechados há mais de DIAS_PARA_FECHAR_MES dias."""
+DIAS_ESPERA_SEGUNDA_FONTE = 10  # depois disso o mês é gravado mesmo sem a segunda fonte, com aviso
+
+
+def promover(H, E, hoje, conf=None, cat=None, relato=None):
+    """Grava no histórico os meses fechados há mais de DIAS_PARA_FECHAR_MES dias.
+
+    conf: função de conferência (pipeline.conferir.conferir). Com ela, cada mês só é gravado depois de
+    comparado com uma segunda fonte. Divergência num ativo do comparador para tudo (vai para
+    relato['erros']); no catálogo, só o ativo divergente fica de fora (relato['avisos']).
+    cat: (C, ext) do catálogo, para gravar os ativos aprovados junto."""
+    relato = relato if relato is not None else {"avisos": [], "erros": []}
     promovidos = []
     for i, m in enumerate(E["meses"]):
-        if hoje < fim_do_mes(m) + dt.timedelta(days=config.DIAS_PARA_FECHAR_MES):
+        fim = fim_do_mes(m)
+        if hoje < fim + dt.timedelta(days=config.DIAS_PARA_FECHAR_MES):
             break
+        aprovados_cat, nao_conf = [], set()
+        if conf:
+            ant = H["ultimo"] if i == 0 else E["meses"][i - 1]
+            nucleo = [a for a in config.ATIVOS if a["id"] != "CDI"]
+            ativos = [{"id": a["id"], "simbolo": a["fontes"][0][1], "tipo": a["tipo"], "moeda": a["moeda"]} for a in nucleo]
+            ret = {a["id"]: E["precos"][a["id"]][m] / (H["ativos"][a["id"]]["precos"][ant] if i == 0 else E["precos"][a["id"]][ant]) - 1 for a in nucleo}
+            if cat:
+                C, ext = cat
+                rc = CD.retornos_do_mes(C, ext, m)
+                ativos += [{"id": a["id"], "simbolo": a["yahoo"], "tipo": a["tipo"], "moeda": a["moeda"]} for a in CD.cfg.CATALOGO if a["id"] in rc]
+                ret.update(rc)
+            res = conf(ativos, m, ret)
+            ids_nucleo = {a["id"] for a in nucleo}
+            fmt = lambda k: f"{k} ({res[k]['principal']:+.2%} na fonte principal, {res[k]['segunda']:+.2%} na segunda)"
+            div = [k for k in ids_nucleo if res[k]["situacao"] == "diverge"]
+            if div:
+                relato["erros"].append(f"conferência de {m}: " + ", ".join(fmt(k) for k in sorted(div)))
+                break
+            liberado = hoje >= fim + dt.timedelta(days=DIAS_ESPERA_SEGUNDA_FONTE)
+            sem = sorted(k for k, v in res.items() if v["situacao"] == "sem_fonte")
+            if any(k in ids_nucleo for k in sem) and not liberado:
+                print(f"{m}: aguardando a segunda fonte para {', '.join(k for k in sem if k in ids_nucleo)}")
+                break
+            if sem and liberado:
+                relato["avisos"].append(f"{m} gravado sem segunda fonte para: {', '.join(sem)}")
+                nao_conf = set(sem)
+            for k, v in res.items():
+                if k in ids_nucleo:
+                    continue
+                if v["situacao"] == "ok" or (v["situacao"] == "sem_fonte" and liberado):
+                    aprovados_cat.append(k)
+                elif v["situacao"] == "diverge":
+                    relato["avisos"].append(f"conferência de {m}, catálogo: " + fmt(k) + "; o mês não foi gravado para este ativo")
         H["fx"][m] = E["fx"][m]
         for aid, a in H["ativos"].items():
             a["precos"][m] = E["precos"][aid][m]
-            a["fonte"][m] = f"{E['fontes'].get(aid, '')} (atualização automática)"
+            a["fonte"][m] = f"{E['fontes'].get(aid, '')} (atualização automática" + ("; não conferido" if aid in nao_conf else "; conferido" if conf else "") + ")"
         H["sim"]["months"].append(m)
         H["sim"]["fx"].append(round(E["fxr"][i], 6))
         for k in config.CATEGORIAS:
             H["sim"][k].append(round(E["sim"][k][i], 6))
+        if cat:
+            CD.promover(cat[0], cat[1], m, aprovados_cat, nao_conf)
         promovidos.append(m)
     if promovidos:
         H["ultimo"] = promovidos[-1]
@@ -298,6 +345,7 @@ def main(argv=None):
     a = ap.parse_args(argv)
     hoje = dt.date.fromisoformat(a.hoje) if a.hoje else dt.date.today()
     H = carregar_historico()
+    C = CD.carregar()
     if a.semear:
         ini, fim = semear(H, a.semear.upper())
         gravar_historico(H)
@@ -305,21 +353,35 @@ def main(argv=None):
         return 0
     if a.offline:
         E = {"meses": [], "fx": {}, "fxr": [], "precos": {}, "sim": {}, "fontes": {}, "data_ref": None}
+        ext, avisos = {}, []
     else:
         E = estender(H, hoje)
+        inicio = dt.date.fromisoformat(H["ultimo"] + "-01") - dt.timedelta(days=7)
+        ext, avisos = CD.estender(C, E["meses"], inicio, hoje)
     erros = checar(H, E, hoje)
     if erros:
         print("CHECAGENS FALHARAM, nada foi gravado:\n- " + "\n- ".join(erros), file=sys.stderr)
         return 1
-    promovidos = [] if (a.offline or a.sem_promover) else promover(H, E, hoje)
+    relato = {"avisos": avisos, "erros": []}
+    promovidos = [] if (a.offline or a.sem_promover) else promover(H, E, hoje, CONF.conferir, (C, ext), relato)
+    if relato["erros"]:
+        print("CONFERÊNCIA FALHOU, nada foi gravado:\n- " + "\n- ".join(relato["erros"]), file=sys.stderr)
+        return 1
     if promovidos:
         gravar_historico(H)
+        CD.gravar(C)
         E = {**E, "meses": E["meses"][len(promovidos):], "fxr": E["fxr"][len(promovidos):],
              "fx": {m: E["fx"][m] for m in E["meses"][len(promovidos):]},
              "precos": {k: {m: v[m] for m in E["meses"][len(promovidos):]} for k, v in E["precos"].items()},
              "sim": {k: v[len(promovidos):] for k, v in E["sim"].items()}}
     mercado, sim, status = montar_saidas(H, E, hoje)
+    indice, arquivos = CD.saidas(C, ext, mercado["meses"], mercado["parcial"], mercado["atualizado_em"])
+    status["catalogo"] = len(indice["ativos"])
+    status["avisos"] = relato["avisos"]
     gravar_saidas(mercado, sim, status)
+    CD.gravar_saidas(indice, arquivos)
+    for av in relato["avisos"]:
+        print("AVISO:", av)
     print(f"ok: último mês {mercado['ultimo_mes']}{' (parcial)' if mercado['parcial'] else ''}; "
           f"meses gravados no histórico: {promovidos or 'nenhum'}")
     return 0

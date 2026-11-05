@@ -130,3 +130,69 @@ def test_semear_ativo_novo(H, monkeypatch):
     ini, fim = at.semear(H2, "XPTO3", fonte_falsa())
     assert ini == "2004-07" or ini == "2004-08"
     assert fim == "2026-10" and "XPTO3" in H2["ativos"]
+
+
+# ---------------------------------------------------------------- conferência e catálogo
+from pipeline import catalogo_dados as CD
+
+
+def conf_falsa(situacao_por_id=None, padrao="ok"):
+    def conf(ativos, mes, retornos):
+        return {a["id"]: {"situacao": (situacao_por_id or {}).get(a["id"], padrao), "principal": retornos.get(a["id"], 0.0), "segunda": 0.0} for a in ativos}
+    return conf
+
+
+def catalogo_pequeno():
+    C = {"AAPL": {"precos": {"2026-09": 100.0, "2026-10": 110.0}, "fonte": {}},
+         "PETR4": {"precos": {"2026-09": 30.0, "2026-10": 31.0}, "fonte": {}}}
+    return C
+
+
+def test_conferencia_divergente_no_comparador_para_tudo(H):
+    hoje = dt.date(2026, 12, 10)
+    H2 = copy.deepcopy(H)
+    E = at.estender(H2, hoje, fonte_falsa(), bcb_falso)
+    relato = {"avisos": [], "erros": []}
+    assert at.promover(H2, E, hoje, conf_falsa({"SPY": "diverge"}), None, relato) == []
+    assert relato["erros"] and "SPY" in relato["erros"][0] and H2["ultimo"] == CORTE
+
+
+def test_segunda_fonte_fora_do_ar_espera_e_depois_grava(H):
+    E = at.estender(copy.deepcopy(H), dt.date(2026, 12, 4), fonte_falsa(), bcb_falso)
+    H2 = copy.deepcopy(H)
+    assert at.promover(H2, E, dt.date(2026, 12, 4), conf_falsa({"VHYL": "sem_fonte"})) == []  # 4 dias depois do fim
+    H3 = copy.deepcopy(H)
+    relato = {"avisos": [], "erros": []}
+    E = at.estender(copy.deepcopy(H), dt.date(2026, 12, 11), fonte_falsa(), bcb_falso)
+    assert at.promover(H3, E, dt.date(2026, 12, 11), conf_falsa({"VHYL": "sem_fonte"}), None, relato) == ["2026-11"]
+    assert "não conferido" in H3["ativos"]["VHYL"]["fonte"]["2026-11"] and relato["avisos"]
+
+
+def test_catalogo_estende_e_so_o_divergente_fica_de_fora(H, monkeypatch):
+    monkeypatch.setattr(CD.cfg, "CATALOGO", [
+        {"id": "AAPL", "yahoo": "AAPL", "nome": "Apple", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
+        {"id": "PETR4", "yahoo": "PETR4.SA", "nome": "Petrobras PN", "tipo": "acao", "mercado": "Brasil", "moeda": "BRL", "categoria": "rvbr"}])
+    hoje = dt.date(2026, 12, 10)
+    H2 = copy.deepcopy(H)
+    E = at.estender(H2, hoje, fonte_falsa(), bcb_falso)
+    C = catalogo_pequeno()
+    ext, avisos = CD.estender(C, E["meses"], dt.date(2026, 9, 24), hoje, fonte_falsa())
+    assert avisos == [] and set(ext) == {"AAPL", "PETR4"} and set(ext["AAPL"]["precos"]) == {"2026-11", "2026-12"}
+    relato = {"avisos": [], "erros": []}
+    assert at.promover(H2, E, hoje, conf_falsa({"PETR4": "diverge"}), (C, ext), relato) == ["2026-11"]
+    assert "2026-11" in C["AAPL"]["precos"] and "2026-11" not in C["PETR4"]["precos"]
+    assert any("PETR4" in a for a in relato["avisos"])
+    # no dia seguinte o PETR4 continua sendo servido (da âncora dele) e as saídas ficam alinhadas
+    mercado, _, _ = at.montar_saidas(H2, {**E, "meses": ["2026-12"], "fxr": E["fxr"][1:], "fx": {"2026-12": E["fx"]["2026-12"]},
+                                          "precos": {k: {"2026-12": v["2026-12"]} for k, v in E["precos"].items()}, "sim": {k: v[1:] for k, v in E["sim"].items()}}, hoje)
+    ext2, _ = CD.estender(C, ["2026-12"], dt.date(2026, 10, 24), hoje, fonte_falsa())
+    indice, arquivos = CD.saidas(C, ext2, mercado["meses"], True, "agora")
+    assert {a["id"] for a in indice["ativos"]} == {"AAPL", "PETR4"}
+    for aid, arq in arquivos.items():
+        assert arq["fim"] == mercado["ultimo_mes"] and len(arq["precos"]) == len([m for m in mercado["meses"] if m >= arq["inicio"]])
+
+
+def test_catalogo_ativo_sem_dados_nao_derruba(H, monkeypatch):
+    monkeypatch.setattr(CD.cfg, "CATALOGO", [{"id": "AAPL", "yahoo": "AAPL", "nome": "Apple", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"}])
+    ext, avisos = CD.estender(catalogo_pequeno(), ["2026-11"], dt.date(2026, 9, 24), dt.date(2026, 11, 4), fonte_falsa(faltando={"AAPL"}))
+    assert ext == {} and avisos and "AAPL" in avisos[0]

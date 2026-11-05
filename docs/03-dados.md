@@ -71,6 +71,50 @@ Retornos mensais em reais por categoria. Para meses novos:
 - Ouro: GLD, em reais.
 - Alternativos: 50% URTH + 50% SHY, em reais.
 
+## Catálogo (169 ativos que o usuário escolhe)
+
+Definido em `pipeline/catalogo.py`: as ações do Ibovespa (composição oficial da B3 em
+04/nov/2026), ETFs da B3 (BOVA11, SMAL11, IVVB11, SPXI11, NASD11, ACWI11, HASH11, GOLD11),
+ETFs americanos (ações, títulos, setores, ouro, prata, bitcoin), ~50 das maiores ações
+americanas (e TSMC, ASML, Mercado Livre, Nubank) e o ether. Histórico em
+`dados/historico/catalogo.csv`; saídas em `public/data/catalogo.json` (índice) e
+`public/data/catalogo/<ID>.json` (série de cada ativo).
+
+**Nenhum ativo entrou sem validação** (ferramentas em `ferramentas/catalogo/`, resultado por
+ativo em `dados/correcoes/2026-11-04-catalogo.csv`):
+- **B3:** retorno total oficial calculado com a cotação de fechamento do COTAHIST da B3 +
+  proventos (Fundamentus, todas as parcelas) na data ex + desdobramentos. O histórico de cada
+  ativo começa no primeiro mês a partir do qual as janelas de 3 meses do Yahoo e do oficial
+  batem (até 1,5 ponto em 95% delas, nenhuma acima de 3 pontos) e há cotação oficial em todo mês
+  (troca de código ou fusão deixa buraco; o histórico recomeça depois). Meses em que o Yahoo
+  perdeu (total ou parcialmente) ou duplicou um provento declarado usam o retorno oficial
+  (97 meses). Desdobramento de ETF que o Yahoo não registrou (SPXI11, 1:8 em 22/jan/2026) é
+  corrigido. Ficaram fora: IMAB11, B5P211 e FIXA11 (não aparecem no COTAHIST) e XFIX11 (distribui
+  rendimentos sem fonte oficial para conferir).
+- **EUA:** fechamento e dividendos do Nasdaq nos últimos 10 anos. 84 de 89 batem em todos os
+  meses; os outros 5 divergem só em cisões (Merck/Organon, Pfizer/Viatris, AT&T/WBD,
+  IBM/Kyndryl: o Yahoo inclui o valor distribuído) e na mudança de sede da Broadcom em 2018.
+  O Nasdaq não dá dividendos de ETFs nem de ações da NYSE; nesses casos o preço é conferido e o
+  dividendo vem do Yahoo (que bateu com a Digrin em 22 anos para BLK e LLY, ambas da NYSE).
+  Antes de 2016 vale o Yahoo, pelo mesmo motivo.
+- **Ether:** CoinGecko nos últimos 12 meses (até 0,6 ponto; o "fechamento" de cripto depende do minuto).
+
+## Conferência mensal (antes de gravar um mês no histórico)
+
+`pipeline/conferir.py` compara o retorno do mês fechado de cada ativo com uma segunda fonte:
+B3 pelo arquivo mensal oficial de cotações + lista oficial de proventos (últimos 12 meses);
+EUA pelo Nasdaq (para ETFs e ações da NYSE, o retorno ajustado deve ficar entre o retorno de
+preço e esse + 2,5 pontos); VHYL pela linha em libras convertida; cripto pela CoinGecko.
+Tolerância de 0,5 ponto (1 ponto para cripto e Londres).
+
+- Divergência num dos 16 ativos do comparador: nada é gravado e o Action falha.
+- Divergência num ativo do catálogo: só aquele ativo deixa de gravar o mês (ele continua no site,
+  estendido a partir do último mês gravado) e entra um aviso.
+- Segunda fonte fora do ar: o mês espera; depois de 10 dias do fim do mês é gravado marcado
+  como "não conferido", com aviso.
+- Avisos ficam em `public/data/status.json` (`avisos`); o último passo do Action falha quando há
+  algum, e o GitHub manda e-mail. Os dados bons já foram gravados antes.
+
 ## Checagens (bloqueiam a publicação)
 
 - Retorno mensal novo acima de 60% em módulo (100% no bitcoin).
