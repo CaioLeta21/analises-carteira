@@ -12,6 +12,12 @@
     { k: 'rvbr', nome: 'Renda variável Brasil', cor: '#D97AA5', brasil: true },
   ];
   const CHAVES = CATEGORIAS.map((c) => c.k);
+  // Os mesmos exemplos do simulador (public/simulador/app.js, PRESETS).
+  const EXEMPLOS = {
+    Conservadora: { rfbr: 70, rfex: 15, ouro: 5, alt: 0, rvex: 5, rvbr: 5 },
+    Moderada: { rfbr: 45, rfex: 15, ouro: 8, alt: 5, rvex: 17, rvbr: 10 },
+    Arrojada: { rfbr: 25, rfex: 10, ouro: 10, alt: 5, rvex: 35, rvbr: 15 },
+  };
 
   // nomes aceitos no CSV para cada categoria (sem acento, minúsculas)
   const SINONIMOS = {
@@ -170,7 +176,7 @@
     return { pesos: Object.fromEntries(CHAVES.map((k) => [k, total ? soma[k] / total : 0])), total, linhas };
   }
 
-  const api = { CATEGORIAS, CHAVES, categoriaDe, categoriaPadrao, novaCarteira, idsParaSubstituir, problemasLinha, ordenarPorValor, numeroBR, lerCSV, escreverCSV, MODELO_CSV, precosAtuais, valorar, pesosPorCategoria };
+  const api = { CATEGORIAS, CHAVES, EXEMPLOS, categoriaDe, categoriaPadrao, novaCarteira, idsParaSubstituir, problemasLinha, ordenarPorValor, numeroBR, lerCSV, escreverCSV, MODELO_CSV, precosAtuais, valorar, pesosPorCategoria };
   root.CarteiraModelo = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

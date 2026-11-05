@@ -72,6 +72,7 @@
     $('aba-ativos').setAttribute('aria-selected', String(modo === 'ativos'));
     $('painel-categorias').hidden = modo !== 'categorias';
     $('painel-ativos').hidden = modo !== 'ativos';
+    document.querySelector('.grade').classList.toggle('modo-ativos', modo === 'ativos');
   }
   $('aba-categorias').addEventListener('click', () => { aba('categorias'); mudou(false); });
   $('aba-ativos').addEventListener('click', () => { aba('ativos'); mudou(false); });
@@ -94,7 +95,8 @@
   $('patrimonio').addEventListener('input', () => { atual.patrimonio = Math.max(0, parseFloat($('patrimonio').value) || 0); mudou(); });
 
   /* ---------- modo ativos */
-  function celula(tr, el) { const td = document.createElement('td'); td.appendChild(el); tr.appendChild(td); return td; }
+  const ROTULOS = ['Código', 'Nome', 'Categoria', 'Quantidade', 'Valor', 'Moeda', 'Em R$', ''];
+  function celula(tr, el) { const td = document.createElement('td'); td.appendChild(el); td.dataset.rotulo = ROTULOS[tr.children.length] || ''; tr.appendChild(td); return td; }
   function input(tipo, valor, aoMudar, attrs) { const i = document.createElement('input'); i.type = tipo; if (valor != null) i.value = valor; for (const [k, v] of Object.entries(attrs || {})) i.setAttribute(k, v); i.addEventListener(tipo === 'text' && attrs && attrs.list ? 'change' : 'input', () => aoMudar(i.value)); return i; }
   function montarAtivos() {
     const tb = $('corpo'); tb.replaceChildren();
@@ -121,7 +123,7 @@
         totalEditor();
       };
       const rem = document.createElement('button'); rem.className = 'rem'; rem.textContent = '×'; rem.setAttribute('aria-label', 'Remover linha ' + (a.codigo || a.nome || i + 1));
-      rem.addEventListener('click', () => { atual.ativos.splice(i, 1); montarAtivos(); mudou(); }); celula(tr, rem);
+      rem.addEventListener('click', () => { atual.ativos.splice(i, 1); montarAtivos(); mudou(); }); celula(tr, rem).className = 'acao';
       tb.appendChild(tr);
       atualizarLinha();
     });
@@ -167,7 +169,34 @@
   });
 
   /* ---------- análise */
-  let pizza = null;
+  let pizza = null, gCresc = null, gQueda = null;
+  const MOD = (() => {
+    const c = { modo: 'categorias', categorias: Mod.EXEMPLOS.Moderada, patrimonio: 1 };
+    return Mot.metricas(Mot.retornosCarteira(Mot.componentes(c, SIM, retAtivos, Mod, atuais), SIM.months.length), SIM.fx, SIM.months);
+  })();
+  const CDI = (() => { const idx = [1]; for (const r of SIM.rfbr) idx.push(idx[idx.length - 1] * (1 + r)); return idx; })();
+  function comparar(m) {
+    const meses = ['2006-10', ...SIM.months];
+    const rot = meses.map(mes);
+    const ticks = { color: css('--color-fg-muted'), font: { size: 11 }, autoSkip: false, maxRotation: 0, callback: (v, i) => (meses[i].endsWith('-01') && +meses[i].slice(0, 4) % 4 === 0 ? meses[i].slice(0, 4) : '') };
+    const grade = css('--color-border-line'), acc = css('--color-accent'), mut = css('--color-fg-muted'), bad = css('--color-bad');
+    const base = (fmtY, max) => ({ responsive: true, maintainAspectRatio: false, animation: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => ' ' + c.dataset.label + ': ' + fmtY(c.parsed.y) } } },
+      scales: { x: { grid: { display: false }, ticks }, y: { max, grid: { color: grade }, border: { display: false }, ticks: { color: mut, font: { size: 11 }, callback: fmtY } } } });
+    const serieC = m ? m.indice.map((v) => v * 100) : [], serieQ = m ? m.queda.serie.map((v) => v * 100) : [];
+    if (!window.Chart) return;
+    if (!gCresc) {
+      gCresc = new Chart($('g-cresc'), { type: 'line', data: { labels: rot, datasets: [
+        { label: 'Sua carteira', data: serieC, borderColor: acc, borderWidth: 2.2, pointRadius: 0 },
+        { label: 'Moderada', data: MOD.indice.map((v) => v * 100), borderColor: '#8C8C8C', borderDash: [6, 4], borderWidth: 1.6, pointRadius: 0 },
+        { label: 'CDI', data: CDI.map((v) => v * 100), borderColor: mut, borderDash: [2, 3], borderWidth: 1.6, pointRadius: 0 }] }, options: base((v) => 'R$ ' + fmt(v, 0)) });
+      gQueda = new Chart($('g-queda'), { type: 'line', data: { labels: rot, datasets: [
+        { label: 'Sua carteira', data: serieQ, borderColor: bad, backgroundColor: bad + '22', fill: 'origin', borderWidth: 1.8, pointRadius: 0 },
+        { label: 'Moderada', data: MOD.queda.serie.map((v) => v * 100), borderColor: '#8C8C8C', borderDash: [6, 4], borderWidth: 1.4, pointRadius: 0 }] }, options: base((v) => fmt(v, 0) + '%', 0) });
+    } else { gCresc.data.datasets[0].data = serieC; gQueda.data.datasets[0].data = serieQ; gCresc.update('none'); gQueda.update('none'); }
+    const n = SIM.months.length, cdiA = Math.pow(CDI[n], 12 / n) - 1;
+    $('resumo-comp').textContent = m ? 'Retorno anual: sua carteira ' + pct(m.cagr) + ', Moderada ' + pct(MOD.cagr) + ', CDI ' + pct(cdiA) + '. Maior queda: sua carteira ' + sgn(m.queda.m) + ', Moderada ' + sgn(MOD.queda.m) + '.' : 'Preencha a carteira para comparar.';
+  }
   const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   function tile(k, v, c, cls) { const d = document.createElement('div'); d.className = 'tile'; const a = document.createElement('div'); a.className = 'k'; a.textContent = k; const b = document.createElement('div'); b.className = 'v' + (cls ? ' ' + cls : ''); b.textContent = v; const e = document.createElement('div'); e.className = 'c'; e.textContent = c || ''; d.append(a, b, e); return d; }
   function analisar() {
@@ -186,7 +215,7 @@
 
     const tiles = $('tiles'); tiles.replaceChildren();
     const comp = Mot.componentes(atual, SIM, retAtivos, Mod, atuais);
-    if (!comp.length) { tiles.appendChild(tile('Sem dados', '—', 'Preencha a carteira para ver o risco.')); }
+    if (!comp.length) { tiles.appendChild(tile('Sem dados', '—', 'Preencha a carteira para ver o risco.')); comparar(null); }
     else {
       const rr = Mot.retornosCarteira(comp, SIM.months.length);
       const m = Mot.metricas(rr, SIM.fx, SIM.months);
@@ -200,6 +229,7 @@
         tile('Meses negativos', pct(m.mesesNegativos, 0), 'de ' + SIM.months.length + ' meses'));
       $('nota-metodo').textContent = 'Simulação de ' + mes(SIM.months[0]) + ' a ' + mes(SIM.months[SIM.months.length - 1]) + ', com rebalanceamento mensal. ' +
         (atual.modo === 'ativos' ? 'Ativos da base usam a própria série; os demais, e os meses antes da estreia de cada ativo, usam o substituto da categoria.' : 'Cada categoria usa um substituto (veja o simulador).');
+      comparar(m);
       $('abrir-sim').href = '/simulador/#pesos=' + Mod.CHAVES.map((k) => k + ':' + (Math.round(pesos[k] * 1000) / 10)).join(',') + '&pat=' + (Math.round(total / 1e4) / 100);
     }
     // desempenho por ativo conhecido

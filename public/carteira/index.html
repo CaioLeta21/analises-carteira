@@ -69,9 +69,19 @@
     </section>
   </div>
 
+  <section class="card" id="comparacao" aria-labelledby="h-comp">
+    <h2 id="h-comp">Sua carteira contra o CDI e a carteira Moderada</h2>
+    <div class="legenda"><span><i class="lg-cart"></i>Sua carteira</span><span><i class="lg-mod"></i>Moderada</span><span><i class="lg-cdi"></i>CDI</span></div>
+    <div class="graficos">
+      <figure><figcaption>Quanto viraria R$ 100 (em reais)</figcaption><div class="chartbox"><canvas id="g-cresc" role="img" aria-label="Evolução de R$ 100 na sua carteira, na Moderada e no CDI"></canvas></div></figure>
+      <figure><figcaption>Distância do pico (quedas, em reais)</figcaption><div class="chartbox"><canvas id="g-queda" role="img" aria-label="Quedas a partir do pico na sua carteira e na Moderada"></canvas></div></figure>
+    </div>
+    <p class="nota" id="resumo-comp"></p>
+  </section>
+
   <section class="card" id="posicoes-card" hidden>
     <h2>Desempenho dos ativos da base</h2>
-    <div class="tw"><table class="tabela"><thead><tr><th>Ativo</th><th>Nome</th><th>Em R$</th><th>% da carteira</th><th>12 meses (R$)</th><th>5 anos (R$)</th></tr></thead><tbody id="corpo-pos"></tbody></table></div>
+    <div class="tw"><table class="tabela"><thead><tr><th>Ativo</th><th>Nome</th><th class="num">Em R$</th><th class="num">% da carteira</th><th class="num">12 meses (R$)</th><th class="num">5 anos (R$)</th></tr></thead><tbody id="corpo-pos"></tbody></table></div>
   </section>
 
   <section class="card" id="backup">

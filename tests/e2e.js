@@ -44,6 +44,7 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     ok(await p.$$eval('#corpo tr', (r) => r.length) === 7, 'carteira importa o CSV modelo');
     ok(/^R\$ [\d.]+$/.test(await p.$eval('#tot-brl', (e) => e.textContent)), 'carteira mostra o patrimônio');
     ok((await p.$eval('#total-editor', (e) => e.textContent)) === (await p.$eval('#tot-brl', (e) => e.textContent)), 'editor mostra o total no rodapé');
+    ok(/Moderada .*CDI/.test(await p.$eval('#resumo-comp', (e) => e.textContent)), 'carteira se compara com Moderada e CDI');
     await p.click('#ordenar'); await p.waitForTimeout(200);
     const vals = await p.$$eval('#corpo tr td.num span:first-child', (s) => s.map((x) => +x.textContent.replace(/\D/g, '')));
     ok(vals.every((v, i) => !i || vals[i - 1] >= v), 'ordenar por valor');
@@ -70,6 +71,9 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
       await cel.goto(BASE + pg); await cel.waitForTimeout(1000);
       ok(!(await cel.evaluate(() => document.documentElement.scrollWidth > innerWidth)), pg + ' sem rolagem lateral em 390 px');
     }
+    await cel.click('#aba-ativos'); await cel.click('#add'); await cel.waitForTimeout(300);
+    ok((await cel.$eval('#corpo tr', (t) => getComputedStyle(t).display)) === 'grid', 'editor vira cartões no celular');
+    ok(!(await cel.evaluate(() => document.documentElement.scrollWidth > innerWidth)), 'editor em cartões sem rolagem lateral');
     await cel.close();
 
     ok(externos.length === 0, 'nenhuma requisição para outro domínio ' + (externos.length ? JSON.stringify(externos) : ''));

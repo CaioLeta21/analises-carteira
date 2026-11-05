@@ -90,3 +90,12 @@ test('validação da linha e ordenação por valor', () => {
   const l = [{ codigo: 'A', valor: 10, moeda: 'BRL' }, { codigo: 'B', valor: null, quantidade: null }, { codigo: 'C', valor: 50, moeda: 'BRL' }];
   assert.deepStrictEqual(Modelo.ordenarPorValor(l, atuais).map((x) => x.codigo), ['C', 'A', 'B']);
 });
+
+test('exemplos da carteira são os mesmos do simulador', () => {
+  const sim = fs.readFileSync(path.join(raiz, 'public/simulador/app.js'), 'utf8');
+  for (const [nome, chave] of [['Conservadora', 'cons'], ['Moderada', 'mod'], ['Arrojada', 'arr']]) {
+    const m = sim.match(new RegExp(chave + ':\\{([^}]+)\\}'))[1];
+    const w = Object.fromEntries(m.split(',').map((x) => x.split(':').map((y) => y.trim())).map(([k, v]) => [k, +v]));
+    assert.deepStrictEqual(w, Modelo.EXEMPLOS[nome], nome);
+  }
+});
