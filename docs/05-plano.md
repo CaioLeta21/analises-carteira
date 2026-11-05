@@ -3,6 +3,14 @@
 Faça uma etapa por vez. No fim de cada uma, rode os testes indicados e mostre o resultado ao
 dono do projeto antes de seguir. Não pule as checagens.
 
+## Situação em 04/nov/2026
+
+Feitas: 0, 1, 2, 3, 5, 5b, 6 e 7. Etapa 4 parcial: o site está no Cloudflare Pages
+(`ativos-letabuild.pages.dev`, ligado ao repositório) e o domínio `ativos.letabuild.com` já foi
+adicionado ao projeto, mas falta trocar o registro DNS (hoje aponta para o app Streamlit antigo
+no servidor Oracle) e depois desligar esse app. O repositório deve virar público depois de
+trocar o e-mail dos commits pelo e-mail anônimo do GitHub.
+
 ## Etapa 0. Preparar o ambiente
 
 ```bash
