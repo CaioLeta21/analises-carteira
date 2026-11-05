@@ -63,8 +63,12 @@ O básico funciona. Faça, nesta ordem, uma por commit:
    valor informado (o valor tem prioridade sobre a quantidade).
 4. **Comparação:** mostrar a carteira contra CDI e contra um exemplo (Moderada) no gráfico de
    "quanto viraria R$ 100" e de quedas, como no simulador.
-5. **Fotos mensais (opcional, pergunte antes):** botão "Guardar foto de hoje" que salva valores
-   por data, para ver a evolução real ao longo do tempo. Continua só no navegador.
+5. **Instalável na Tela de Início (decidido em 04/nov/2026):** manifesto e ícone para "Adicionar à
+   Tela de Início". No Safari, só assim os dados escapam da limpeza após 7 dias sem visita.
+   Lembrete de backup na página.
+   **Modo "só arquivo" (decidido):** opção de não guardar nada no navegador; a pessoa abre o
+   arquivo de backup a cada visita e baixa de novo se editar. O modo normal continua padrão.
+   (Fotos mensais / histórico automático: adiado. Senha local: não fazer.)
 6. **Acessibilidade:** navegação por teclado nas abas (setas), foco visível, rótulos em todos os
    campos, contraste AA nos dois temas.
 7. **Celular:** editor por ativo vira lista de cartões abaixo de 600 px.
@@ -72,11 +76,22 @@ O básico funciona. Faça, nesta ordem, uma por commit:
 **Pronto quando:** cada item tem teste (unitário ou no `e2e.js`) e o e2e continua sem
 requisições externas.
 
+## Etapa 5b. Catálogo de ativos (decidido em 04/nov/2026)
+
+- Universo médio, ~200 ativos: Ibovespa, principais ETFs da B3 e dos EUA, ~50 maiores ações
+  americanas, ouro (GLD), bitcoin e ether. O usuário escolhe quais aparecem no comparador e
+  na carteira (escolha salva só no navegador).
+- Carga inicial validada como na etapa 2: B3 pela cotação oficial (COTAHIST) + proventos;
+  EUA por uma segunda fonte (Nasdaq). Ativo que não bater não entra até ser explicado.
+- Conferência contínua: todo mês fechado é comparado com a segunda fonte antes de ir para o
+  histórico; divergência bloqueia a gravação e manda e-mail.
+- Arquivos por ativo em `/data/` carregados sob demanda, para a página não ficar pesada.
+
 ## Etapa 6. Acabamento
 
 - Página 404 simples (`public/404.html`).
 - `favicon` e imagem de compartilhamento (`og:image`) sem depender de serviço externo.
-- Fontes próprias (opcional): baixar IBM Plex Sans/Serif (licença OFL) para `assets/fonts/` e
+- Fontes próprias (decidido: sim): baixar IBM Plex Sans/Serif (licença OFL) para `assets/fonts/` e
   trocar as variáveis `--font-sans` e `--font-serif`. Nada de Google Fonts.
 - Link para o repositório (se público) no rodapé, com a frase "Confira o código: nada sai do seu navegador."
 
