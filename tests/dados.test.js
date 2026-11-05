@@ -6,7 +6,8 @@ const path = require('path');
 const Dados = require('../public/assets/js/dados.js');
 
 const raiz = path.join(__dirname, '..');
-const M = JSON.parse(fs.readFileSync(path.join(raiz, 'public/data/mercado.json')));
+// Os dados de out/2026 ficam congelados em tests/referencia: o teste confere o cálculo, não os dados.
+const M = JSON.parse(fs.readFileSync(path.join(raiz, 'tests/referencia/mercado_out2026.json')));
 const ref = (nome) => {
   const linhas = fs.readFileSync(path.join(raiz, 'tests/referencia', nome), 'utf8').trim().split('\n');
   const cab = linhas[0].split(',');
