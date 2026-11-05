@@ -3151,127 +3151,168 @@ mes,ativo,moeda_original,preco_ajustado_original,usdbrl_fim_mes,preco_ajustado_u
 2026-08,SPY,USD,765.15,5.1816,765.15,Digrin (preço ajustado)
 2026-09,SPY,USD,762.63,5.1809,762.63,Digrin (preço ajustado)
 2026-10,SPY,USD,755.79,5.4206,755.79,Digrin (preço ajustado)
-2016-10,VHYL,USD,100.0,3.1811,100.0,Início da série: vale 100 no fim de out/2016
-2016-11,VHYL,USD,101.1186,3.3967,101.1186,"40% VYM e 60% VYMI (Digrin), antes do primeiro ano completo calibrado"
-2016-12,VHYL,USD,104.1487,3.2591,104.1487,"40% VYM e 60% VYMI (Digrin), antes do primeiro ano completo calibrado"
-2017-01,VHYL,USD,106.4705,3.127,106.4705,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2017-02,VHYL,USD,108.4047,3.0993,108.4047,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2017-03,VHYL,USD,110.0214,3.1684,110.0214,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2017-04,VHYL,USD,110.8874,3.1984,110.8874,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2017-05,VHYL,USD,112.6074,3.2437,112.6074,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2017-06,VHYL,USD,113.5127,3.3082,113.5127,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2017-07,VHYL,USD,116.4464,3.1307,116.4464,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2017-08,VHYL,USD,116.4259,3.1471,116.4259,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2017-09,VHYL,USD,119.2321,3.168,119.2321,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2017-10,VHYL,USD,120.2244,3.2769,120.2244,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2017-11,VHYL,USD,121.9079,3.2616,121.9079,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2017-12,VHYL,USD,123.9891,3.308,123.9891,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2018-01,VHYL,USD,130.2074,3.1624,130.2074,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2018-02,VHYL,USD,123.2804,3.2449,123.2804,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2018-03,VHYL,USD,121.7943,3.3238,121.7943,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2018-04,VHYL,USD,121.8441,3.4811,121.8441,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2018-05,VHYL,USD,120.0089,3.737,120.0089,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2018-06,VHYL,USD,118.3282,3.8558,118.3282,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2018-07,VHYL,USD,122.7135,3.7549,122.7135,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2018-08,VHYL,USD,120.7664,4.1353,120.7664,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2018-09,VHYL,USD,121.7959,4.0039,121.7959,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2018-10,VHYL,USD,114.7347,3.7177,114.7347,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2018-11,VHYL,USD,116.7808,3.8633,116.7808,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2018-12,VHYL,USD,109.6559,3.8748,109.6559,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2019-01,VHYL,USD,117.0126,3.6519,117.0126,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2019-02,VHYL,USD,119.913,3.7385,119.913,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2019-03,VHYL,USD,120.3766,3.8967,120.3766,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2019-04,VHYL,USD,123.8327,3.9453,123.8327,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2019-05,VHYL,USD,116.7931,3.9407,116.7931,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2019-06,VHYL,USD,123.706,3.8322,123.706,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2019-07,VHYL,USD,122.1124,3.7649,122.1124,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2019-08,VHYL,USD,118.5995,4.1385,118.5995,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2019-09,VHYL,USD,123.4262,4.1644,123.4262,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2019-10,VHYL,USD,126.4306,4.0041,126.4306,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2019-11,VHYL,USD,128.2351,4.224,128.2351,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2019-12,VHYL,USD,132.9688,4.0307,132.9688,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2020-01,VHYL,USD,128.2532,4.2695,128.2532,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2020-02,VHYL,USD,117.3429,4.4987,117.3429,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2020-03,VHYL,USD,97.4593,5.1987,97.4593,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2020-04,VHYL,USD,105.0204,5.427,105.0204,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2020-05,VHYL,USD,108.5488,5.4263,108.5488,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2020-06,VHYL,USD,110.6145,5.476,110.6145,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2020-07,VHYL,USD,113.7366,5.2033,113.7366,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2020-08,VHYL,USD,117.55,5.4713,117.55,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2020-09,VHYL,USD,114.0271,5.6407,114.0271,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2020-10,VHYL,USD,111.3848,5.7718,111.3848,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2020-11,VHYL,USD,126.8653,5.3317,126.8653,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2020-12,VHYL,USD,132.6231,5.1967,132.6231,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2021-01,VHYL,USD,132.5637,5.4759,132.5637,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2021-02,VHYL,USD,137.76,5.5302,137.76,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2021-03,VHYL,USD,144.6224,5.6973,144.6224,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2021-04,VHYL,USD,147.8883,5.4036,147.8883,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2021-05,VHYL,USD,153.3692,5.2322,153.3692,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2021-06,VHYL,USD,151.0694,5.0022,151.0694,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2021-07,VHYL,USD,150.637,5.1216,150.637,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2021-08,VHYL,USD,152.7809,5.1433,152.7809,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2021-09,VHYL,USD,148.519,5.4394,148.519,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2021-10,VHYL,USD,153.8959,5.643,153.8959,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2021-11,VHYL,USD,147.7272,5.6199,147.7272,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2021-12,VHYL,USD,156.3361,5.5805,156.3361,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2022-01,VHYL,USD,157.9319,5.3574,157.9319,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2022-02,VHYL,USD,154.9037,5.1394,154.9037,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2022-03,VHYL,USD,157.291,4.7378,157.291,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2022-04,VHYL,USD,149.1884,4.9191,149.1884,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2022-05,VHYL,USD,153.89,4.7289,153.89,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2022-06,VHYL,USD,140.6178,5.238,140.6178,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2022-07,VHYL,USD,144.3981,5.1884,144.3981,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2022-08,VHYL,USD,139.7072,5.179,139.7072,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2022-09,VHYL,USD,127.9507,5.4066,127.9507,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2022-10,VHYL,USD,138.1857,5.257,138.1857,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2022-11,VHYL,USD,150.9083,5.2941,150.9083,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2022-12,VHYL,USD,147.3624,5.2177,147.3624,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2023-01,VHYL,USD,155.6132,5.0993,155.6132,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2023-02,VHYL,USD,150.1816,5.2078,150.1816,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2023-03,VHYL,USD,149.8471,5.0804,149.8471,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2023-04,VHYL,USD,153.6225,5.0007,153.6225,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2023-05,VHYL,USD,145.9277,5.0959,145.9277,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2023-06,VHYL,USD,153.7894,4.8192,153.7894,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2023-07,VHYL,USD,160.1329,4.7415,160.1329,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2023-08,VHYL,USD,154.4883,4.9219,154.4883,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2023-09,VHYL,USD,151.2387,5.0076,151.2387,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2023-10,VHYL,USD,146.6879,5.0575,146.6879,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2023-11,VHYL,USD,156.3163,4.9355,156.3163,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2023-12,VHYL,USD,164.3238,4.8413,164.3238,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2024-01,VHYL,USD,163.4052,4.9535,163.4052,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2024-02,VHYL,USD,166.8993,4.9833,166.8993,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2024-03,VHYL,USD,173.8224,4.9962,173.8224,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2024-04,VHYL,USD,169.4177,5.1718,169.4177,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2024-05,VHYL,USD,176.0535,5.2416,176.0535,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2024-06,VHYL,USD,173.4472,5.5589,173.4472,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2024-07,VHYL,USD,179.7619,5.6621,179.7619,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2024-08,VHYL,USD,184.0352,5.6562,184.0352,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2024-09,VHYL,USD,187.2754,5.4481,187.2754,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2024-10,VHYL,USD,182.5828,5.7779,182.5828,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2024-11,VHYL,USD,186.0842,6.0535,186.0842,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2024-12,VHYL,USD,179.7538,6.1923,179.7538,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2025-01,VHYL,USD,185.8918,5.8301,185.8918,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2025-02,VHYL,USD,189.9599,5.8488,189.9599,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2025-03,VHYL,USD,190.2742,5.7422,190.2742,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2025-04,VHYL,USD,190.4228,5.6608,190.4228,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2025-05,VHYL,USD,198.091,5.7087,198.091,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2025-06,VHYL,USD,204.1576,5.4571,204.1576,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2025-07,VHYL,USD,204.1648,5.6021,204.1648,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2025-08,VHYL,USD,213.2113,5.4264,213.2113,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2025-09,VHYL,USD,216.4458,5.3186,216.4458,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2025-10,VHYL,USD,216.7395,5.3843,216.7395,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2025-11,VHYL,USD,223.2058,5.3338,223.2058,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2025-12,VHYL,USD,227.2088,5.5024,227.2088,Vanguard (retorno anual oficial) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2026-01,VHYL,USD,239.1078,5.2301,239.1078,Vanguard (acumulado oficial de 2026 até set) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2026-02,VHYL,USD,251.3487,5.1495,251.3487,Vanguard (acumulado oficial de 2026 até set) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2026-03,VHYL,USD,238.2964,5.2194,238.2964,Vanguard (acumulado oficial de 2026 até set) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2026-04,VHYL,USD,251.2373,4.9886,251.2373,Vanguard (acumulado oficial de 2026 até set) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2026-05,VHYL,USD,254.2625,5.0569,254.2625,Vanguard (acumulado oficial de 2026 até set) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2026-06,VHYL,USD,253.3074,5.1766,253.3074,Vanguard (acumulado oficial de 2026 até set) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2026-07,VHYL,USD,264.1543,5.0773,264.1543,Vanguard (acumulado oficial de 2026 até set) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2026-08,VHYL,USD,267.8881,5.1816,267.8881,Vanguard (acumulado oficial de 2026 até set) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2026-09,VHYL,USD,257.8593,5.1809,257.8593,Vanguard (acumulado oficial de 2026 até set) com padrão mensal de 40% VYM e 60% VYMI (Digrin)
-2026-10,VHYL,USD,263.9479,5.4206,263.9479,40% VYM e 60% VYMI (Digrin) aplicados sobre set/2026
+2013-05,VHYL,USD,89.5991,2.1319,89.5991,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2013-06,VHYL,USD,86.5012,2.2156,86.5012,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2013-07,VHYL,USD,90.4607,2.2903,90.4607,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2013-08,VHYL,USD,88.1402,2.3725,88.1402,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2013-09,VHYL,USD,92.8241,2.23,92.8241,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2013-10,VHYL,USD,97.2399,2.2026,97.2399,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2013-11,VHYL,USD,97.6388,2.3249,97.6388,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2013-12,VHYL,USD,98.3303,2.3426,98.3303,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2014-01,VHYL,USD,93.9578,2.4263,93.9578,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2014-02,VHYL,USD,98.7498,2.3334,98.7498,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2014-03,VHYL,USD,100.3811,2.263,100.3811,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2014-04,VHYL,USD,102.4074,2.236,102.4074,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2014-05,VHYL,USD,103.9530,2.239,103.9530,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2014-06,VHYL,USD,105.4701,2.2025,105.4701,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2014-07,VHYL,USD,104.0180,2.2674,104.0180,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2014-08,VHYL,USD,105.3937,2.2396,105.3937,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2014-09,VHYL,USD,101.8115,2.451,101.8115,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2014-10,VHYL,USD,101.3304,2.4442,101.3304,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2014-11,VHYL,USD,102.6004,2.5601,102.6004,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2014-12,VHYL,USD,100.3223,2.6562,100.3223,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2015-01,VHYL,USD,97.8650,2.6623,97.8650,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2015-02,VHYL,USD,102.7892,2.8782,102.7892,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2015-03,VHYL,USD,100.4334,3.208,100.4334,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2015-04,VHYL,USD,105.1428,2.9936,105.1428,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2015-05,VHYL,USD,103.5276,3.1788,103.5276,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2015-06,VHYL,USD,100.9275,3.1026,100.9275,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2015-07,VHYL,USD,101.2623,3.394,101.2623,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2015-08,VHYL,USD,94.6270,3.6467,94.6270,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2015-09,VHYL,USD,90.3200,3.9729,90.3200,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2015-10,VHYL,USD,97.4052,3.8589,97.4052,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2015-11,VHYL,USD,96.1349,3.8506,96.1349,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2015-12,VHYL,USD,94.7355,3.9048,94.7355,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2016-01,VHYL,USD,89.0442,4.0428,89.0442,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2016-02,VHYL,USD,89.8430,3.9796,89.8430,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2016-03,VHYL,USD,96.5054,3.5589,96.5054,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2016-04,VHYL,USD,97.6514,3.4508,97.6514,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2016-05,VHYL,USD,97.5911,3.5951,97.5911,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2016-06,VHYL,USD,96.9291,3.2098,96.9291,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2016-07,VHYL,USD,100.6940,3.239,100.6940,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2016-08,VHYL,USD,101.3044,3.2403,101.3044,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2016-09,VHYL,USD,102.0311,3.2462,102.0311,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2016-10,VHYL,USD,100.6152,3.1811,100.6152,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2016-11,VHYL,USD,101.2924,3.3967,101.2924,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2016-12,VHYL,USD,104.4158,3.2591,104.4158,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2017-01,VHYL,USD,105.7781,3.127,105.7781,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2017-02,VHYL,USD,108.4406,3.0993,108.4406,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2017-03,VHYL,USD,109.9877,3.1684,109.9877,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2017-04,VHYL,USD,110.8395,3.1984,110.8395,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2017-05,VHYL,USD,112.8963,3.2437,112.8963,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2017-06,VHYL,USD,113.2918,3.3082,113.2918,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2017-07,VHYL,USD,116.4663,3.1307,116.4663,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2017-08,VHYL,USD,116.5714,3.1471,116.5714,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2017-09,VHYL,USD,119.0762,3.168,119.0762,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2017-10,VHYL,USD,119.8598,3.2769,119.8598,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2017-11,VHYL,USD,121.7022,3.2616,121.7022,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2017-12,VHYL,USD,124.5993,3.308,124.5993,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2018-01,VHYL,USD,129.9879,3.1624,129.9879,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2018-02,VHYL,USD,124.2372,3.2449,124.2372,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2018-03,VHYL,USD,120.7241,3.3238,120.7241,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2018-04,VHYL,USD,122.9113,3.4811,122.9113,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2018-05,VHYL,USD,119.3303,3.737,119.3303,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2018-06,VHYL,USD,118.9851,3.8558,118.9851,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2018-07,VHYL,USD,122.6098,3.7549,122.6098,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2018-08,VHYL,USD,120.6998,4.1353,120.6998,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2018-09,VHYL,USD,122.2925,4.0039,122.2925,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2018-10,VHYL,USD,115.0911,3.7177,115.0911,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2018-11,VHYL,USD,116.1199,3.8633,116.1199,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2018-12,VHYL,USD,110.0068,3.8748,110.0068,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2019-01,VHYL,USD,116.9731,3.6519,116.9731,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2019-02,VHYL,USD,119.9052,3.7385,119.9052,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2019-03,VHYL,USD,120.8175,3.8967,120.8175,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2019-04,VHYL,USD,123.1825,3.9453,123.1825,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2019-05,VHYL,USD,117.0534,3.9407,117.0534,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2019-06,VHYL,USD,123.9460,3.8322,123.9460,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2019-07,VHYL,USD,123.1193,3.7649,123.1193,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2019-08,VHYL,USD,119.0646,4.1385,119.0646,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2019-09,VHYL,USD,123.4118,4.1644,123.4118,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2019-10,VHYL,USD,126.0603,4.0041,126.0603,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2019-11,VHYL,USD,128.0679,4.224,128.0679,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2019-12,VHYL,USD,132.8380,4.0307,132.8380,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2020-01,VHYL,USD,127.7453,4.2695,127.7453,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2020-02,VHYL,USD,114.8339,4.4987,114.8339,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2020-03,VHYL,USD,98.9370,5.1987,98.9370,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2020-04,VHYL,USD,105.9620,5.427,105.9620,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2020-05,VHYL,USD,107.9601,5.4263,107.9601,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2020-06,VHYL,USD,110.2799,5.476,110.2799,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2020-07,VHYL,USD,114.0761,5.2033,114.0761,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2020-08,VHYL,USD,118.6384,5.4713,118.6384,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2020-09,VHYL,USD,114.8246,5.6407,114.8246,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2020-10,VHYL,USD,111.3364,5.7718,111.3364,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2020-11,VHYL,USD,126.7433,5.3317,126.7433,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2020-12,VHYL,USD,132.4279,5.1967,132.4279,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2021-01,VHYL,USD,132.3276,5.4759,132.3276,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2021-02,VHYL,USD,137.5415,5.5302,137.5415,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2021-03,VHYL,USD,144.5299,5.6973,144.5299,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2021-04,VHYL,USD,147.3312,5.4036,147.3312,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2021-05,VHYL,USD,152.9813,5.2322,152.9813,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2021-06,VHYL,USD,149.7230,5.0022,149.7230,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2021-07,VHYL,USD,149.7470,5.1216,149.7470,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2021-08,VHYL,USD,152.3354,5.1433,152.3354,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2021-09,VHYL,USD,149.2418,5.4394,149.2418,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2021-10,VHYL,USD,152.8299,5.643,152.8299,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2021-11,VHYL,USD,147.1154,5.6199,147.1154,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2021-12,VHYL,USD,156.0575,5.5805,156.0575,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2022-01,VHYL,USD,155.9235,5.3574,155.9235,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2022-02,VHYL,USD,154.7968,5.1394,154.7968,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2022-03,VHYL,USD,157.7420,4.7378,157.7420,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2022-04,VHYL,USD,150.9254,4.9191,150.9254,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2022-05,VHYL,USD,153.3752,4.7289,153.3752,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2022-06,VHYL,USD,139.7745,5.238,139.7745,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2022-07,VHYL,USD,143.6201,5.1884,143.6201,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2022-08,VHYL,USD,140.6457,5.179,140.6457,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2022-09,VHYL,USD,129.3032,5.4066,129.3032,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2022-10,VHYL,USD,138.0799,5.257,138.0799,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2022-11,VHYL,USD,148.3006,5.2941,148.3006,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2022-12,VHYL,USD,147.5590,5.2177,147.5590,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2023-01,VHYL,USD,154.4875,5.0993,154.4875,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2023-02,VHYL,USD,150.4417,5.2078,150.4417,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2023-03,VHYL,USD,149.8782,5.0804,149.8782,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2023-04,VHYL,USD,154.1957,5.0007,154.1957,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2023-05,VHYL,USD,146.4267,5.0959,146.4267,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2023-06,VHYL,USD,154.2579,4.8192,154.2579,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2023-07,VHYL,USD,160.2946,4.7415,160.2946,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2023-08,VHYL,USD,155.2834,4.9219,155.2834,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2023-09,VHYL,USD,151.9753,5.0076,151.9753,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2023-10,VHYL,USD,146.0768,5.0575,146.0768,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2023-11,VHYL,USD,156.2090,4.9355,156.2090,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2023-12,VHYL,USD,164.3973,4.8413,164.3973,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2024-01,VHYL,USD,164.9669,4.9535,164.9669,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2024-02,VHYL,USD,167.0749,4.9833,167.0749,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2024-03,VHYL,USD,174.2789,4.9962,174.2789,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2024-04,VHYL,USD,170.7238,5.1718,170.7238,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2024-05,VHYL,USD,174.4501,5.2416,174.4501,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2024-06,VHYL,USD,174.5223,5.5589,174.5223,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2024-07,VHYL,USD,181.2265,5.6621,181.2265,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2024-08,VHYL,USD,184.7319,5.6562,184.7319,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2024-09,VHYL,USD,188.6925,5.4481,188.6925,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2024-10,VHYL,USD,183.6506,5.7779,183.6506,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2024-11,VHYL,USD,187.3498,6.0535,187.3498,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2024-12,VHYL,USD,179.7320,6.1923,179.7320,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2025-01,VHYL,USD,188.1428,5.8301,188.1428,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2025-02,VHYL,USD,190.3180,5.8488,190.3180,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2025-03,VHYL,USD,190.6972,5.7422,190.6972,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2025-04,VHYL,USD,190.1534,5.6608,190.1534,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2025-05,VHYL,USD,197.8827,5.7087,197.8827,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2025-06,VHYL,USD,203.8597,5.4571,203.8597,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2025-07,VHYL,USD,204.7405,5.6021,204.7405,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2025-08,VHYL,USD,212.7014,5.4264,212.7014,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2025-09,VHYL,USD,215.6502,5.3186,215.6502,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2025-10,VHYL,USD,216.8133,5.3843,216.8133,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2025-11,VHYL,USD,221.8117,5.3338,221.8117,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2025-12,VHYL,USD,228.3134,5.5024,228.3134,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2026-01,VHYL,USD,239.5369,5.2301,239.5369,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2026-02,VHYL,USD,252.4384,5.1495,252.4384,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2026-03,VHYL,USD,235.3729,5.2194,235.3729,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2026-04,VHYL,USD,248.2066,4.9886,248.2066,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2026-05,VHYL,USD,253.3428,5.0569,253.3428,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2026-06,VHYL,USD,253.8891,5.1766,253.8891,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2026-07,VHYL,USD,261.8130,5.0773,261.8130,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2026-08,VHYL,USD,267.9132,5.1816,267.9132,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2026-09,VHYL,USD,258.7022,5.1809,258.7022,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
+2026-10,VHYL,USD,263.9479,5.4206,263.9479,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
 2010-12,BTC,USD,0.3,1.6662,0.3,"Digrin (fechamento do mês, BTC-USD)"
 2011-01,BTC,USD,0.52,1.6734,0.52,"Digrin (fechamento do mês, BTC-USD)"
 2011-02,BTC,USD,0.87,1.6612,0.87,"Digrin (fechamento do mês, BTC-USD)"

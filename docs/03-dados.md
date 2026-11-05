@@ -14,25 +14,37 @@
 
 Tokens são opcionais e ficam nos *secrets* do GitHub. Sem token, a fonte reserva é pulada.
 
-**A confirmar na primeira execução (etapa 2 do plano):**
-- Se `VHYD.L` existe no Yahoo e vem em USD. Se não, usar `VHYL.L`; o pipeline converte de
-  GBP/GBp para USD com `GBPUSD=X`.
-- Se o fechamento ajustado do Yahoo para ações da B3 inclui JCP e dividendos (compare um mês
-  com a Mais Retorno ou a Status Invest).
-- Se a API do Banco Central responde a partir dos servidores do GitHub (às vezes exige
-  cabeçalho `Accept: application/json`).
+**Confirmado na primeira execução (04/nov/2026):**
+- `VHYD.L` existe no Yahoo e vem em USD (desde mai/2013). `VHYL.L` vem em GBP e, convertido,
+  concorda com ele.
+- O fechamento ajustado do Yahoo para a B3 inclui dividendos e JCP (valor bruto, na data ex).
+  Nos 12 meses até out/2026 bateu com o retorno calculado pela cotação oficial da B3 e pela
+  lista oficial de proventos em todos os meses, com diferença de até 0,05 ponto. Antes de
+  2016 o Yahoo é fraco para a B3 (WEGE3 até 2007 é inutilizável); por isso o histórico não vem dele.
+- Ainda falta: confirmar que a API do Banco Central responde a partir dos servidores do GitHub
+  (etapa 3).
 
 ## Como as séries são montadas
 
 ### Histórico (até out/2026)
 Montado à mão e conferido. Em `dados/historico/precos_mensais.csv`, uma linha por ativo e mês,
-com a coluna `fonte`. Resumo:
+com a coluna `fonte`. Correções ficam registradas em `dados/correcoes/`. Resumo:
 - Americanos: preço ajustado mensal da Digrin.
 - Brasileiros: retornos mensais com proventos da Mais Retorno, encadeados a partir do
   fechamento de 30/out/2026. TAEE11 desde mai/2012; CSMG3 desde fev/2006.
-- DIVO11: retornos mensais da Meus Dividendos (até 2023) e da ETFs Brasil.
-- VHYL: retornos anuais oficiais da Vanguard, distribuídos mês a mês pelo padrão de 40% VYM e
-  60% VYMI. Começa em out/2016.
+  Em 04/nov/2026 cada mês de 2004 a 2026 foi conferido contra o retorno total oficial
+  (fechamento do COTAHIST da B3 + proventos na data ex + desdobramentos e bonificações), com o
+  Yahoo como terceira fonte. O histórico batia em cerca de 95% dos meses. Os 48 meses em que a B3
+  oficial e o Yahoo concordavam entre si e o histórico divergia foram corrigidos (evidência em
+  `dados/correcoes/2026-11-04-b3-oficial.csv`), a maioria dividendos da Tractebel (EGIE3) entre
+  2007 e 2015 e jun–jul/2026 em cinco ações. Exceção mantida: ITUB3 em out/2021, cisão da XP,
+  cujo valor distribuído o histórico inclui e as outras fontes não.
+- DIVO11: fechamento oficial da B3 (o ETF reinveste os proventos, então o preço já é o retorno
+  total). A série antiga (Meus Dividendos e ETFs Brasil) estava desalinhada em 86 de 131 meses.
+- VHYL: preço ajustado em USD na Bolsa de Londres (`VHYD.L`), desde mai/2013. Conferido contra
+  os retornos anuais oficiais da Vanguard (diferença de até 0,6 ponto por ano, típica entre
+  cotação e valor da cota). Substituiu a série sintética (anuais da Vanguard distribuídos pelo
+  padrão de VYM e VYMI), comparada em `dados/correcoes/2026-11-04-vhyl.csv`.
 - Bitcoin: fechamento mensal em dólar (Digrin), desde dez/2010.
 - CDI: Banco Central, série 4391, capitalizada a partir de 100 em ago/2004.
 
