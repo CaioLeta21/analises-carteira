@@ -2,10 +2,24 @@
 (async function () {
 'use strict';
 const CA = window.CONFIG_ATIVOS;
-let M, D, dash;
+let M, D, dash, CAT = null;
+// ativos do catálogo que o usuário adicionou: guardados só neste navegador
+const CHAVE_EXTRAS = 'analises-carteira:comparador';
+const lerExtras = () => { try { return JSON.parse(localStorage.getItem(CHAVE_EXTRAS) || '[]').filter((x) => typeof x === 'string'); } catch (e) { return []; } };
+const gravarExtras = (l) => { try { localStorage.setItem(CHAVE_EXTRAS, JSON.stringify(l)); } catch (e) { /* sem armazenamento: vale só nesta visita */ } };
+let extras = lerExtras();
 try {
-  M = await Dados.buscarJSON('/data/mercado.json');
-  D = Dados.derivar(M, CA.ordem);
+  [M, CAT] = await Promise.all([Dados.buscarJSON('/data/mercado.json'), Dados.buscarJSON('/data/catalogo.json').catch(() => null)]);
+  const doCatalogo = CAT && CAT.ultimo_mes === M.ultimo_mes ? Object.fromEntries(CAT.ativos.map((a) => [a.id, a])) : {};
+  extras = extras.filter((id) => doCatalogo[id] && !M.ativos.some((a) => a.id === id));
+  const series = await Promise.all(extras.map((id) => Dados.buscarJSON('/data/catalogo/' + encodeURIComponent(id) + '.json').catch(() => null)));
+  extras = extras.filter((id, i) => series[i] && series[i].fim === M.ultimo_mes);
+  series.filter((x) => x && x.fim === M.ultimo_mes).forEach((x, i) => {
+    const a = doCatalogo[x.id];
+    M.ativos.push({ id: x.id, nome: a.nome, tipo: a.tipo, mercado: a.mercado, moeda: a.moeda, inicio: x.inicio, precos: x.precos });
+    if (CA.corFixa[x.id] == null && CA.paleta[x.id] == null) CA.paleta[x.id] = i % 8;
+  });
+  D = Dados.derivar(M, CA.ordem.concat(extras));
   dash = window.dash = criarDash(D);
 } catch (e) {
   document.getElementById('atualizacao').outerHTML = '<p class="erro-carga">Não foi possível carregar os dados agora. Tente de novo em alguns minutos.</p>';
@@ -53,8 +67,32 @@ const chips = document.getElementById('chips');
 for (const id of D.ids) {
   const b = document.createElement('button'); b.className = 'chip lx-leg'; b.dataset.t = id;
   const s = document.createElement('span'); s.className = 'sw lx-sw'; s.dataset.t = id;
-  b.append(s, document.createTextNode(CA.rotulo[id] || NOMES[id])); chips.appendChild(b);
+  b.append(s, document.createTextNode(CA.rotulo[id] || (NOMES[id] + (extras.includes(id) ? ' (' + id + ')' : ''))));
+  chips.appendChild(b);
+  if (extras.includes(id)) {
+    const x = document.createElement('button'); x.className = 'rem-ext'; x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Tirar ' + NOMES[id] + ' do comparador');
+    x.addEventListener('click', () => { gravarExtras(extras.filter((e) => e !== id)); location.reload(); });
+    chips.appendChild(x);
+  }
 }
+
+// adicionar ativo do catálogo
+(function () {
+  const lista = document.getElementById('lista-catalogo'), inp = document.getElementById('busca-ativo'), msg = document.getElementById('msg-ativo');
+  if (!CAT) { document.querySelector('.adicionar').hidden = true; return; }
+  for (const a of CAT.ativos) { if (D.info[a.id]) continue; const o = document.createElement('option'); o.value = a.id; o.label = a.nome; o.textContent = a.nome; lista.appendChild(o); }
+  const achar = (t) => { const q = t.trim().toUpperCase(); if (!q) return null; return CAT.ativos.find((a) => a.id === q) || CAT.ativos.find((a) => a.nome.toUpperCase() === q) || (CAT.ativos.filter((a) => a.nome.toUpperCase().includes(q)).length === 1 ? CAT.ativos.find((a) => a.nome.toUpperCase().includes(q)) : null); };
+  const adicionar = () => {
+    const a = achar(inp.value);
+    if (!a) { msg.textContent = 'Não achei esse ativo no catálogo. Escolha um da lista.'; return; }
+    if (D.info[a.id]) { msg.textContent = a.nome + ' já está no comparador.'; return; }
+    gravarExtras(lerExtras().filter((e) => e !== a.id).concat([a.id]));
+    msg.textContent = 'Adicionando ' + a.nome + '…';
+    location.reload();
+  };
+  document.getElementById('add-ativo').addEventListener('click', adicionar);
+  inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); adicionar(); } });
+})();
 for (const [g, txt] of [['acoes', 'ações'], ['etfs', 'ETFs']]) {
   const b = document.createElement('button'); b.className = 'lnk lx-grupo'; b.dataset.g = g;
   b.innerHTML = '<span class="lx-g-on">Esconder ' + txt + '</span><span class="lx-g-off" hidden>Mostrar ' + txt + '</span>';

@@ -39,6 +39,7 @@
   /* Categoria padrão de um ativo conhecido (dados de /data/mercado.json). */
   function categoriaPadrao(info) {
     if (!info) return null;
+    if (info.categoria && CHAVES.includes(info.categoria)) return info.categoria; // ativos do catálogo já dizem
     if (info.id === 'CDI') return 'rfbr';
     if (info.tipo === 'cripto') return 'alt';
     return info.mercado === 'Brasil' ? 'rvbr' : 'rvex';
@@ -126,9 +127,12 @@
     'ITUB3,Itaú ON,rvbr,1000,,BRL\nDIVO11,ETF de dividendos,rvbr,500,,BRL\nQQQ,ETF Nasdaq-100,rvex,20,,USD\n' +
     'BTC,Bitcoin,alt,0.05,,USD\n,Tesouro Selic 2029,rfbr,,250000,BRL\n,CDB Banco X,rfbr,,100000,BRL\n,Fundo multimercado Y,alt,,80000,BRL\n';
 
-  /* Último preço de cada ativo conhecido, em reais. */
-  function precosAtuais(mercado) {
+  /* Último preço de cada ativo conhecido, em reais. catalogo (opcional): /data/catalogo.json. */
+  function precosAtuais(mercado, catalogo) {
     const fx = mercado.usdbrl[mercado.usdbrl.length - 1], out = {};
+    if (catalogo && catalogo.ultimo_mes === mercado.ultimo_mes) {
+      for (const a of catalogo.ativos) out[a.id] = { info: a, brl: a.moeda === 'BRL' ? a.preco : a.preco * fx, original: a.preco };
+    }
     for (const a of mercado.ativos) {
       const p = a.precos[a.precos.length - 1];
       out[a.id] = { info: a, brl: a.moeda === 'BRL' ? p : p * fx, original: p };

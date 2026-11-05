@@ -12,23 +12,35 @@
   const MN = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
   const mes = (m) => MN[+m.slice(5) - 1] + '/' + m.slice(0, 4);
 
-  let MERC, SIM;
+  let MERC, SIM, CAT = null;
   try {
-    [MERC, SIM] = await Promise.all([Dados.buscarJSON('/data/mercado.json'), Dados.buscarJSON('/data/simulador.json')]);
+    [MERC, SIM, CAT] = await Promise.all([Dados.buscarJSON('/data/mercado.json'), Dados.buscarJSON('/data/simulador.json'), Dados.buscarJSON('/data/catalogo.json').catch(() => null)]);
+    if (CAT && CAT.ultimo_mes !== MERC.ultimo_mes) CAT = null;
   } catch (e) {
     $('atualizacao').textContent = 'Não foi possível carregar os preços agora. Suas carteiras continuam salvas; tente de novo em alguns minutos.';
     $('atualizacao').className = 'erro-carga';
     return;
   }
-  const atuais = Mod.precosAtuais(MERC);
-  const info = Object.fromEntries(MERC.ativos.map((a) => [a.id, a]));
-  const retAtivos = Mot.retornosAtivos(MERC, SIM.months);
+  const atuais = Mod.precosAtuais(MERC, CAT);
+  const info = Object.fromEntries([...(CAT ? CAT.ativos : []), ...MERC.ativos].map((a) => [a.id, a]));
+  let retAtivos = Mot.retornosAtivos(MERC, SIM.months);
+  /* Série de preços dos ativos do catálogo que estão nas carteiras: carregada sob demanda. */
+  const series = Object.fromEntries(MERC.ativos.map((a) => [a.id, a]));
+  async function carregarSeries(codigos) {
+    const faltam = [...new Set(codigos)].filter((c) => c && !series[c] && CAT && CAT.ativos.some((a) => a.id === c));
+    if (!faltam.length) return false;
+    const novas = await Promise.all(faltam.map((c) => Dados.buscarJSON('/data/catalogo/' + encodeURIComponent(c) + '.json').catch(() => null)));
+    novas.filter((x) => x && x.fim === MERC.ultimo_mes).forEach((x) => { series[x.id] = { ...info[x.id], inicio: x.inicio, precos: x.precos }; });
+    retAtivos = Mot.retornosAtivos({ ...MERC, ativos: Object.values(series) }, SIM.months);
+    return true;
+  }
   $('atualizacao').textContent = 'Preços até ' + new Date(MERC.data_ref + 'T12:00:00').toLocaleDateString('pt-BR') + (MERC.parcial ? ' (mês parcial)' : '') + '. Dólar a R$ ' + fmt(atuais.fx, 2) + '.';
   const dl = $('conhecidos');
-  MERC.ativos.forEach((a) => { const o = document.createElement('option'); o.value = a.id; o.label = a.nome; o.textContent = a.nome; dl.appendChild(o); });
+  Object.values(info).forEach((a) => { const o = document.createElement('option'); o.value = a.id; o.label = a.nome; o.textContent = a.nome; dl.appendChild(o); });
 
   Arm.pedirPersistencia();
   let carteiras = await Arm.listar();
+  await carregarSeries(carteiras.flatMap((c) => (c.ativos || []).map((a) => a.codigo)));
   if (!carteiras.length) carteiras = [await Arm.salvar(Mod.novaCarteira())];
   carteiras.sort((a, b) => b.atualizadaEm.localeCompare(a.atualizadaEm));
   let atual = carteiras[0];
@@ -112,7 +124,7 @@
     const tb = $('corpo'); tb.replaceChildren();
     atual.ativos.forEach((a, i) => {
       const tr = document.createElement('tr');
-      const tdc = celula(tr, input('text', a.codigo, (v) => { a.codigo = v.toUpperCase().trim(); const inf = info[a.codigo]; if (inf) { a.nome = a.nome || inf.nome; a.categoria = Mod.categoriaPadrao(inf); a.moeda = inf.moeda; } montarAtivos(); mudou(); }, { list: 'conhecidos', size: 9, 'aria-label': 'Código', autocomplete: 'off' }));
+      const tdc = celula(tr, input('text', a.codigo, (v) => { a.codigo = v.toUpperCase().trim(); const inf = info[a.codigo]; if (inf) { a.nome = a.nome || inf.nome; a.categoria = Mod.categoriaPadrao(inf); a.moeda = inf.moeda; } montarAtivos(); mudou(); carregarSeries([a.codigo]).then((n) => { if (n) analisar(); }); }, { list: 'conhecidos', size: 9, 'aria-label': 'Código', autocomplete: 'off' }));
       tdc.className = 'cod';
       celula(tr, input('text', a.nome, (v) => { a.nome = v.slice(0, 80); mudou(); }, { 'aria-label': 'Nome' }));
       const sel = document.createElement('select'); sel.setAttribute('aria-label', 'Categoria');
@@ -148,6 +160,7 @@
   $('csv').addEventListener('change', async () => {
     const f = $('csv').files[0]; if (!f) return;
     const { ativos, avisos } = Mod.lerCSV(await f.text(), info);
+    await carregarSeries(ativos.map((x) => x.codigo));
     const lista = $('avisos'); lista.replaceChildren();
     avisos.forEach((a) => { const li = document.createElement('li'); li.textContent = a; lista.appendChild(li); });
     if (ativos.length && (!atual.ativos.length || confirm('Substituir as ' + atual.ativos.length + ' posições atuais pelas ' + ativos.length + ' do arquivo? (Cancelar = juntar)'))) atual.ativos = ativos;
@@ -211,6 +224,7 @@
       for (const id of Mod.idsParaSubstituir(await Arm.listar(), lista)) await Arm.apagar(id);
       for (const c of lista) await Arm.salvar(c);
       carteiras = (await Arm.listar()).sort((a, b) => b.atualizadaEm.localeCompare(a.atualizadaEm));
+      await carregarSeries(carteiras.flatMap((c) => (c.ativos || []).map((x) => x.codigo)));
       atual = carteiras[0]; sujo = false; montar();
       $('msg-backup').textContent = lista.length + ' carteira(s) restaurada(s).';
     } catch (e) { $('msg-backup').textContent = e.message; }
@@ -283,10 +297,10 @@
     }
     // desempenho por ativo conhecido
     const card = $('posicoes-card'), corpo = $('corpo-pos'); corpo.replaceChildren();
-    const conhecidas = atual.modo === 'ativos' && linhas ? linhas.filter((l) => info[l.codigo] && l.valorBRL > 0) : [];
+    const conhecidas = atual.modo === 'ativos' && linhas ? linhas.filter((l) => series[l.codigo] && l.valorBRL > 0) : [];
     card.hidden = !conhecidas.length;
     for (const l of conhecidas) {
-      const a = info[l.codigo], fx = MERC.usdbrl, n = a.precos.length;
+      const a = series[l.codigo], fx = MERC.usdbrl, n = a.precos.length;
       const emBRL = (k) => { const i = MERC.meses.length - 1 - k; const p = a.precos[n - 1 - k]; return p == null ? null : (a.moeda === 'BRL' ? p : p * fx[i]); };
       const r = (k) => (n > k ? emBRL(0) / emBRL(k) - 1 : null);
       const tr = document.createElement('tr');

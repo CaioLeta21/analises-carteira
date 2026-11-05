@@ -99,3 +99,20 @@ test('exemplos da carteira são os mesmos do simulador', () => {
     assert.deepStrictEqual(w, Modelo.EXEMPLOS[nome], nome);
   }
 });
+
+test('catálogo: preço atual, categoria padrão e CSV reconhecem os ativos', () => {
+  const CAT = JSON.parse(fs.readFileSync(path.join(raiz, 'public/data/catalogo.json')));
+  const atuais = Modelo.precosAtuais(M, CAT);
+  const petr = CAT.ativos.find((a) => a.id === 'PETR4'), aapl = CAT.ativos.find((a) => a.id === 'AAPL'), tlt = CAT.ativos.find((a) => a.id === 'TLT');
+  assert.strictEqual(atuais.precos.PETR4.brl, petr.preco);
+  assert.ok(Math.abs(atuais.precos.AAPL.brl - aapl.preco * atuais.fx) < 1e-9);
+  assert.strictEqual(Modelo.categoriaPadrao(tlt), 'rfex');
+  assert.strictEqual(Modelo.categoriaPadrao(CAT.ativos.find((a) => a.id === 'GOLD11')), 'ouro');
+  const infoTudo = Object.fromEntries([...CAT.ativos, ...M.ativos].map((a) => [a.id, a]));
+  const { ativos, avisos } = Modelo.lerCSV('codigo,quantidade\nPETR4,100\nAAPL,10\nTLT,5\n', infoTudo);
+  assert.deepStrictEqual(ativos.map((a) => a.categoria), ['rvbr', 'rvex', 'rfex']);
+  assert.deepStrictEqual(ativos.map((a) => a.moeda), ['BRL', 'USD', 'USD']);
+  assert.deepStrictEqual(avisos, []);
+  // catálogo de outro mês é ignorado (preço velho não entra)
+  assert.strictEqual(Modelo.precosAtuais(M, { ...CAT, ultimo_mes: '1999-01' }).precos.PETR4, undefined);
+});

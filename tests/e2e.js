@@ -32,6 +32,12 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     ok(await p.$$eval('[data-draw="linhas"] svg path', (x) => x.length) > 10, 'comparador desenha as linhas');
     for (const per of ['15a', 'divo', '10a', '5a']) { await p.click(`.lx-periodo[data-v="${per}"]`); await p.waitForTimeout(150); }
     ok((await p.$eval('#tit-evolucao', (e) => e.textContent)).startsWith('Quanto valeria'), 'títulos mudam com o período');
+    // catálogo: adicionar e tirar um ativo
+    await p.fill('#busca-ativo', 'PETR4'); await p.click('#add-ativo'); await p.waitForLoadState('load'); await p.waitForTimeout(1200);
+    ok(await p.$('.lx-leg[data-t="PETR4"]') !== null, 'comparador adiciona ativo do catálogo');
+    ok((await p.$$eval('#tabela-longa tbody tr td:first-child, #tabela tbody tr td:first-child', (t) => t.map((x) => x.textContent))).includes('PETR4'), 'ativo adicionado entra na tabela');
+    await p.click('.rem-ext'); await p.waitForLoadState('load'); await p.waitForTimeout(1000);
+    ok(await p.$('.lx-leg[data-t="PETR4"]') === null, 'comparador tira o ativo adicionado');
 
     await p.goto(BASE + '/simulador/'); await p.waitForTimeout(1000);
     ok(/%$/.test(await p.$eval('#mVol', (e) => e.textContent)), 'simulador calcula a volatilidade');
@@ -45,6 +51,14 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     ok(/^R\$ [\d.]+$/.test(await p.$eval('#tot-brl', (e) => e.textContent)), 'carteira mostra o patrimônio');
     ok((await p.$eval('#total-editor', (e) => e.textContent)) === (await p.$eval('#tot-brl', (e) => e.textContent)), 'editor mostra o total no rodapé');
     ok(/Moderada .*CDI/.test(await p.$eval('#resumo-comp', (e) => e.textContent)), 'carteira se compara com Moderada e CDI');
+    // ativo do catálogo digitado na hora: valor pelo último preço e linha de desempenho
+    await p.click('#add'); await p.waitForTimeout(200);
+    const ult = '#corpo tr:last-child';
+    await p.fill(ult + ' td.cod input', 'VALE3'); await p.press(ult + ' td.cod input', 'Tab'); await p.waitForTimeout(400);
+    await p.fill('#corpo tr:last-child td:nth-child(4) input', '100'); await p.waitForTimeout(1500);
+    ok(/^R\$ [\d.]+$/.test(await p.$eval('#corpo tr:last-child td.num span', (e) => e.textContent)), 'ativo do catálogo ganha valor pelo último preço');
+    ok((await p.$$eval('#corpo-pos tr td:first-child', (t) => t.map((x) => x.textContent))).includes('VALE3'), 'ativo do catálogo aparece no desempenho');
+    await p.click('#corpo tr:last-child .rem'); await p.waitForTimeout(300);
     await p.click('#ordenar'); await p.waitForTimeout(200);
     const vals = await p.$$eval('#corpo tr td.num span:first-child', (s) => s.map((x) => +x.textContent.replace(/\D/g, '')));
     ok(vals.every((v, i) => !i || vals[i - 1] >= v), 'ordenar por valor');
