@@ -46,6 +46,13 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     await p.waitForTimeout(600); await p.reload(); await p.waitForTimeout(1000);
     ok(await p.$$eval('#corpo tr', (r) => r.length) === 7, 'carteira continua salva depois de recarregar');
 
+    const cel = await b.newPage({ viewport: { width: 390, height: 900 }, colorScheme: 'dark' });
+    for (const pg of ['/', '/acoes-etfs/', '/simulador/', '/carteira/']) {
+      await cel.goto(BASE + pg); await cel.waitForTimeout(1000);
+      ok(!(await cel.evaluate(() => document.documentElement.scrollWidth > innerWidth)), pg + ' sem rolagem lateral em 390 px');
+    }
+    await cel.close();
+
     ok(externos.length === 0, 'nenhuma requisição para outro domínio ' + (externos.length ? JSON.stringify(externos) : ''));
     ok(erros.length === 0, 'sem erros no console ' + (erros.length ? JSON.stringify(erros) : ''));
   } finally {

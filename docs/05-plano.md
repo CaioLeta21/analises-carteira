@@ -45,11 +45,11 @@ O pipeline foi escrito sem acesso às APIs. Agora, com internet:
 
 ## Etapa 4. Cloudflare Pages
 
-Siga `docs/06-deploy.md`. Domínio sugerido: `analises.letabuild.com` (confirme com o dono).
+Siga `docs/06-deploy.md`. Domínio sugerido: `ativos.letabuild.com` (confirme com o dono).
 
 **Pronto quando:** o site abre no domínio, `curl -I` mostra os cabeçalhos do `_headers`, e o
 teste de ponta a ponta passa apontando para o endereço publicado
-(`BASE=https://analises.letabuild.com npm run e2e`).
+(`BASE=https://ativos.letabuild.com npm run e2e`).
 
 ## Etapa 5. Terminar a página Minha carteira
 

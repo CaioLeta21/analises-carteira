@@ -16,7 +16,10 @@ O Pages lê `public/_headers` automaticamente (CSP, cache).
 ## 2. Domínio
 
 Se `letabuild.com` já está no Cloudflare:
-1. No projeto do Pages → **Custom domains** → **Set up a domain** → `analises.letabuild.com`.
+0. `ativos.letabuild.com` hoje aponta para o app Streamlit antigo (servidor Oracle, porta 8502;
+   código em `CaioLeta21/letabuild-ativos`). Apague esse registro DNS antes, senão o Pages
+   recusa o domínio. Depois, desligue o app no servidor (nginx e serviço).
+1. No projeto do Pages → **Custom domains** → **Set up a domain** → `ativos.letabuild.com`.
 2. O Cloudflare cria o registro DNS sozinho.
 
 Se o DNS estiver em outro lugar, crie um `CNAME analises → <projeto>.pages.dev` e confirme no Pages.
@@ -37,8 +40,8 @@ Se o DNS estiver em outro lugar, crie um `CNAME analises → <projeto>.pages.dev
 ## 5. Conferir
 
 ```bash
-curl -sI https://analises.letabuild.com/ | grep -i -E "content-security|referrer"
-curl -s https://analises.letabuild.com/data/status.json
+curl -sI https://ativos.letabuild.com/ | grep -i -E "content-security|referrer"
+curl -s https://ativos.letabuild.com/data/status.json
 ```
 
 ## 6. Voltar atrás

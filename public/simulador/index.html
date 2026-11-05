@@ -83,7 +83,8 @@ td.neg{color:var(--bad)}
 .notes{font-size:12.5px;color:var(--muted);line-height:1.55}
 .notes p{margin:0 0 6px;max-width:110ch}
 @media (max-width:1060px){.grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} .grid .metrics{grid-column:1/-1} .charts{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:680px){.grid{grid-template-columns:minmax(0,1fr)} .tiles{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} h1{font-size:22px}}
+.tablewrap{margin-top:12px;overflow-x:auto}
+@media (max-width:680px){table{font-size:12px} th,td{padding-left:4px;padding-right:4px} .grid{grid-template-columns:minmax(0,1fr)} .tiles{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} h1{font-size:22px}}
 .nav{max-width:1240px;margin:0 auto;padding:14px 20px 0;display:flex;gap:16px;flex-wrap:wrap;font-size:13px}
 .nav a{color:var(--muted);text-decoration:none}.nav a[aria-current="page"]{color:var(--ink);font-weight:600}
 .saveline{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--muted)}
@@ -153,10 +154,10 @@ td.neg{color:var(--bad)}
         <div class="tile"><div class="k">Pior janela de 12 meses</div><div class="v" id="m12">–</div><div class="c" id="c12"></div></div>
         <div class="tile"><div class="k">Meses negativos</div><div class="v" id="mNeg">–</div><div class="c" id="cNeg"></div></div>
       </div>
-      <table style="margin-top:12px" aria-label="Retorno em anos de crise">
+      <div class="tablewrap"><table aria-label="Retorno em anos de crise">
         <thead><tr><th>Ano (em reais)</th><th>Simulada</th><th id="thR1">Ref. 1</th><th id="thR2">Ref. 2</th><th>CDI</th></tr></thead>
         <tbody id="years"></tbody>
-      </table>
+      </table></div>
     </section>
   </div>
 
@@ -174,7 +175,7 @@ td.neg{color:var(--bad)}
   </div>
 
   <section class="notes" aria-label="Como o simulador calcula">
-    <p><b>Como calcula.</b> Cada categoria usa um substituto com dados mensais, convertido para reais pela PTAX. A carteira é rebalanceada todo mês. Renda fixa Brasil: CDI. Renda fixa exterior: 38% bonds corporativos curtos (VCSH/IGSB) e 62% Tesouro americano curto (SHY), como na carteira D. Renda variável Brasil: DIVO11 (EWZ antes de nov/2015). Renda variável exterior: 50% Nasdaq-100 (QQQ) e 50% mundo ex-EUA (EFA). Ouro: GLD. Alternativos: 50% ações globais e 50% Tesouro curto.</p>
+    <p><b>Como calcula.</b> Cada categoria usa um substituto com dados mensais, convertido para reais pela PTAX. A carteira é rebalanceada todo mês. Renda fixa Brasil: CDI. Renda fixa exterior: 38% bonds corporativos curtos (VCSH/IGSB) e 62% Tesouro americano curto (SHY). Renda variável Brasil: DIVO11 (EWZ antes de nov/2015). Renda variável exterior: 50% Nasdaq-100 (QQQ) e 50% mundo ex-EUA (EFA). Ouro: GLD. Alternativos: 50% ações globais e 50% Tesouro curto.</p>
     <p><b>Limites.</b> Alternativos reais, como multimercados e hedge funds, oscilam de forma diferente desse substituto. Venture capital e crédito privado não têm preço diário, então o risco real pode ser maior do que aparece. O passado não garante o futuro, e as faixas de perfil são só referência. Não é recomendação de investimento.</p>
     <p>Fontes: Digrin e Yahoo Finance (preços mensais ajustados), Banco Central (CDI e PTAX). Atualizado todo dia; o mês corrente aparece como parcial. <span id="dataref"></span></p>
   </section>
