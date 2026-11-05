@@ -76,6 +76,26 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     ok(!(await cel.evaluate(() => document.documentElement.scrollWidth > innerWidth)), 'editor em cartões sem rolagem lateral');
     await cel.close();
 
+    // acessibilidade (WCAG 2 A e AA) com o axe-core, nos dois temas
+    const axe = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
+    const auditar = async (pg, rotulo) => {
+      await pg.evaluate(axe);
+      const r = await pg.evaluate(() => axe.run(document, { runOnly: ['wcag2a', 'wcag2aa'] }));
+      ok(r.violations.length === 0, rotulo + ' sem problemas de acessibilidade ' + (r.violations.length ? JSON.stringify(r.violations.map((v) => v.id + ': ' + v.nodes.map((n) => n.target.join(' ')).slice(0, 3).join(', '))) : ''));
+    };
+    await p.click('#add'); await p.waitForTimeout(200);
+    await auditar(p, 'carteira preenchida (claro)');
+    await p.click('#corpo tr:last-child .rem'); await p.waitForTimeout(200);
+    for (const tema of ['light', 'dark']) {
+      const pa = await b.newPage({ viewport: { width: 1280, height: 900 }, colorScheme: tema });
+      for (const pg of ['/', '/acoes-etfs/', '/simulador/', '/carteira/']) { await pa.goto(BASE + pg); await pa.waitForTimeout(800); await auditar(pa, pg + ' (' + tema + ')'); }
+      await pa.close();
+    }
+    // abas da carteira pelo teclado
+    await p.focus('#aba-ativos'); await p.keyboard.press('ArrowLeft'); await p.waitForTimeout(100);
+    ok(await p.evaluate(() => document.activeElement.id === 'aba-categorias' && !document.getElementById('painel-categorias').hidden), 'abas trocam com as setas do teclado');
+    await p.keyboard.press('End');
+
     ok(externos.length === 0, 'nenhuma requisição para outro domínio ' + (externos.length ? JSON.stringify(externos) : ''));
     ok(erros.length === 0, 'sem erros no console ' + (erros.length ? JSON.stringify(erros) : ''));
   } finally {

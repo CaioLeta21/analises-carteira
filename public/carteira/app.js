@@ -68,14 +68,23 @@
   /* ---------- abas */
   function aba(modo) {
     atual.modo = modo;
-    $('aba-categorias').setAttribute('aria-selected', String(modo === 'categorias'));
-    $('aba-ativos').setAttribute('aria-selected', String(modo === 'ativos'));
+    for (const [id, m] of [['aba-categorias', 'categorias'], ['aba-ativos', 'ativos']]) {
+      $(id).setAttribute('aria-selected', String(modo === m));
+      $(id).tabIndex = modo === m ? 0 : -1;
+    }
     $('painel-categorias').hidden = modo !== 'categorias';
     $('painel-ativos').hidden = modo !== 'ativos';
     document.querySelector('.grade').classList.toggle('modo-ativos', modo === 'ativos');
   }
   $('aba-categorias').addEventListener('click', () => { aba('categorias'); mudou(false); });
   $('aba-ativos').addEventListener('click', () => { aba('ativos'); mudou(false); });
+  // setas, Home e End trocam de aba (padrão WAI-ARIA para abas)
+  document.querySelector('.abas').addEventListener('keydown', (e) => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+    e.preventDefault();
+    const alvo = e.key === 'Home' ? 'aba-categorias' : e.key === 'End' ? 'aba-ativos' : (atual.modo === 'ativos' ? 'aba-categorias' : 'aba-ativos');
+    $(alvo).click(); $(alvo).focus();
+  });
 
   /* ---------- modo categorias */
   function montarCategorias() {

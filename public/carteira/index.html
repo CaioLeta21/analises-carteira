@@ -25,7 +25,7 @@
     <span class="status" id="status" role="status"></span>
   </section>
 
-  <div class="abas" role="tablist">
+  <div class="abas" role="tablist" aria-label="Como montar a carteira">
     <button role="tab" id="aba-categorias" aria-controls="painel-categorias">Por categoria</button>
     <button role="tab" id="aba-ativos" aria-controls="painel-ativos">Por ativo</button>
   </div>
@@ -50,7 +50,7 @@
         <button class="btn" id="ordenar">Ordenar por valor</button>
       </div>
       <ul class="avisos" id="avisos"></ul>
-      <div class="tw"><table class="editor">
+      <div class="tw" tabindex="0" role="region" aria-label="Posições da carteira"><table class="editor">
         <thead><tr><th>Código</th><th>Nome</th><th>Categoria</th><th class="num">Quantidade</th><th class="num">Valor</th><th>Moeda</th><th class="num">Em R$</th><th><span class="sr">Remover</span></th></tr></thead>
         <tbody id="corpo"></tbody>
         <tfoot><tr><th colspan="6">Total</th><th class="num" id="total-editor">–</th><th></th></tr></tfoot>
@@ -81,14 +81,14 @@
 
   <section class="card" id="posicoes-card" hidden>
     <h2>Desempenho dos ativos da base</h2>
-    <div class="tw"><table class="tabela"><thead><tr><th>Ativo</th><th>Nome</th><th class="num">Em R$</th><th class="num">% da carteira</th><th class="num">12 meses (R$)</th><th class="num">5 anos (R$)</th></tr></thead><tbody id="corpo-pos"></tbody></table></div>
+    <div class="tw" tabindex="0" role="region" aria-label="Desempenho dos ativos da base"><table class="tabela"><thead><tr><th>Ativo</th><th>Nome</th><th class="num">Em R$</th><th class="num">% da carteira</th><th class="num">12 meses (R$)</th><th class="num">5 anos (R$)</th></tr></thead><tbody id="corpo-pos"></tbody></table></div>
   </section>
 
   <section class="card" id="backup">
     <h2>Backup</h2>
     <p class="nota">Baixe um arquivo com todas as suas carteiras para guardar ou levar para outro aparelho. Com senha, o arquivo fica cifrado no seu navegador (AES-256); sem a senha, ninguém abre, nem você.</p>
     <div class="acoes-csv">
-      <input id="senha" type="password" placeholder="Senha (opcional)" autocomplete="new-password">
+      <input id="senha" type="password" placeholder="Senha (opcional)" aria-label="Senha do backup (opcional)" autocomplete="new-password">
       <button class="btn" id="exportar">Baixar backup</button>
       <label class="btn" for="importar">Restaurar backup</label><input id="importar" type="file" accept=".json,application/json" hidden>
     </div>
