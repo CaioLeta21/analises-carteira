@@ -1,0 +1,44 @@
+name: Atualizar dados
+
+on:
+  schedule:
+    # 23:30 UTC = 20:30 em Brasília, depois do fechamento da B3 e de Nova York.
+    # Roda todo dia porque o bitcoin negocia no fim de semana.
+    - cron: "30 23 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: atualizar-dados
+  cancel-in-progress: false
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r pipeline/requirements.txt
+      - run: python -m pytest -q pipeline/tests
+      - name: Buscar dados e gravar public/data
+        env:
+          BRAPI_TOKEN: ${{ secrets.BRAPI_TOKEN }}
+          TIINGO_TOKEN: ${{ secrets.TIINGO_TOKEN }}
+          COINGECKO_KEY: ${{ secrets.COINGECKO_KEY }}
+        run: python -m pipeline.atualizar
+      - name: Gravar no repositório (o Cloudflare Pages publica sozinho)
+        run: |
+          git config user.name "atualizador-de-dados"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/data dados/historico
+          if git diff --cached --quiet; then
+            echo "Sem mudanças."
+          else
+            git commit -m "dados: $(date -u +%Y-%m-%d)"
+            git push
+          fi

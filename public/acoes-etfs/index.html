@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ações, ETFs e bitcoin em dólar e em real, desde 2004</title>
+<meta name="description" content="Compare o retorno de ações brasileiras e americanas, ETFs, bitcoin e CDI, em dólar e em real, em cinco janelas de tempo. Atualizado todo dia.">
+<link rel="stylesheet" href="/assets/css/base.css">
+<style>
+.dz h1{font-family:var(--font-serif);font-weight:400;font-size:var(--fs-title);margin:0 0 var(--gap-xs);line-height:1.2}
+.dz h2{font-size:var(--fs-heading);font-weight:var(--fw-medium);margin:var(--gap-xl) 0 var(--gap-sm)}
+.dz h3{font-size:var(--fs-body);font-weight:var(--fw-medium);margin:0 0 var(--gap-xs)}
+.dz p{margin:0 0 var(--gap-sm)}
+.dz .lede{color:var(--color-fg-muted);max-width:62rem}
+.dz .lede b{font-weight:var(--fw-medium);color:var(--color-fg)}
+.dz .note{color:var(--color-fg-muted);font-size:var(--fs-caption);margin:0 0 var(--gap-sm)}
+.dz .ctrl{display:flex;flex-wrap:wrap;gap:var(--gap-sm) var(--gap-lg);align-items:center;margin:var(--gap-md) 0}
+.dz .ctrl label{font-size:var(--fs-caption);color:var(--color-fg-muted);margin-right:var(--gap-xs)}
+.dz .seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--color-border-line);border-radius:var(--radius);overflow:hidden}
+.dz .seg button{background:transparent;border:0;border-right:1px solid var(--color-border-line);padding:var(--pad-xs) var(--pad-sm);font:inherit;font-size:var(--fs-caption);color:var(--color-fg-muted);cursor:pointer}
+.dz .seg button:last-child{border-right:0}
+.dz .seg button.on{background:var(--color-panel);color:var(--color-fg);font-weight:var(--fw-medium)}
+.dz .card{background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--radius);padding:var(--pad-lg);min-width:0}
+.dz .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,24rem),1fr));gap:var(--gap-md);margin-top:var(--gap-md)}
+.dz .chart{position:relative;min-height:420px}
+.dz .chart.sm{min-height:320px}
+.dz .chips{display:flex;flex-wrap:wrap;gap:var(--gap-xs);align-items:center}
+.dz .chip{display:inline-flex;align-items:center;gap:var(--gap-xs);background:transparent;border:1px solid var(--color-border-line);border-radius:999px;padding:2px var(--pad-sm);font:inherit;font-size:var(--fs-caption);color:var(--color-fg);cursor:pointer}
+.dz .chip.off{color:var(--color-fg-muted);text-decoration:line-through}
+.dz .chip.off .sw{background:transparent!important;box-shadow:inset 0 0 0 1px var(--color-fg-muted)}
+.dz .lnk{background:none;border:0;padding:0 var(--pad-xs);font:inherit;font-size:var(--fs-caption);color:var(--color-fg-muted);text-decoration:underline;cursor:pointer}
+.dz .sw{display:inline-block;width:.6rem;height:.6rem;border-radius:2px;flex:none}
+.dz .tw{overflow-x:auto}
+.dz table{width:100%;border-collapse:collapse;font-size:var(--fs-caption);font-variant-numeric:tabular-nums}
+.dz th,.dz td{padding:var(--pad-xs) var(--pad-sm);border-bottom:1px solid var(--color-border-line);text-align:right;white-space:nowrap}
+.dz th{font-weight:var(--fw-medium);color:var(--color-fg-muted)}
+.dz th:first-child,.dz td:first-child,.dz th:nth-child(2),.dz td:nth-child(2){text-align:left}
+.dz .pos{color:var(--color-ok)}
+.dz .neg{color:var(--color-bad)}
+.dz .tip{position:absolute;pointer-events:none;background:var(--surface-popover);border:1px solid var(--color-border-line);border-radius:var(--radius);box-shadow:var(--shadow-popover);padding:var(--pad-xs) var(--pad-sm);font-size:var(--fs-caption);z-index:2;min-width:10rem}
+.dz .tip .h{color:var(--color-fg-muted);margin-bottom:2px}
+.dz .tip .r{display:flex;align-items:center;gap:var(--gap-xs);white-space:nowrap}
+.dz .tip .r span:last-child{margin-left:auto;padding-left:var(--gap-sm);font-variant-numeric:tabular-nums}
+.dz svg text{font-family:var(--font-sans)}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Páginas"><a href="/">Início</a><a href="/acoes-etfs/" aria-current="page">Ações e ETFs</a><a href="/simulador/">Simulador</a><a href="/carteira/">Minha carteira</a></nav>
+<main class="pagina">
+<div class="dz">
+<h1 id="topo">Ações, ETFs e bitcoin em dólar e em real, desde o IPO do Google</h1>
+<p class="atualizacao" id="atualizacao">Carregando dados…</p>
+<p class="lede" id="lede"></p>
+
+<div class="ctrl" id="filtros">
+<span><label>Período</label><span class="seg">
+<button class="lx-periodo" data-v="ipo">Desde o IPO do Google (ago/2004)</button><button class="lx-periodo" data-v="15a">15 anos</button><button class="lx-periodo" data-v="divo">Desde o DIVO11 (nov/2015)</button><button class="lx-periodo" data-v="10a">10 anos</button><button class="lx-periodo" data-v="5a">5 anos</button>
+</span></span>
+<span><label>Moeda</label><span class="seg"><button class="lx-moeda" data-v="USD">Dólar</button><button class="lx-moeda" data-v="BRL">Real</button></span></span>
+<span><label>Escala</label><span class="seg"><button class="lx-escala" data-v="lin">Linear</button><button class="lx-escala" data-v="log">Logarítmica</button></span></span>
+</div>
+<div class="ctrl" id="ativos"><span class="chips" id="chips"><label>Ativos</label></span></div>
+<p class="note">Clique num ativo para tirá-lo ou recolocá-lo no gráfico, nas barras e na tabela. Os botões de ações e de ETFs tiram ou recolocam o grupo inteiro de uma vez.</p>
+
+<div class="card" id="evolucao">
+<h3 id="tit-evolucao"></h3>
+<p class="note">Fechamento mensal ajustado por dividendos e desdobramentos. Na visão em dólar, os ativos brasileiros foram convertidos pela PTAX do fim de cada mês; na visão em real, os americanos é que foram convertidos. Os ETFs aparecem tracejados (DIVO11 e QQQ em traço longo neutro, VHYL em traço longo colorido), exceto o S&amp;P 500, em linha neutra contínua. O CDI aparece em traço e ponto mais claro.<span id="nota-estreias"></span> Na escala linear, os ativos que mais subiram ocupam quase todo o eixo; a escala logarítmica mostra cada alta em proporção.</p>
+<div class="chart" data-draw="linhas"></div>
+</div>
+
+<div class="grid">
+<div class="card" id="cagr">
+<h3>Retorno anual composto</h3>
+<p class="note">Quanto cada ativo rendeu por ano, em média, na moeda escolhida. Para quem estreou depois do início do período, conta a partir da estreia.</p>
+<div class="chart sm" data-draw="barras"></div>
+</div>
+<div class="card" id="tabela" hidden>
+<h3>Retornos e risco em dólar, 10 anos</h3>
+<p class="note" id="nota-tabela10"></p>
+<div class="tw"><table>
+<thead><tr><th>Ativo</th><th>Nome</th><th>10 anos</th><th>Ao ano</th><th>5 anos</th><th>12 meses</th><th id="th-ano">No ano</th><th>Volat.</th><th>Queda máx.</th><th>10 anos em R$</th></tr></thead>
+<tbody data-draw="tabela"></tbody>
+</table></div>
+</div>
+<div class="card" id="tabela-longa">
+<h3 id="tit-tabela-longa"></h3>
+<p class="note" id="nota-tabela-longa"></p>
+<div class="tw"><table>
+<thead><tr><th>Ativo</th><th>Nome</th><th>Desde</th><th>Multiplicou (US$)</th><th>Ao ano (US$)</th><th>Volat.</th><th>Queda máx.</th><th>Multiplicou (R$)</th><th>Ao ano (R$)</th></tr></thead>
+<tbody data-draw="tabela-longa"></tbody>
+</table></div>
+</div>
+</div>
+
+<h2 id="metodo">Método e fontes</h2>
+<p class="note">Até out/2026, os preços vêm do histórico montado à mão: ações e ETFs americanos (BLK, GOOGL, LLY, TSLA, QQQ e SPY) com preços ajustados da Digrin; ações brasileiras (ITUB3, EGIE3, PSSA3, WEGE3, TAEE11 e CSMG3) com retornos mensais com proventos da Mais Retorno; DIVO11 com retornos mensais da Meus Dividendos e da ETFs Brasil; VHYL com os retornos anuais oficiais da Vanguard distribuídos pelo padrão mensal de 40% VYM e 60% VYMI; bitcoin com o fechamento mensal em dólar da Digrin, desde dez/2010. Depois de out/2026, cada série é estendida todo dia pelos fechamentos ajustados do Yahoo Finance (com fontes reserva), e o mês corrente aparece como parcial. CDI: Banco Central (séries 4391 e 12). Câmbio: PTAX de venda do fim de cada mês (Banco Central, séries 3696 e 1). O passado não garante o futuro. Não é recomendação de investimento.</p>
+</div>
+</main>
+
+<script src="/assets/vendor/d3.v7.9.0.min.js"></script>
+<script src="/assets/js/config-ativos.js"></script>
+<script src="/assets/js/dados.js"></script>
+<script src="/assets/js/dash-shim.js"></script>
+<script src="/acoes-etfs/app.js"></script>
+</body>
+</html>

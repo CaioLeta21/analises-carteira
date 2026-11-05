@@ -1,0 +1,30 @@
+/* Tokens visuais compartilhados pelas páginas. Claro e escuro seguem o sistema. */
+:root{
+  color-scheme:light;
+  --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --font-serif:Georgia,"Times New Roman",serif;
+  --color-bg:#f7f7f5;--color-panel:#ffffff;--color-fg:#1b1b1a;--color-fg-muted:#5f5e5a;--color-border-line:#e3e2dd;
+  --color-accent:#1F3864;--color-ok:#1f8a4c;--color-warn:#b7791f;--color-bad:#c43c3b;
+  --fs-title:28px;--fs-heading:18px;--fs-body:15px;--fs-caption:13px;--fw-medium:600;
+  --gap-xs:4px;--gap-sm:8px;--gap-md:16px;--gap-lg:24px;--gap-xl:40px;
+  --pad-xs:4px;--pad-sm:10px;--pad-lg:20px;--radius:10px;
+  --surface-popover:#ffffff;--shadow-popover:0 6px 24px rgba(0,0,0,.12);
+  --chart-grid:#ecebe6;--chart-axis:#b9b8b1;--chart-reference:#8f8d86;
+}
+@media (prefers-color-scheme:dark){:root{
+  color-scheme:dark;
+  --color-bg:#141413;--color-panel:#1e1e1c;--color-fg:#f0efec;--color-fg-muted:#b5b3ab;--color-border-line:#34332f;
+  --color-accent:#8fb0ff;--color-ok:#4fb67a;--color-warn:#e0a43c;--color-bad:#e66767;
+  --surface-popover:#262624;--shadow-popover:0 6px 24px rgba(0,0,0,.5);
+  --chart-grid:#2a2a27;--chart-axis:#55544f;--chart-reference:#7a7871;
+}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--color-bg);color:var(--color-fg);font-family:var(--font-sans);font-size:var(--fs-body);line-height:1.5;-webkit-font-smoothing:antialiased}
+.site-nav{max-width:1200px;margin:0 auto;padding:14px 20px 0;display:flex;gap:16px;flex-wrap:wrap;font-size:var(--fs-caption)}
+.site-nav a{color:var(--color-fg-muted);text-decoration:none}
+.site-nav a[aria-current="page"]{color:var(--color-fg);font-weight:var(--fw-medium)}
+.site-nav a:hover{color:var(--color-fg)}
+.pagina{max-width:1200px;margin:0 auto;padding:16px 20px 48px}
+.atualizacao{color:var(--color-fg-muted);font-size:var(--fs-caption);margin:0 0 var(--gap-sm)}
+.erro-carga{border:1px solid var(--color-bad);color:var(--color-bad);border-radius:var(--radius);padding:var(--pad-sm);margin:var(--gap-md) 0}

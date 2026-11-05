@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minha carteira: risco e retorno, só no seu navegador</title>
+<meta name="description" content="Monte sua carteira por categoria ou por ativo, suba um CSV e veja risco e retorno em 20 anos. Os dados ficam só no seu navegador.">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/carteira/carteira.css">
+</head>
+<body>
+<nav class="site-nav" aria-label="Páginas"><a href="/">Início</a><a href="/acoes-etfs/">Ações e ETFs</a><a href="/simulador/">Simulador</a><a href="/carteira/" aria-current="page">Minha carteira</a></nav>
+<main class="pagina">
+  <h1>Minha carteira</h1>
+  <p class="aviso-privado"><b>Sua carteira fica só neste navegador.</b> Nada é enviado para servidor nenhum, e o dono do site não tem como ver. Se você limpar os dados do navegador ou trocar de aparelho, ela some: use <a href="#backup">Backup</a> para guardar uma cópia.</p>
+  <p class="atualizacao" id="atualizacao">Carregando preços…</p>
+
+  <section class="barra" aria-label="Carteiras salvas">
+    <label for="sel">Carteira</label>
+    <select id="sel"></select>
+    <button class="btn" id="nova">Nova</button>
+    <button class="btn" id="renomear">Renomear</button>
+    <button class="btn" id="duplicar">Duplicar</button>
+    <button class="btn perigo" id="apagar">Apagar</button>
+    <span class="status" id="status" role="status"></span>
+  </section>
+
+  <div class="abas" role="tablist">
+    <button role="tab" id="aba-categorias" aria-controls="painel-categorias">Por categoria</button>
+    <button role="tab" id="aba-ativos" aria-controls="painel-ativos">Por ativo</button>
+  </div>
+
+  <div class="grade">
+    <section class="card" id="painel-categorias" role="tabpanel" aria-labelledby="aba-categorias">
+      <h2>Composição por categoria</h2>
+      <p class="nota">Informe quanto da carteira está em cada categoria. O total não precisa dar 100%: o site ajusta a proporção.</p>
+      <div class="campo"><label for="patrimonio">Patrimônio (R$)</label><input id="patrimonio" type="number" min="0" step="1000"></div>
+      <div id="linhas-cat"></div>
+      <p class="total" id="total-cat"></p>
+    </section>
+
+    <section class="card" id="painel-ativos" role="tabpanel" aria-labelledby="aba-ativos" hidden>
+      <h2>Posições</h2>
+      <p class="nota">Para ativos da base de preços (ações e ETFs do comparador, bitcoin), basta a quantidade. Para o resto (Tesouro, CDB, fundos), informe o valor atual. A categoria define o substituto usado no cálculo de risco.</p>
+      <div class="acoes-csv">
+        <button class="btn" id="add">Adicionar linha</button>
+        <label class="btn" for="csv">Importar CSV</label><input id="csv" type="file" accept=".csv,text/csv" hidden>
+        <button class="btn" id="modelo">Baixar modelo CSV</button>
+        <button class="btn" id="exportar-csv">Exportar CSV</button>
+      </div>
+      <ul class="avisos" id="avisos"></ul>
+      <div class="tw"><table class="editor">
+        <thead><tr><th>Código</th><th>Nome</th><th>Categoria</th><th>Quantidade</th><th>Valor</th><th>Moeda</th><th>Em R$</th><th><span class="sr">Remover</span></th></tr></thead>
+        <tbody id="corpo"></tbody>
+      </table></div>
+      <datalist id="conhecidos"></datalist>
+    </section>
+
+    <section class="card" id="analise">
+      <h2>Risco e retorno</h2>
+      <div class="totais"><div><span class="k">Patrimônio</span><span class="v" id="tot-brl">–</span><span class="c" id="tot-usd"></span></div></div>
+      <div class="pizza"><canvas id="pizza" role="img" aria-label="Alocação por categoria"></canvas></div>
+      <div class="split"><div class="splitbar" aria-hidden="true"><i id="sb-br"></i><i id="sb-ex"></i></div><div class="splitlbl"><span id="sl-br"></span><span id="sl-ex"></span></div></div>
+      <div class="tiles" id="tiles"></div>
+      <p class="nota" id="nota-metodo"></p>
+      <p><a class="btn" id="abrir-sim" href="/simulador/">Abrir no simulador</a></p>
+    </section>
+  </div>
+
+  <section class="card" id="posicoes-card" hidden>
+    <h2>Desempenho dos ativos da base</h2>
+    <div class="tw"><table class="tabela"><thead><tr><th>Ativo</th><th>Nome</th><th>Em R$</th><th>% da carteira</th><th>12 meses (R$)</th><th>5 anos (R$)</th></tr></thead><tbody id="corpo-pos"></tbody></table></div>
+  </section>
+
+  <section class="card" id="backup">
+    <h2>Backup</h2>
+    <p class="nota">Baixe um arquivo com todas as suas carteiras para guardar ou levar para outro aparelho. Com senha, o arquivo fica cifrado no seu navegador (AES-256); sem a senha, ninguém abre, nem você.</p>
+    <div class="acoes-csv">
+      <input id="senha" type="password" placeholder="Senha (opcional)" autocomplete="new-password">
+      <button class="btn" id="exportar">Baixar backup</button>
+      <label class="btn" for="importar">Restaurar backup</label><input id="importar" type="file" accept=".json,application/json" hidden>
+    </div>
+    <p class="nota" id="msg-backup" role="status"></p>
+  </section>
+
+  <p class="nota">O passado não garante o futuro. Os cálculos usam preços mensais desde nov/2006 e substitutos por categoria quando um ativo não tem histórico. Não é recomendação de investimento.</p>
+</main>
+<script src="/assets/vendor/chart.v4.4.1.umd.js"></script>
+<script src="/assets/js/dados.js"></script>
+<script src="/assets/js/carteira-modelo.js"></script>
+<script src="/assets/js/carteira-motor.js"></script>
+<script src="/assets/js/carteira-armazenamento.js"></script>
+<script src="/assets/js/carteira-cripto.js"></script>
+<script src="/carteira/app.js"></script>
+</body>
+</html>
