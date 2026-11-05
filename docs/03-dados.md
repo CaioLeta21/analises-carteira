@@ -45,8 +45,17 @@ com a coluna `fonte`. Correções ficam registradas em `dados/correcoes/`. Resum
   os retornos anuais oficiais da Vanguard (diferença de até 0,6 ponto por ano, típica entre
   cotação e valor da cota). Substituiu a série sintética (anuais da Vanguard distribuídos pelo
   padrão de VYM e VYMI), comparada em `dados/correcoes/2026-11-04-vhyl.csv`.
-- Bitcoin: fechamento mensal em dólar (Digrin), desde dez/2010. De set/2014 em diante é igual ao
-  Yahoo; antes disso as fontes divergem (veja o simulador, abaixo).
+- Bitcoin: fechamento mensal em dólar desde out/2009 (refeito em 05/nov/2026, evidência em
+  `dados/correcoes/2026-11-05-bitcoin-desde-2009.csv`, script em `ferramentas/bitcoin/`):
+  - out/2009–mar/2010: New Liberty Standard, a primeira casa de câmbio (taxa diária das páginas
+    arquivadas; a última, de 02/03/2010, vale para março). Confere dia a dia com bitcoin.zorinaq.com.
+  - abr–jun/2010: BitcoinMarket.com (média ponderada do último dia, negociações brutas da
+    bitcoincharts). Confere dia a dia com a Zorinaq.
+  - jul/2010–set/2014: cada retorno mensal fica o do histórico antigo (Digrin) quando ele bate com a
+    Coin Metrics ou com a CoinDesk; senão, a mediana das três (20 meses, quase todos de 2011 a 2014,
+    quando cada corretora tinha um preço).
+  - Desde out/2014: igual ao Yahoo e à Coin Metrics.
+  Bitbo e Glassnode não foram usados: a Bitbo bloqueia acesso automatizado e a Glassnode exige chave.
 - CDI: Banco Central, série 4391, capitalizada a partir de 100 em ago/2004.
 
 ### Extensão diária
@@ -71,12 +80,8 @@ Retornos mensais em reais por categoria. Para meses novos:
 - Renda variável exterior: 50% QQQ + 50% EFA, em reais.
 - Ouro: GLD, em reais.
 - Alternativos: 50% URTH + 50% SHY, em reais.
-- Bitcoin: BTC-USD, em reais. No histórico, desde out/2014; antes disso a série fica vazia e
-  as páginas usam o CDI no lugar. Motivo: conferido em 05/nov/2026 contra a Coin Metrics
-  (fechamento diário independente), o histórico bate com o Yahoo em 144 de 145 meses desde
-  set/2014 e com a Coin Metrics em 132 (os outros, até 3 pontos, são diferença de horário de
-  fechamento em meses muito voláteis). Antes de set/2014 o preço variava muito entre corretoras
-  (Mt. Gox) e as fontes divergem em até 80 pontos num mês.
+- Bitcoin: BTC-USD, em reais, desde nov/2009 (antes disso o bitcoin não tinha preço; as páginas
+  usam o CDI no lugar).
 
 ## Catálogo (169 ativos que o usuário escolhe)
 

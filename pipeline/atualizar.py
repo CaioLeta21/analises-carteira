@@ -88,15 +88,20 @@ def carregar_historico():
     return H
 
 
+def _arred(p):
+    """4 casas decimais; preços abaixo de 1 (o bitcoin em 2009 valia US$ 0,001) guardam 6 algarismos."""
+    return round(p, 4) if abs(p) >= 1 else float(f"{p:.6g}")
+
+
 def gravar_historico(H):
     linhas = []
     for aid, a in H["ativos"].items():
         for m in sorted(a["precos"]):
             p = a["precos"][m]
             fx = H["fx"][m]
-            usd = a["usd"].get(m) or round(p if a["moeda"] == "USD" else p / fx, 4)
+            usd = a["usd"].get(m) or _arred(p if a["moeda"] == "USD" else p / fx)
             linhas.append({"mes": m, "ativo": aid, "moeda_original": a["moeda"],
-                           "preco_ajustado_original": round(p, 4), "usdbrl_fim_mes": fx,
+                           "preco_ajustado_original": _arred(p), "usdbrl_fim_mes": fx,
                            "preco_ajustado_usd": usd, "fonte": a["fonte"].get(m, "")})
     ordem = [x["id"] for x in config.ATIVOS]
     linhas.sort(key=lambda x: (ordem.index(x["ativo"]) if x["ativo"] in ordem else 99, x["mes"]))

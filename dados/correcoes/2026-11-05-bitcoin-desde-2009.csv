@@ -1,0 +1,60 @@
+mes,fonte,historico,coin_metrics,coindesk,usado,regra
+2009-11,New Liberty Standard,,,,-0.339141,única casa de câmbio; confere com a Zorinaq
+2009-12,New Liberty Standard,,,,-0.163931,única casa de câmbio; confere com a Zorinaq
+2010-01,New Liberty Standard,,,,3.788515,única casa de câmbio; confere com a Zorinaq
+2010-02,New Liberty Standard,,,,0.606304,única casa de câmbio; confere com a Zorinaq
+2010-03,New Liberty Standard,,,,0.032888,única casa de câmbio; confere com a Zorinaq
+2010-04,BitcoinMarket.com,,,,-0.451780,única casa de câmbio; confere com a Zorinaq
+2010-05,BitcoinMarket.com,,,,0.495000,única casa de câmbio; confere com a Zorinaq
+2010-06,BitcoinMarket.com,,,,0.204013,única casa de câmbio; confere com a Zorinaq
+2010-07,BitcoinMarket.com (jun) e Coin Metrics (jul),,11.508481,11.574074,11.508481,"fechamento de jul igual nas duas fontes (0,0675 e 0,0679)"
+2010-08,Digrin/Coin Metrics/CoinDesk,,-0.111714,-0.116348,-0.111714,Coin Metrics (confere com a CoinDesk)
+2010-09,Digrin/Coin Metrics/CoinDesk,,0.031667,0.031667,0.031667,Coin Metrics (confere com a CoinDesk)
+2010-10,Digrin/Coin Metrics/CoinDesk,,2.109855,2.109855,2.109855,Coin Metrics (confere com a CoinDesk)
+2010-11,Digrin/Coin Metrics/CoinDesk,,0.081558,0.081558,0.081558,Coin Metrics (confere com a CoinDesk)
+2010-12,Digrin/Coin Metrics/CoinDesk,,0.440922,0.440922,0.440922,Coin Metrics (confere com a CoinDesk)
+2011-01,Digrin/Coin Metrics/CoinDesk,0.733333,0.750456,0.733333,0.733333,histórico confere
+2011-02,Digrin/Coin Metrics/CoinDesk,0.673077,0.638089,0.653846,0.653846,mediana das três fontes
+2011-03,Digrin/Coin Metrics/CoinDesk,-0.091954,-0.087897,-0.087674,-0.091954,histórico confere
+2011-04,Digrin/Coin Metrics/CoinDesk,3.354430,3.460815,3.460872,3.460815,mediana das três fontes
+2011-05,Digrin/Coin Metrics/CoinDesk,1.552326,1.491879,1.497429,1.497429,mediana das três fontes
+2011-06,Digrin/Coin Metrics/CoinDesk,0.840547,0.855773,0.842009,0.840547,histórico confere
+2011-07,Digrin/Coin Metrics/CoinDesk,-0.168936,-0.173760,-0.170859,-0.168936,histórico confere
+2011-08,Digrin/Coin Metrics/CoinDesk,-0.326136,-0.386883,-0.385805,-0.385805,mediana das três fontes
+2011-09,Digrin/Coin Metrics/CoinDesk,-0.437569,-0.372656,-0.373120,-0.373120,mediana das três fontes
+2011-10,Digrin/Coin Metrics/CoinDesk,-0.347741,-0.365222,-0.368106,-0.365222,mediana das três fontes
+2011-11,Digrin/Coin Metrics/CoinDesk,-0.105422,-0.091592,-0.085560,-0.091592,mediana das três fontes
+2011-12,Digrin/Coin Metrics/CoinDesk,0.552189,0.589427,0.589845,0.589427,mediana das três fontes
+2012-01,Digrin/Coin Metrics/CoinDesk,0.203905,0.174769,0.161330,0.174769,mediana das três fontes
+2012-02,Digrin/Coin Metrics/CoinDesk,-0.106306,-0.120160,-0.113753,-0.106306,histórico confere
+2012-03,Digrin/Coin Metrics/CoinDesk,-0.014113,0.003495,0.010021,0.003495,mediana das três fontes
+2012-04,Digrin/Coin Metrics/CoinDesk,0.020450,0.010704,0.008230,0.020450,histórico confere
+2012-05,Digrin/Coin Metrics/CoinDesk,0.038076,0.048466,0.046675,0.038076,histórico confere
+2012-06,Digrin/Coin Metrics/CoinDesk,0.289575,0.289250,0.291481,0.289575,histórico confere
+2012-07,Digrin/Coin Metrics/CoinDesk,0.396707,0.395270,0.397608,0.396707,histórico confere
+2012-08,Digrin/Coin Metrics/CoinDesk,0.153269,0.083833,0.086631,0.086631,mediana das três fontes
+2012-09,Digrin/Coin Metrics/CoinDesk,0.160781,0.226601,0.220472,0.220472,mediana das três fontes
+2012-10,Digrin/Coin Metrics/CoinDesk,-0.111289,-0.100516,-0.096694,-0.100516,mediana das três fontes
+2012-11,Digrin/Coin Metrics/CoinDesk,0.136036,0.129200,0.121775,0.136036,histórico confere
+2012-12,Digrin/Coin Metrics/CoinDesk,0.072958,0.076228,0.075209,0.072958,histórico confere
+2013-01,Digrin/Coin Metrics/CoinDesk,0.498152,0.514271,0.510733,0.510733,mediana das três fontes
+2013-02,Digrin/Coin Metrics/CoinDesk,0.580168,0.627139,0.635473,0.627139,mediana das três fontes
+2013-03,Digrin/Coin Metrics/CoinDesk,1.888542,1.813436,1.786998,1.813436,mediana das três fontes
+2013-04,Digrin/Coin Metrics/CoinDesk,0.502378,0.481691,0.496581,0.502378,histórico confere
+2013-05,Digrin/Coin Metrics/CoinDesk,-0.071942,-0.081314,-0.074783,-0.071942,histórico confere
+2013-06,Digrin/Coin Metrics/CoinDesk,-0.251085,-0.299927,-0.243024,-0.251085,histórico confere
+2013-07,Digrin/Coin Metrics/CoinDesk,0.098126,0.095479,0.004153,0.098126,histórico confere
+2013-08,Digrin/Coin Metrics/CoinDesk,0.275804,0.309653,0.322167,0.309653,mediana das três fontes
+2013-09,Digrin/Coin Metrics/CoinDesk,-0.017362,-0.017820,-0.049140,-0.017362,histórico confere
+2013-10,Digrin/Coin Metrics/CoinDesk,0.533835,0.612207,0.610309,0.610309,mediana das três fontes
+2013-11,Digrin/Coin Metrics/CoinDesk,4.536422,4.506083,4.674137,4.536422,mediana das três fontes
+2013-12,Digrin/Coin Metrics/CoinDesk,-0.332398,-0.348200,-0.326529,-0.332398,histórico confere
+2014-01,Digrin/Coin Metrics/CoinDesk,0.100675,0.100993,0.119858,0.100675,histórico confere
+2014-02,Digrin/Coin Metrics/CoinDesk,-0.338177,-0.313659,-0.358795,-0.338177,mediana das três fontes
+2014-03,Digrin/Coin Metrics/CoinDesk,-0.167971,-0.174026,-0.157060,-0.167971,histórico confere
+2014-04,Digrin/Coin Metrics/CoinDesk,-0.020481,-0.014230,-0.027550,-0.020481,histórico confere
+2014-05,Digrin/Coin Metrics/CoinDesk,0.393262,0.398811,0.397858,0.393262,histórico confere
+2014-06,Digrin/Coin Metrics/CoinDesk,0.025847,0.017604,0.025841,0.025847,histórico confere
+2014-07,Digrin/Coin Metrics/CoinDesk,-0.083714,-0.089163,-0.090734,-0.083714,histórico confere
+2014-08,Digrin/Coin Metrics/CoinDesk,-0.185044,-0.177781,-0.177650,-0.185044,histórico confere
+2014-09,Digrin/Coin Metrics/CoinDesk,-0.190095,-0.186510,-0.192031,-0.190095,histórico confere

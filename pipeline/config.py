@@ -70,8 +70,8 @@ CATEGORIAS = {
     "rvex": [("QQQ", 0.5), ("EFA", 0.5)],
     "ouro": [("GLD", 1.0)],
     "alt": [("URTH", 0.5), ("SHY", 0.5)],
-    # Bitcoin: a própria série (BTC-USD). No histórico, só a partir de out/2014: antes disso o preço
-    # variava muito de uma corretora para outra e as fontes não concordam (docs/03-dados.md).
+    # Bitcoin: a própria série (BTC-USD). No histórico, desde nov/2009 (primeiro preço: out/2009,
+    # New Liberty Standard; docs/03-dados.md).
     "btc": [("BTC", 1.0)],
 }
 

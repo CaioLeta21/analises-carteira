@@ -3313,52 +3313,66 @@ mes,ativo,moeda_original,preco_ajustado_original,usdbrl_fim_mes,preco_ajustado_u
 2026-08,VHYL,USD,267.9132,5.1816,267.9132,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
 2026-09,VHYL,USD,258.7022,5.1809,258.7022,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
 2026-10,VHYL,USD,263.9479,5.4206,263.9479,Yahoo VHYD.L (fechamento ajustado em USD); validado contra os retornos anuais da Vanguard e o VHYL.L; 04/nov/2026
-2010-12,BTC,USD,0.3,1.6662,0.3,"Digrin (fechamento do mês, BTC-USD)"
-2011-01,BTC,USD,0.52,1.6734,0.52,"Digrin (fechamento do mês, BTC-USD)"
-2011-02,BTC,USD,0.87,1.6612,0.87,"Digrin (fechamento do mês, BTC-USD)"
-2011-03,BTC,USD,0.79,1.6287,0.79,"Digrin (fechamento do mês, BTC-USD)"
-2011-04,BTC,USD,3.44,1.5733,3.44,"Digrin (fechamento do mês, BTC-USD)"
-2011-05,BTC,USD,8.78,1.5799,8.78,"Digrin (fechamento do mês, BTC-USD)"
-2011-06,BTC,USD,16.16,1.5611,16.16,"Digrin (fechamento do mês, BTC-USD)"
-2011-07,BTC,USD,13.43,1.5563,13.43,"Digrin (fechamento do mês, BTC-USD)"
-2011-08,BTC,USD,9.05,1.5872,9.05,"Digrin (fechamento do mês, BTC-USD)"
-2011-09,BTC,USD,5.09,1.8544,5.09,"Digrin (fechamento do mês, BTC-USD)"
-2011-10,BTC,USD,3.32,1.6885,3.32,"Digrin (fechamento do mês, BTC-USD)"
-2011-11,BTC,USD,2.97,1.8109,2.97,"Digrin (fechamento do mês, BTC-USD)"
-2011-12,BTC,USD,4.61,1.8758,4.61,"Digrin (fechamento do mês, BTC-USD)"
-2012-01,BTC,USD,5.55,1.7391,5.55,"Digrin (fechamento do mês, BTC-USD)"
-2012-02,BTC,USD,4.96,1.7092,4.96,"Digrin (fechamento do mês, BTC-USD)"
-2012-03,BTC,USD,4.89,1.8221,4.89,"Digrin (fechamento do mês, BTC-USD)"
-2012-04,BTC,USD,4.99,1.8918,4.99,"Digrin (fechamento do mês, BTC-USD)"
-2012-05,BTC,USD,5.18,2.0223,5.18,"Digrin (fechamento do mês, BTC-USD)"
-2012-06,BTC,USD,6.68,2.0213,6.68,"Digrin (fechamento do mês, BTC-USD)"
-2012-07,BTC,USD,9.33,2.0499,9.33,"Digrin (fechamento do mês, BTC-USD)"
-2012-08,BTC,USD,10.76,2.0372,10.76,"Digrin (fechamento do mês, BTC-USD)"
-2012-09,BTC,USD,12.49,2.0306,12.49,"Digrin (fechamento do mês, BTC-USD)"
-2012-10,BTC,USD,11.1,2.0313,11.1,"Digrin (fechamento do mês, BTC-USD)"
-2012-11,BTC,USD,12.61,2.1074,12.61,"Digrin (fechamento do mês, BTC-USD)"
-2012-12,BTC,USD,13.53,2.0435,13.53,"Digrin (fechamento do mês, BTC-USD)"
-2013-01,BTC,USD,20.27,1.9883,20.27,"Digrin (fechamento do mês, BTC-USD)"
-2013-02,BTC,USD,32.03,1.9754,32.03,"Digrin (fechamento do mês, BTC-USD)"
-2013-03,BTC,USD,92.52,2.0138,92.52,"Digrin (fechamento do mês, BTC-USD)"
-2013-04,BTC,USD,139.0,2.0017,139.0,"Digrin (fechamento do mês, BTC-USD)"
-2013-05,BTC,USD,129.0,2.1319,129.0,"Digrin (fechamento do mês, BTC-USD)"
-2013-06,BTC,USD,96.61,2.2156,96.61,"Digrin (fechamento do mês, BTC-USD)"
-2013-07,BTC,USD,106.09,2.2903,106.09,"Digrin (fechamento do mês, BTC-USD)"
-2013-08,BTC,USD,135.35,2.3725,135.35,"Digrin (fechamento do mês, BTC-USD)"
-2013-09,BTC,USD,133.0,2.23,133.0,"Digrin (fechamento do mês, BTC-USD)"
-2013-10,BTC,USD,204.0,2.2026,204.0,"Digrin (fechamento do mês, BTC-USD)"
-2013-11,BTC,USD,1129.43,2.3249,1129.43,"Digrin (fechamento do mês, BTC-USD)"
-2013-12,BTC,USD,754.01,2.3426,754.01,"Digrin (fechamento do mês, BTC-USD)"
-2014-01,BTC,USD,829.92,2.4263,829.92,"Digrin (fechamento do mês, BTC-USD)"
-2014-02,BTC,USD,549.26,2.3334,549.26,"Digrin (fechamento do mês, BTC-USD)"
-2014-03,BTC,USD,457.0,2.263,457.0,"Digrin (fechamento do mês, BTC-USD)"
-2014-04,BTC,USD,447.64,2.236,447.64,"Digrin (fechamento do mês, BTC-USD)"
-2014-05,BTC,USD,623.68,2.239,623.68,"Digrin (fechamento do mês, BTC-USD)"
-2014-06,BTC,USD,639.8,2.2025,639.8,"Digrin (fechamento do mês, BTC-USD)"
-2014-07,BTC,USD,586.24,2.2674,586.24,"Digrin (fechamento do mês, BTC-USD)"
-2014-08,BTC,USD,477.76,2.2396,477.76,"Digrin (fechamento do mês, BTC-USD)"
-2014-09,BTC,USD,386.94,2.451,386.94,"Digrin (fechamento do mês, BTC-USD)"
+2009-10,BTC,USD,0.00112741,1.744,0.00112741,New Liberty Standard (fechamento do mês)
+2009-11,BTC,USD,0.000745057,1.7505,0.000745057,New Liberty Standard (fechamento do mês)
+2009-12,BTC,USD,0.000622919,1.7412,0.000622919,New Liberty Standard (fechamento do mês)
+2010-01,BTC,USD,0.00298286,1.8748,0.00298286,New Liberty Standard (fechamento do mês)
+2010-02,BTC,USD,0.00479137,1.811,0.00479137,New Liberty Standard (fechamento do mês)
+2010-03,BTC,USD,0.00494895,1.781,0.00494895,New Liberty Standard (fechamento do mês)
+2010-04,BTC,USD,0.00271312,1.7306,0.00271312,BitcoinMarket.com (média ponderada do último dia)
+2010-05,BTC,USD,0.00405611,1.8167,0.00405611,BitcoinMarket.com (média ponderada do último dia)
+2010-06,BTC,USD,0.00488361,1.8015,0.00488361,BitcoinMarket.com (média ponderada do último dia)
+2010-07,BTC,USD,0.0610865,1.7572,0.0610865,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2010-08,BTC,USD,0.0542623,1.756,0.0542623,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2010-09,BTC,USD,0.0559806,1.6942,0.0559806,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2010-10,BTC,USD,0.174092,1.7014,0.174092,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2010-11,BTC,USD,0.18829,1.7161,0.18829,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2010-12,BTC,USD,0.271312,1.6662,0.271312,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2011-01,BTC,USD,0.470273,1.6734,0.470273,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2011-02,BTC,USD,0.77776,1.6612,0.77776,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2011-03,BTC,USD,0.706242,1.6287,0.706242,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2011-04,BTC,USD,3.1504,1.5733,3.1504,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2011-05,BTC,USD,7.8679,1.5799,7.8679,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2011-06,BTC,USD,14.4813,1.5611,14.4813,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2011-07,BTC,USD,12.0349,1.5563,12.0349,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2011-08,BTC,USD,7.3918,1.5872,7.3918,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2011-09,BTC,USD,4.6337,1.8544,4.6337,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2011-10,BTC,USD,2.9414,1.6885,2.9414,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2011-11,BTC,USD,2.672,1.8109,2.672,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2011-12,BTC,USD,4.2469,1.8758,4.2469,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2012-01,BTC,USD,4.9892,1.7391,4.9892,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2012-02,BTC,USD,4.4588,1.7092,4.4588,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2012-03,BTC,USD,4.4744,1.8221,4.4744,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2012-04,BTC,USD,4.5659,1.8918,4.5659,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2012-05,BTC,USD,4.7397,2.0223,4.7397,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2012-06,BTC,USD,6.1122,2.0213,6.1122,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2012-07,BTC,USD,8.537,2.0499,8.537,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2012-08,BTC,USD,9.2766,2.0372,9.2766,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2012-09,BTC,USD,11.3218,2.0306,11.3218,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2012-10,BTC,USD,10.1838,2.0313,10.1838,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2012-11,BTC,USD,11.5691,2.1074,11.5691,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2012-12,BTC,USD,12.4132,2.0435,12.4132,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2013-01,BTC,USD,18.753,1.9883,18.753,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2013-02,BTC,USD,30.5137,1.9754,30.5137,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2013-03,BTC,USD,85.8485,2.0138,85.8485,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2013-04,BTC,USD,128.9768,2.0017,128.9768,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2013-05,BTC,USD,119.6979,2.1319,119.6979,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2013-06,BTC,USD,89.6435,2.2156,89.6435,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2013-07,BTC,USD,98.4399,2.2903,98.4399,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2013-08,BTC,USD,128.9222,2.3725,128.9222,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2013-09,BTC,USD,126.6838,2.23,126.6838,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2013-10,BTC,USD,204.0,2.2026,204.0,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2013-11,BTC,USD,1129.43,2.3249,1129.43,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2013-12,BTC,USD,754.01,2.3426,754.01,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2014-01,BTC,USD,829.92,2.4263,829.92,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2014-02,BTC,USD,549.26,2.3334,549.26,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2014-03,BTC,USD,457.0,2.263,457.0,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2014-04,BTC,USD,447.64,2.236,447.64,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2014-05,BTC,USD,623.68,2.239,623.68,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2014-06,BTC,USD,639.8,2.2025,639.8,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2014-07,BTC,USD,586.24,2.2674,586.24,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2014-08,BTC,USD,477.76,2.2396,477.76,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
+2014-09,BTC,USD,386.94,2.451,386.94,Coin Metrics/CoinDesk/Digrin conferidos (correção de 05/nov/2026)
 2014-10,BTC,USD,338.32,2.4442,338.32,"Digrin (fechamento do mês, BTC-USD)"
 2014-11,BTC,USD,378.05,2.5601,378.05,"Digrin (fechamento do mês, BTC-USD)"
 2014-12,BTC,USD,320.19,2.6562,320.19,"Digrin (fechamento do mês, BTC-USD)"

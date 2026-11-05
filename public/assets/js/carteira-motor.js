@@ -49,7 +49,7 @@
       pior12m: p12, pior12mAte: p12i, mesesNegativos: rr.filter((x) => x < 0).length / N, anos, indice: ib };
   }
 
-  /* Série da categoria. Bitcoin: antes de out/2014 não há série confiável (sim.btc é null);
+  /* Série da categoria. Bitcoin: antes de out/2009 não havia preço (sim.btc é null);
      nesses meses a fatia rende o CDI, como no simulador. */
   function serieCategoria(sim, k) {
     if (k !== 'btc') return sim[k];

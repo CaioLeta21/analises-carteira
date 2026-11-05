@@ -22,7 +22,7 @@ const CATS = [
   {k:'rvbr', name:'Renda variável Brasil', color:'#D97AA5', br:true},
   {k:'btc',  name:'Bitcoin', color:'#F7931A', br:false},
 ];
-// Antes de out/2014 não há série confiável do bitcoin: nesses meses a fatia dele rende o CDI.
+// Antes de out/2009 o bitcoin não tinha preço: nesses meses a fatia dele rende o CDI.
 if (!S.btc) S.btc = S.rfbr.map(()=>null);
 const BTC_INI = S.months[S.btc.findIndex(x=>x!==null)] || null;
 S.btc = S.btc.map((x,i)=> x===null ? S.rfbr[i] : x);
