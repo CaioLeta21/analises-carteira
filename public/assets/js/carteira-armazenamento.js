@@ -28,24 +28,51 @@
   };
 
   let usaLS = false;
+  /* Modo "só arquivo": as carteiras ficam só na memória desta página; nada é gravado no
+     aparelho. O único registro local é o marcador de que o modo está ligado (sem dados). */
+  const CHAVE_MODO = 'analises-carteira:modo';
+  let memoria = null;
+  try { if (root.localStorage && root.localStorage.getItem(CHAVE_MODO) === 'arquivo') memoria = []; } catch (e) { /* sem localStorage */ }
+  const copia = (x) => JSON.parse(JSON.stringify(x));
+  async function apagarTudoDoAparelho() {
+    try { await transacao('readwrite', (l) => l.clear()); } catch (e) { /* sem IndexedDB */ }
+    try { root.localStorage.removeItem(CHAVE_LS); } catch (e) { /* sem localStorage */ }
+  }
   const api = {
+    get soArquivo() { return memoria !== null; },
+    /* Liga: leva as carteiras para a memória e apaga do aparelho. Desliga: grava a memória no aparelho. */
+    async definirSoArquivo(ligar) {
+      if (ligar && memoria === null) {
+        const lista = await api.listar();
+        memoria = copia(lista);
+        await apagarTudoDoAparelho();
+        try { root.localStorage.setItem(CHAVE_MODO, 'arquivo'); } catch (e) { /* segue só na memória */ }
+      } else if (!ligar && memoria !== null) {
+        const lista = memoria; memoria = null;
+        try { root.localStorage.removeItem(CHAVE_MODO); } catch (e) { /* nada */ }
+        for (const c of lista) await api.salvar(c);
+      }
+    },
     async listar() {
+      if (memoria !== null) return copia(memoria);
       try { if (!usaLS) return (await transacao('readonly', (l) => l.getAll())) || []; } catch (e) { usaLS = true; }
       return ls.todas();
     },
     async obter(id) { return (await api.listar()).find((c) => c.id === id) || null; },
     async salvar(carteira) {
       const c = { ...carteira, atualizadaEm: new Date().toISOString() };
+      if (memoria !== null) { memoria = memoria.filter((x) => x.id !== c.id).concat([copia(c)]); return c; }
       try { if (!usaLS) { await transacao('readwrite', (l) => l.put(c)); return c; } } catch (e) { usaLS = true; }
       const lista = ls.todas().filter((x) => x.id !== c.id); lista.push(c); ls.gravar(lista); return c;
     },
     async apagar(id) {
+      if (memoria !== null) { memoria = memoria.filter((x) => x.id !== id); return; }
       try { if (!usaLS) { await transacao('readwrite', (l) => l.delete(id)); return; } } catch (e) { usaLS = true; }
       ls.gravar(ls.todas().filter((x) => x.id !== id));
     },
     /* Pede ao navegador para não apagar os dados por falta de espaço. */
     async pedirPersistencia() { try { return navigator.storage && navigator.storage.persist ? await navigator.storage.persist() : false; } catch (e) { return false; } },
-    get modo() { return usaLS ? 'localStorage' : 'IndexedDB'; },
+    get modo() { return memoria !== null ? 'memória' : usaLS ? 'localStorage' : 'IndexedDB'; },
   };
   root.CarteiraArmazenamento = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -82,3 +82,9 @@ th{color:var(--color-fg-muted);font-weight:var(--fw-medium)}
   .editor tfoot th:empty{display:none}
   .editor .dica{max-width:none}
 }
+.guarda .opcoes{display:grid;gap:8px;margin-bottom:var(--gap-sm)}
+.guarda .opcoes label{display:block;cursor:pointer}
+.guarda .opcoes .nota{display:block;margin:2px 0 0 1.6rem}
+.arquivo-barra{display:flex;flex-wrap:wrap;gap:var(--gap-sm);align-items:center;margin-top:var(--gap-sm)}
+.lembrete{margin:var(--gap-sm) 0 0;font-size:var(--fs-caption);color:var(--color-warn)}
+.sujo{color:var(--color-warn)}

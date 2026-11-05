@@ -42,7 +42,10 @@ Três cartões com links para as páginas e a data dos dados.
   e desempenho de 12 meses e 5 anos de cada ativo da base.
 - Backup: baixa um arquivo com todas as carteiras, com senha opcional (AES-256 no navegador);
   restaura em outro aparelho.
-- Salva sozinho a cada mudança, no IndexedDB do navegador.
+- Onde guardar: neste navegador (padrão, salva sozinho no IndexedDB) ou só no arquivo (nada
+  fica no aparelho; abre o arquivo a cada visita e baixa de novo quando muda).
+- Instalável na Tela de Início (abre direto na Minha carteira).
+- Compara a carteira com o CDI e com a carteira Moderada (crescimento e quedas).
 
 ## Critérios de aceite (todas as páginas)
 

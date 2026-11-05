@@ -7,13 +7,39 @@
 <meta name="description" content="Monte sua carteira por categoria ou por ativo, suba um CSV e veja risco e retorno em 20 anos. Os dados ficam só no seu navegador.">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/carteira/carteira.css">
+<link rel="icon" href="/assets/icones/icone.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/icones/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/assets/icones/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1F3864">
+<meta name="apple-mobile-web-app-title" content="Ativos">
 </head>
 <body>
 <nav class="site-nav" aria-label="Páginas"><a href="/">Início</a><a href="/acoes-etfs/">Ações e ETFs</a><a href="/simulador/">Simulador</a><a href="/carteira/" aria-current="page">Minha carteira</a></nav>
 <main class="pagina">
   <h1>Minha carteira</h1>
-  <p class="aviso-privado"><b>Sua carteira fica só neste navegador.</b> Nada é enviado para servidor nenhum, e o dono do site não tem como ver. Se você limpar os dados do navegador ou trocar de aparelho, ela some: use <a href="#backup">Backup</a> para guardar uma cópia.</p>
+  <p class="aviso-privado"><b>Sua carteira é só sua.</b> Ela fica neste navegador ou num arquivo seu, nunca em servidor nenhum, e o dono do site não tem como ver. Se você limpar os dados do navegador ou trocar de aparelho, use o <a href="#backup">backup</a> para levar uma cópia.</p>
   <p class="atualizacao" id="atualizacao">Carregando preços…</p>
+
+  <section class="card guarda" aria-labelledby="h-guarda">
+    <h2 id="h-guarda">Onde guardar</h2>
+    <div class="opcoes" role="radiogroup" aria-labelledby="h-guarda">
+      <label><input type="radio" name="guarda" value="navegador" id="guarda-navegador"> <b>Neste navegador</b> <span class="nota">Salva sozinho a cada mudança. Some se você limpar os dados do navegador.</span></label>
+      <label><input type="radio" name="guarda" value="arquivo" id="guarda-arquivo"> <b>Só no arquivo</b> <span class="nota">Nada fica neste aparelho. A cada visita, abra o seu arquivo; quando mudar algo, baixe de novo.</span></label>
+    </div>
+    <div class="arquivo-barra" id="arquivo-barra" hidden>
+      <label class="btn" for="importar">Abrir arquivo</label>
+      <button class="btn" id="baixar-arquivo">Baixar arquivo</button>
+      <span class="status" id="status-arquivo" role="status"></span>
+    </div>
+    <p class="lembrete" id="lembrete-backup" role="status" hidden></p>
+  </section>
+
+  <section class="card instalar" id="instalar" aria-labelledby="h-instalar" hidden>
+    <h2 id="h-instalar">Instale na Tela de Início</h2>
+    <p class="nota" id="instalar-texto">Assim o site abre como app e o navegador não apaga sua carteira por falta de uso.</p>
+    <button class="btn" id="instalar-btn" hidden>Instalar</button>
+  </section>
 
   <section class="barra" aria-label="Carteiras salvas">
     <label for="sel">Carteira</label>
@@ -93,6 +119,7 @@
       <label class="btn" for="importar">Restaurar backup</label><input id="importar" type="file" accept=".json,application/json" hidden>
     </div>
     <p class="nota" id="msg-backup" role="status"></p>
+    <p class="nota" id="ultimo-backup"></p>
   </section>
 
   <p class="nota">O passado não garante o futuro. Os cálculos usam preços mensais desde nov/2006 e substitutos por categoria quando um ativo não tem histórico. Não é recomendação de investimento.</p>

@@ -76,6 +76,31 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     ok(!(await cel.evaluate(() => document.documentElement.scrollWidth > innerWidth)), 'editor em cartões sem rolagem lateral');
     await cel.close();
 
+    // modo "só arquivo": nada fica no aparelho
+    const ctx3 = await b.newContext({ viewport: { width: 1280, height: 1000 } });
+    const p3 = await ctx3.newPage(); p3.on('dialog', (d) => d.accept());
+    p3.on('request', (r) => { if (!r.url().startsWith(BASE) && !r.url().startsWith('blob:') && !r.url().startsWith('data:')) externos.push(r.url()); });
+    await p3.goto(BASE + '/carteira/'); await p3.waitForTimeout(1000);
+    await p3.check('#guarda-arquivo'); await p3.waitForTimeout(300);
+    await p3.fill('#cat-ouro', '33'); await p3.waitForTimeout(700);
+    const noAparelho = () => p3.evaluate(() => new Promise((ok) => { const r = indexedDB.open('analises-carteira', 1); r.onsuccess = () => { const db = r.result; if (!db.objectStoreNames.contains('carteiras')) return ok(0); const q = db.transaction('carteiras').objectStore('carteiras').count(); q.onsuccess = () => ok(q.result); }; r.onerror = () => ok(-1); }));
+    ok(await noAparelho() === 0, 'só arquivo: nada gravado no IndexedDB');
+    ok(/Baixe antes de sair/.test(await p3.$eval('#status-arquivo', (e) => e.textContent)), 'só arquivo: avisa que há mudanças não baixadas');
+    const [dl3] = await Promise.all([p3.waitForEvent('download'), p3.click('#baixar-arquivo')]);
+    const arq3 = path.join(require('os').tmpdir(), 'so-arquivo-e2e.json'); await dl3.saveAs(arq3);
+    await p3.reload(); await p3.waitForTimeout(1000);
+    ok(await p3.isChecked('#guarda-arquivo') && (await p3.inputValue('#cat-ouro')) !== '33', 'só arquivo: depois de recarregar, a carteira não está no aparelho');
+    await p3.setInputFiles('#importar', arq3); await p3.waitForTimeout(1200);
+    ok((await p3.inputValue('#cat-ouro')) === '33' && await noAparelho() === 0, 'só arquivo: abrir o arquivo traz a carteira sem gravar no aparelho');
+    await p3.check('#guarda-navegador'); await p3.waitForTimeout(500);
+    ok(await noAparelho() === 1, 'voltar para o navegador grava a carteira de novo');
+    await ctx3.close();
+
+    // instalável: manifesto e ícones
+    const man = await (await p.request.get(BASE + '/manifest.webmanifest')).json();
+    ok(man.start_url === '/carteira/' && man.icons.length >= 2, 'manifesto da Tela de Início');
+    for (const ic of man.icons) ok((await p.request.get(BASE + ic.src)).ok(), 'ícone ' + ic.src);
+
     // acessibilidade (WCAG 2 A e AA) com o axe-core, nos dois temas
     const axe = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
     const auditar = async (pg, rotulo) => {

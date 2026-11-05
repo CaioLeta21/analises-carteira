@@ -11,6 +11,7 @@
 |---|---|
 | Sem servidor de aplicação | O site é só arquivo estático. Não existe endpoint que receba dados. |
 | IndexedDB | A carteira é gravada no armazenamento local do navegador, na origem do site. |
+| Modo "só arquivo" | Opcional: nada da carteira fica no aparelho; ela vive só na memória da página e num arquivo do usuário (backup, com senha opcional). O único registro local é o marcador `analises-carteira:modo` (sem dados). |
 | CSP `connect-src 'self'` | O navegador bloqueia qualquer tentativa de script enviar dados a outro domínio. |
 | CSP `script-src 'self'` | Só roda JS servido pelo próprio site; nada embutido, nada de terceiros. |
 | Sem terceiros | Sem analytics, fontes externas ou CDNs. Bibliotecas copiadas em `assets/vendor/`. |
@@ -32,9 +33,12 @@
 - **Extensões do navegador** com permissão ampla conseguem ler a página.
 - **Aparelho compartilhado:** quem usar o mesmo navegador vê a carteira. Não há senha local
   (pode ser uma melhoria: cifrar o IndexedDB com senha).
+- **Safari apaga dados de sites sem visita há 7 dias.** Site instalado na Tela de Início escapa
+  dessa regra; por isso a página oferece a instalação (manifesto em `/manifest.webmanifest`).
 - **Perda:** limpar os dados do navegador apaga as carteiras. O site pede ao navegador para não
   apagar por falta de espaço (`navigator.storage.persist()`), mas isso não impede o usuário de
-  limpar. Por isso o aviso de backup.
+  limpar. Por isso o aviso de backup: a página guarda a data do último backup baixado
+  (`analises-carteira:ultimoBackup`, só a data) e lembra depois de 30 dias.
 
 ## Regras para quem mexer no código
 

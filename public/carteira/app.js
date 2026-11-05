@@ -35,14 +35,15 @@
 
   /* ---------- salvar com atraso (evita gravar a cada tecla) */
   let timer = null;
+  let sujo = false;
   function mudou(edicao = true) {
-    if (edicao) delete atual.intocada;
+    if (edicao) { delete atual.intocada; if (Arm.soArquivo) { sujo = true; mostrarGuarda(); } }
     $('status').textContent = 'Salvando…';
     clearTimeout(timer);
     timer = setTimeout(async () => {
       atual = await Arm.salvar(atual);
       carteiras = carteiras.map((c) => (c.id === atual.id ? atual : c));
-      $('status').textContent = 'Salvo neste navegador às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + '.';
+      $('status').textContent = Arm.soArquivo ? '' : 'Salvo neste navegador às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + '.';
     }, 400);
     analisar();
   }
@@ -159,11 +160,50 @@
   $('exportar-csv').addEventListener('click', () => baixar((atual.nome || 'carteira') + '.csv', Mod.escreverCSV(atual.ativos), 'text/csv'));
 
   /* ---------- backup */
-  $('exportar').addEventListener('click', async () => {
+  const CHAVE_BACKUP = 'analises-carteira:ultimoBackup';
+  const lerUltimoBackup = () => { try { return localStorage.getItem(CHAVE_BACKUP); } catch (e) { return null; } };
+  async function exportar() {
     const txt = await Cri.exportar(await Arm.listar(), $('senha').value || null);
-    baixar('backup-carteiras-' + new Date().toISOString().slice(0, 10) + '.json', txt, 'application/json');
-    $('msg-backup').textContent = $('senha').value ? 'Backup cifrado baixado. Guarde a senha: sem ela, o arquivo não abre.' : 'Backup baixado sem senha. Quem tiver o arquivo consegue ler.';
+    baixar('carteiras-' + new Date().toISOString().slice(0, 10) + '.json', txt, 'application/json');
+    $('msg-backup').textContent = $('senha').value ? 'Arquivo cifrado baixado. Guarde a senha: sem ela, o arquivo não abre.' : 'Arquivo baixado sem senha. Quem tiver o arquivo consegue ler.';
+    if (Arm.soArquivo) sujo = false;
+    else { try { localStorage.setItem(CHAVE_BACKUP, new Date().toISOString()); } catch (e) { /* sem localStorage */ } }
+    mostrarGuarda();
+  }
+  $('exportar').addEventListener('click', exportar);
+  $('baixar-arquivo').addEventListener('click', exportar);
+
+  /* ---------- onde guardar: neste navegador ou só no arquivo */
+  function mostrarGuarda() {
+    const arq = Arm.soArquivo;
+    $('guarda-arquivo').checked = arq; $('guarda-navegador').checked = !arq;
+    $('arquivo-barra').hidden = !arq;
+    $('status-arquivo').textContent = arq ? (sujo ? 'Há mudanças que ainda não estão no arquivo. Baixe antes de sair.' : 'Nada está guardado neste aparelho.') : '';
+    $('status-arquivo').classList.toggle('sujo', arq && sujo);
+    const ult = lerUltimoBackup(), l = $('lembrete-backup');
+    if (arq) { l.hidden = true; $('ultimo-backup').textContent = ''; return; }
+    const editou = carteiras.some((c) => !c.intocada);
+    const dias = ult ? (Date.now() - Date.parse(ult)) / 864e5 : null;
+    $('ultimo-backup').textContent = ult ? 'Último backup baixado neste navegador: ' + new Date(ult).toLocaleDateString('pt-BR') + '.' : 'Você ainda não baixou um backup neste navegador.';
+    l.hidden = !(editou && (dias == null || dias > 30));
+    l.textContent = dias == null ? 'Lembrete: baixe um backup. Se o navegador apagar os dados, é ele que traz sua carteira de volta.' : 'Seu último backup tem mais de 30 dias. Baixe um novo.';
+  }
+  for (const r of document.querySelectorAll('input[name=guarda]')) r.addEventListener('change', async () => {
+    if (r.value === 'arquivo' && r.checked) { await Arm.definirSoArquivo(true); sujo = true; }
+    if (r.value === 'navegador' && r.checked) { await Arm.definirSoArquivo(false); sujo = false; carteiras = await Arm.listar(); }
+    mostrarGuarda();
   });
+  window.addEventListener('beforeunload', (e) => { if (Arm.soArquivo && sujo) { e.preventDefault(); e.returnValue = ''; } });
+
+  /* ---------- instalar na Tela de Início */
+  const instalado = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+  if (!instalado && ios) { $('instalar').hidden = false; $('instalar-texto').textContent += ' No Safari, toque em Compartilhar e depois em "Adicionar à Tela de Início".'; }
+  let pedidoInstalar = null;
+  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); pedidoInstalar = e; $('instalar').hidden = false; $('instalar-btn').hidden = false; });
+  $('instalar-btn').addEventListener('click', async () => { if (!pedidoInstalar) return; pedidoInstalar.prompt(); await pedidoInstalar.userChoice; pedidoInstalar = null; $('instalar').hidden = true; });
+  window.addEventListener('appinstalled', () => { $('instalar').hidden = true; });
+
   $('importar').addEventListener('change', async () => {
     const f = $('importar').files[0]; if (!f) return;
     try {
@@ -171,7 +211,7 @@
       for (const id of Mod.idsParaSubstituir(await Arm.listar(), lista)) await Arm.apagar(id);
       for (const c of lista) await Arm.salvar(c);
       carteiras = (await Arm.listar()).sort((a, b) => b.atualizadaEm.localeCompare(a.atualizadaEm));
-      atual = carteiras[0]; montar();
+      atual = carteiras[0]; sujo = false; montar();
       $('msg-backup').textContent = lista.length + ' carteira(s) restaurada(s).';
     } catch (e) { $('msg-backup').textContent = e.message; }
     $('importar').value = '';
@@ -255,6 +295,6 @@
     }
   }
 
-  function montar() { preencherSeletor(); aba(atual.modo || 'categorias'); montarCategorias(); montarAtivos(); $('avisos').replaceChildren(); analisar(); }
+  function montar() { mostrarGuarda(); preencherSeletor(); aba(atual.modo || 'categorias'); montarCategorias(); montarAtivos(); $('avisos').replaceChildren(); analisar(); }
   montar();
 })();

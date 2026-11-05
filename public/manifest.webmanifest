@@ -1,0 +1,16 @@
+{
+  "name": "Ativos: comparador, simulador e Minha carteira",
+  "short_name": "Ativos",
+  "description": "Compare ativos, simule e acompanhe sua carteira. Os dados da carteira ficam só no seu aparelho.",
+  "lang": "pt-BR",
+  "start_url": "/carteira/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f7f5",
+  "theme_color": "#1F3864",
+  "icons": [
+    { "src": "/assets/icones/icone-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/icones/icone-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/assets/icones/icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
