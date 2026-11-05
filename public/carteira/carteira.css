@@ -29,6 +29,12 @@ table{width:100%;border-collapse:collapse;font-size:var(--fs-caption);font-varia
 th,td{padding:4px 6px;border-bottom:1px solid var(--color-border-line);text-align:left;white-space:nowrap}
 th{color:var(--color-fg-muted);font-weight:var(--fw-medium)}
 .editor input{width:100%;min-width:70px}
+.editor input[type=number]{text-align:right}
+.editor .cod input{min-width:96px;text-transform:uppercase}
+.editor th.num,.editor tfoot th.num{text-align:right}
+.editor tfoot th{color:var(--color-fg);border-bottom:0;padding-top:8px}
+.editor tr.alerta td{background:color-mix(in srgb,var(--color-warn) 12%,transparent)}
+.editor .dica{display:block;font-size:11px;color:var(--color-warn);white-space:normal;max-width:16rem}
 .editor td.num,.tabela td.num,.tabela th.num{text-align:right}
 .editor .rem{border:0;background:none;color:var(--color-bad);cursor:pointer;font-size:16px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}

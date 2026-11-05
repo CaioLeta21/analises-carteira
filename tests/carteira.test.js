@@ -80,3 +80,13 @@ test('restaurar backup substitui só a carteira de exemplo intocada', () => {
   assert.deepStrictEqual(Modelo.idsParaSubstituir([ex], [ex]), []);
   assert.deepStrictEqual(Modelo.idsParaSubstituir([ex], []), []);
 });
+
+test('validação da linha e ordenação por valor', () => {
+  const atuais = Modelo.precosAtuais(M);
+  assert.deepStrictEqual(Modelo.problemasLinha({ codigo: 'ITUB3', quantidade: null, valor: null }, info), ['Informe a quantidade ou o valor.']);
+  assert.ok(Modelo.problemasLinha({ codigo: 'XYZ9', quantidade: 10, valor: null }, info)[0].includes('não está na base'));
+  assert.ok(Modelo.problemasLinha({ codigo: 'ITUB3', quantidade: 10, valor: 500 }, info)[0].includes('prioridade'));
+  assert.deepStrictEqual(Modelo.problemasLinha({ codigo: 'ITUB3', quantidade: 10, valor: null }, info), []);
+  const l = [{ codigo: 'A', valor: 10, moeda: 'BRL' }, { codigo: 'B', valor: null, quantidade: null }, { codigo: 'C', valor: 50, moeda: 'BRL' }];
+  assert.deepStrictEqual(Modelo.ordenarPorValor(l, atuais).map((x) => x.codigo), ['C', 'A', 'B']);
+});

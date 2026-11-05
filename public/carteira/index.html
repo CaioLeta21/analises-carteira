@@ -47,11 +47,13 @@
         <label class="btn" for="csv">Importar CSV</label><input id="csv" type="file" accept=".csv,text/csv" hidden>
         <button class="btn" id="modelo">Baixar modelo CSV</button>
         <button class="btn" id="exportar-csv">Exportar CSV</button>
+        <button class="btn" id="ordenar">Ordenar por valor</button>
       </div>
       <ul class="avisos" id="avisos"></ul>
       <div class="tw"><table class="editor">
-        <thead><tr><th>Código</th><th>Nome</th><th>Categoria</th><th>Quantidade</th><th>Valor</th><th>Moeda</th><th>Em R$</th><th><span class="sr">Remover</span></th></tr></thead>
+        <thead><tr><th>Código</th><th>Nome</th><th>Categoria</th><th class="num">Quantidade</th><th class="num">Valor</th><th>Moeda</th><th class="num">Em R$</th><th><span class="sr">Remover</span></th></tr></thead>
         <tbody id="corpo"></tbody>
+        <tfoot><tr><th colspan="6">Total</th><th class="num" id="total-editor">–</th><th></th></tr></tfoot>
       </table></div>
       <datalist id="conhecidos"></datalist>
     </section>

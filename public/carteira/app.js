@@ -25,7 +25,7 @@
   const retAtivos = Mot.retornosAtivos(MERC, SIM.months);
   $('atualizacao').textContent = 'Preços até ' + new Date(MERC.data_ref + 'T12:00:00').toLocaleDateString('pt-BR') + (MERC.parcial ? ' (mês parcial)' : '') + '. Dólar a R$ ' + fmt(atuais.fx, 2) + '.';
   const dl = $('conhecidos');
-  MERC.ativos.forEach((a) => { const o = document.createElement('option'); o.value = a.id; o.label = a.nome; dl.appendChild(o); });
+  MERC.ativos.forEach((a) => { const o = document.createElement('option'); o.value = a.id; o.label = a.nome; o.textContent = a.nome; dl.appendChild(o); });
 
   Arm.pedirPersistencia();
   let carteiras = await Arm.listar();
@@ -98,26 +98,40 @@
   function input(tipo, valor, aoMudar, attrs) { const i = document.createElement('input'); i.type = tipo; if (valor != null) i.value = valor; for (const [k, v] of Object.entries(attrs || {})) i.setAttribute(k, v); i.addEventListener(tipo === 'text' && attrs && attrs.list ? 'change' : 'input', () => aoMudar(i.value)); return i; }
   function montarAtivos() {
     const tb = $('corpo'); tb.replaceChildren();
-    const linhas = Mod.valorar(atual.ativos, atuais);
     atual.ativos.forEach((a, i) => {
       const tr = document.createElement('tr');
-      celula(tr, input('text', a.codigo, (v) => { a.codigo = v.toUpperCase().trim(); const inf = info[a.codigo]; if (inf) { a.nome = a.nome || inf.nome; a.categoria = Mod.categoriaPadrao(inf); a.moeda = inf.moeda; } montarAtivos(); mudou(); }, { list: 'conhecidos', size: 7, 'aria-label': 'Código' }));
+      const tdc = celula(tr, input('text', a.codigo, (v) => { a.codigo = v.toUpperCase().trim(); const inf = info[a.codigo]; if (inf) { a.nome = a.nome || inf.nome; a.categoria = Mod.categoriaPadrao(inf); a.moeda = inf.moeda; } montarAtivos(); mudou(); }, { list: 'conhecidos', size: 9, 'aria-label': 'Código', autocomplete: 'off' }));
+      tdc.className = 'cod';
       celula(tr, input('text', a.nome, (v) => { a.nome = v.slice(0, 80); mudou(); }, { 'aria-label': 'Nome' }));
       const sel = document.createElement('select'); sel.setAttribute('aria-label', 'Categoria');
       Mod.CATEGORIAS.forEach((c) => { const o = document.createElement('option'); o.value = c.k; o.textContent = c.nome; sel.appendChild(o); });
       sel.value = a.categoria; sel.addEventListener('change', () => { a.categoria = sel.value; mudou(); }); celula(tr, sel);
-      celula(tr, input('number', a.quantidade, (v) => { a.quantidade = v === '' ? null : +v; atualizarValor(); mudou(); }, { step: 'any', min: '0', 'aria-label': 'Quantidade' }));
-      celula(tr, input('number', a.valor, (v) => { a.valor = v === '' ? null : +v; atualizarValor(); mudou(); }, { step: 'any', min: '0', 'aria-label': 'Valor' }));
+      celula(tr, input('number', a.quantidade, (v) => { a.quantidade = v === '' ? null : +v; atualizarLinha(); mudou(); }, { step: 'any', min: '0', 'aria-label': 'Quantidade', inputmode: 'decimal' }));
+      celula(tr, input('number', a.valor, (v) => { a.valor = v === '' ? null : +v; atualizarLinha(); mudou(); }, { step: 'any', min: '0', 'aria-label': 'Valor', inputmode: 'decimal' }));
       const m = document.createElement('select'); m.setAttribute('aria-label', 'Moeda'); ['BRL', 'USD'].forEach((x) => { const o = document.createElement('option'); o.value = x; o.textContent = x; m.appendChild(o); });
-      m.value = a.moeda || 'BRL'; m.addEventListener('change', () => { a.moeda = m.value; atualizarValor(); mudou(); }); celula(tr, m);
-      const v = document.createElement('span'); const tdv = celula(tr, v); tdv.className = 'num';
-      const atualizarValor = () => { const l = Mod.valorar([a], atuais)[0]; v.textContent = l.valorBRL != null ? brl(l.valorBRL) : '—'; v.title = l.origem; };
-      v.textContent = linhas[i].valorBRL != null ? brl(linhas[i].valorBRL) : '—'; v.title = linhas[i].origem;
-      const rem = document.createElement('button'); rem.className = 'rem'; rem.textContent = '×'; rem.setAttribute('aria-label', 'Remover linha');
+      m.value = a.moeda || 'BRL'; m.addEventListener('change', () => { a.moeda = m.value; atualizarLinha(); mudou(); }); celula(tr, m);
+      const v = document.createElement('span'), dica = document.createElement('span'); dica.className = 'dica';
+      const tdv = celula(tr, v); tdv.className = 'num'; tdv.appendChild(dica);
+      const atualizarLinha = () => {
+        const l = Mod.valorar([a], atuais)[0];
+        v.textContent = l.valorBRL != null ? brl(l.valorBRL) : '—'; v.title = l.origem;
+        const p = Mod.problemasLinha(a, info);
+        dica.textContent = p.join(' ');
+        tr.classList.toggle('alerta', p.length > 0 && !(p.length === 1 && p[0].startsWith('Valor informado')));
+        totalEditor();
+      };
+      const rem = document.createElement('button'); rem.className = 'rem'; rem.textContent = '×'; rem.setAttribute('aria-label', 'Remover linha ' + (a.codigo || a.nome || i + 1));
       rem.addEventListener('click', () => { atual.ativos.splice(i, 1); montarAtivos(); mudou(); }); celula(tr, rem);
       tb.appendChild(tr);
+      atualizarLinha();
     });
+    totalEditor();
   }
+  function totalEditor() {
+    const t = Mod.valorar(atual.ativos, atuais).reduce((s, l) => s + (l.valorBRL || 0), 0);
+    $('total-editor').textContent = brl(t);
+  }
+  $('ordenar').addEventListener('click', () => { atual.ativos = Mod.ordenarPorValor(atual.ativos, atuais); montarAtivos(); mudou(); });
   $('add').addEventListener('click', () => { atual.ativos.push({ codigo: '', nome: '', categoria: 'rvbr', quantidade: null, valor: null, moeda: 'BRL' }); montarAtivos(); mudou(); });
   $('csv').addEventListener('change', async () => {
     const f = $('csv').files[0]; if (!f) return;

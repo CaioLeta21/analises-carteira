@@ -43,6 +43,13 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     await p.setInputFiles('#csv', tmp); await p.waitForTimeout(800);
     ok(await p.$$eval('#corpo tr', (r) => r.length) === 7, 'carteira importa o CSV modelo');
     ok(/^R\$ [\d.]+$/.test(await p.$eval('#tot-brl', (e) => e.textContent)), 'carteira mostra o patrimônio');
+    ok((await p.$eval('#total-editor', (e) => e.textContent)) === (await p.$eval('#tot-brl', (e) => e.textContent)), 'editor mostra o total no rodapé');
+    await p.click('#ordenar'); await p.waitForTimeout(200);
+    const vals = await p.$$eval('#corpo tr td.num span:first-child', (s) => s.map((x) => +x.textContent.replace(/\D/g, '')));
+    ok(vals.every((v, i) => !i || vals[i - 1] >= v), 'ordenar por valor');
+    await p.click('#add'); await p.waitForTimeout(200);
+    ok(await p.$eval('#corpo tr:last-child', (t) => t.classList.contains('alerta')), 'linha sem quantidade nem valor fica destacada');
+    await p.click('#corpo tr:last-child .rem'); await p.waitForTimeout(300);
     await p.waitForTimeout(600); await p.reload(); await p.waitForTimeout(1000);
     ok(await p.$$eval('#corpo tr', (r) => r.length) === 7, 'carteira continua salva depois de recarregar');
 

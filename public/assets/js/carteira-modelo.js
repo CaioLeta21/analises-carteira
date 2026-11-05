@@ -141,6 +141,22 @@
     });
   }
 
+  /* Problemas de uma linha, para mostrar na hora. info: mapa de ativos conhecidos. */
+  function problemasLinha(a, info) {
+    const out = [];
+    const conhecido = !!(info && info[a.codigo]);
+    if (a.quantidade == null && a.valor == null) out.push('Informe a quantidade ou o valor.');
+    else if (a.valor == null && !conhecido) out.push(a.codigo ? '"' + a.codigo + '" não está na base de preços: informe o valor.' : 'Sem código: informe o valor.');
+    if (conhecido && a.valor != null && a.quantidade != null) out.push('Valor informado tem prioridade sobre a quantidade.');
+    return out;
+  }
+
+  /* Ordena as linhas pelo valor em reais, do maior para o menor (sem valor vão para o fim). */
+  function ordenarPorValor(ativos, atuais) {
+    const v = valorar(ativos, atuais);
+    return ativos.map((a, i) => [a, v[i].valorBRL]).sort((x, y) => (y[1] ?? -1) - (x[1] ?? -1)).map((x) => x[0]);
+  }
+
   /* Pesos por categoria (somam 1) e patrimônio total em reais. */
   function pesosPorCategoria(carteira, atuais) {
     if (carteira.modo === 'categorias') {
@@ -154,7 +170,7 @@
     return { pesos: Object.fromEntries(CHAVES.map((k) => [k, total ? soma[k] / total : 0])), total, linhas };
   }
 
-  const api = { CATEGORIAS, CHAVES, categoriaDe, categoriaPadrao, novaCarteira, idsParaSubstituir, numeroBR, lerCSV, escreverCSV, MODELO_CSV, precosAtuais, valorar, pesosPorCategoria };
+  const api = { CATEGORIAS, CHAVES, categoriaDe, categoriaPadrao, novaCarteira, idsParaSubstituir, problemasLinha, ordenarPorValor, numeroBR, lerCSV, escreverCSV, MODELO_CSV, precosAtuais, valorar, pesosPorCategoria };
   root.CarteiraModelo = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
