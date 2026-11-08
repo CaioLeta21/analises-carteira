@@ -15,12 +15,24 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
   const b = await chromium.launch();
   try {
     const ctx = await b.newContext({ viewport: { width: 1280, height: 1000 }, acceptDownloads: true });
-    await ctx.addInitScript(() => { window.__csp = []; document.addEventListener('securitypolicyviolation', (e) => window.__csp.push(e.violatedDirective + ' ' + e.blockedURI)); });
+    // No domínio próprio, a Cloudflare injeta no HTML dois scripts dela (detecção de robôs e o
+    // contador do Web Analytics da zona letabuild.com). A CSP do site os bloqueia, então nada sai do
+    // navegador; o teste os remove antes de a página carregar para conferir só o código do site.
+    await ctx.route((u) => u.href.startsWith(BASE), async (route) => {
+      if (route.request().resourceType() !== 'document') return route.continue();
+      const r = await route.fetch();
+      const html = (await r.text()).replace(/<script>\(function\(\)\{[^<]*__CF\$cv\$params[^<]*<\/script>/g, '')
+        .replace(/<script[^>]*static\.cloudflareinsights\.com[^>]*><\/script>/g, '');
+      await route.fulfill({ response: r, body: html });
+    });
+    await ctx.addInitScript(() => { window.__csp = []; document.addEventListener('securitypolicyviolation', (e) => { if (!e.blockedURI.startsWith('https://static.cloudflareinsights.com/')) window.__csp.push(e.violatedDirective + ' ' + e.blockedURI); }); });
     const p = await ctx.newPage();
     const erros = [], externos = [];
+    // contador da Cloudflare que escape da remoção acima (navegações servidas sem passar pela rota)
+    const CF = 'https://static.cloudflareinsights.com/';
     p.on('pageerror', (e) => erros.push(e.message));
-    p.on('console', (m) => { if (m.type() === 'error') erros.push(m.text()); });
-    p.on('request', (r) => { if (!r.url().startsWith(BASE) && !r.url().startsWith('blob:') && !r.url().startsWith('data:')) externos.push(r.url()); });
+    p.on('console', (m) => { if (m.type() === 'error' && !m.text().includes(CF)) erros.push(m.text()); });
+    p.on('request', (r) => { if (!r.url().startsWith(BASE) && !r.url().startsWith('blob:') && !r.url().startsWith('data:') && !r.url().startsWith(CF)) externos.push(r.url()); });
     p.on('dialog', (d) => d.accept());
 
     for (const pg of ['/', '/acoes-etfs/', '/simulador/', '/carteira/']) {
@@ -81,7 +93,7 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     const [dl] = await Promise.all([p.waitForEvent('download'), p.click('#exportar')]);
     const arqBackup = path.join(require('os').tmpdir(), 'backup-e2e.json'); await dl.saveAs(arqBackup);
     const ctx2 = await b.newContext({ viewport: { width: 1280, height: 1000 } });
-    const p2 = await ctx2.newPage(); p2.on('request', (r) => { if (!r.url().startsWith(BASE) && !r.url().startsWith('blob:') && !r.url().startsWith('data:')) externos.push(r.url()); });
+    const p2 = await ctx2.newPage(); p2.on('request', (r) => { if (!r.url().startsWith(BASE) && !r.url().startsWith('blob:') && !r.url().startsWith('data:') && !r.url().startsWith(CF)) externos.push(r.url()); });
     await p2.goto(BASE + '/carteira/'); await p2.waitForTimeout(1000);
     await p2.fill('#senha', 'teste123'); await p2.setInputFiles('#importar', arqBackup); await p2.waitForTimeout(1500);
     ok(await p2.$$eval('#sel option', (o) => o.length) === 1, 'backup restaurado substitui a carteira de exemplo');
@@ -101,7 +113,7 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     // modo "só arquivo": nada fica no aparelho
     const ctx3 = await b.newContext({ viewport: { width: 1280, height: 1000 } });
     const p3 = await ctx3.newPage(); p3.on('dialog', (d) => d.accept());
-    p3.on('request', (r) => { if (!r.url().startsWith(BASE) && !r.url().startsWith('blob:') && !r.url().startsWith('data:')) externos.push(r.url()); });
+    p3.on('request', (r) => { if (!r.url().startsWith(BASE) && !r.url().startsWith('blob:') && !r.url().startsWith('data:') && !r.url().startsWith(CF)) externos.push(r.url()); });
     await p3.goto(BASE + '/carteira/'); await p3.waitForTimeout(1000);
     await p3.check('#guarda-arquivo'); await p3.waitForTimeout(300);
     await p3.fill('#cat-ouro', '33'); await p3.waitForTimeout(700);
