@@ -38,11 +38,8 @@ ATIVOS = [
      "fontes": [("yahoo", "TSLA"), ("tiingo", "TSLA")]},
     {"id": "COST", "nome": "Costco", "tipo": "acao", "mercado": "EUA", "moeda": "USD",
      "fontes": [("yahoo", "COST"), ("tiingo", "COST")]},
-    # Victoria's Secret: saiu da L Brands em ago/2021 com o código VSCO; hoje negocia como VSXY
-    # (o VSCO do Yahoo passou a ser outra empresa). Histórico desde ago/2021, o primeiro mês
-    # inteiro de negociação regular (em jul/2021 só havia negócios "when-issued").
-    {"id": "VSXY", "nome": "Victoria's Secret", "tipo": "acao", "mercado": "EUA", "moeda": "USD",
-     "fontes": [("yahoo", "VSXY"), ("tiingo", "VSXY")]},
+    {"id": "NVDA", "nome": "Nvidia", "tipo": "acao", "mercado": "EUA", "moeda": "USD",
+     "fontes": [("yahoo", "NVDA"), ("tiingo", "NVDA")]},
     {"id": "QQQ", "nome": "QQQ", "tipo": "etf", "mercado": "EUA", "moeda": "USD",
      "fontes": [("yahoo", "QQQ"), ("tiingo", "QQQ")]},
     {"id": "SPY", "nome": "S&P 500", "tipo": "etf", "mercado": "EUA", "moeda": "USD",
