@@ -5,7 +5,7 @@
 | Ativo | Moeda | Fonte principal | Reserva |
 |---|---|---|---|
 | ITUB3, EGIE3, PSSA3, WEGE3, TAEE11, CSMG3, DIVO11 | BRL | Yahoo (`XXXX.SA`) | brapi (`BRAPI_TOKEN`) |
-| BLK, GOOGL, LLY, TSLA, QQQ, SPY | USD | Yahoo | Tiingo (`TIINGO_TOKEN`) |
+| BLK, GOOGL, LLY, TSLA, COST, VSXY, QQQ, SPY | USD | Yahoo | Tiingo (`TIINGO_TOKEN`) |
 | VHYL | USD | Yahoo `VHYD.L` (linha em dólar em Londres) | Yahoo `VHYL.L` convertido de GBP |
 | BTC | USD | Yahoo `BTC-USD` | CoinGecko |
 | CDI | BRL | Banco Central, SGS 12 (diário) | — |
@@ -30,6 +30,11 @@ Tokens são opcionais e ficam nos *secrets* do GitHub. Sem token, a fonte reserv
 Montado à mão e conferido. Em `dados/historico/precos_mensais.csv`, uma linha por ativo e mês,
 com a coluna `fonte`. Correções ficam registradas em `dados/correcoes/`. Resumo:
 - Americanos: preço ajustado mensal da Digrin.
+- Costco (COST, desde ago/2004) e Victoria's Secret (VSXY, desde ago/2021; saiu da L Brands com
+  o código VSCO, depois trocado) entraram em 08/nov/2026 pela carga do Yahoo (`--semear`),
+  conferida mês a mês contra a Digrin (todos os meses) e o retorno de preço + dividendos do
+  Nasdaq (desde nov/2016): diferença máxima de 0,04 ponto (`dados/correcoes/2026-11-08-cost-vsxy.csv`).
+  O jul/2021 da VSXY (só negócios "when-issued") ficou de fora.
 - Brasileiros: retornos mensais com proventos da Mais Retorno, encadeados a partir do
   fechamento de 30/out/2026. TAEE11 desde mai/2012; CSMG3 desde fev/2006.
   Em 04/nov/2026 cada mês de 2004 a 2026 foi conferido contra o retorno total oficial
@@ -119,7 +124,7 @@ EUA pelo Nasdaq (para ETFs e ações da NYSE, o retorno ajustado deve ficar entr
 preço e esse + 2,5 pontos); VHYL pela linha em libras convertida; cripto pela CoinGecko.
 Tolerância de 0,5 ponto (1 ponto para cripto e Londres).
 
-- Divergência num dos 16 ativos do comparador: nada é gravado e o Action falha.
+- Divergência num dos 18 ativos do comparador: nada é gravado e o Action falha.
 - Divergência num ativo do catálogo: só aquele ativo deixa de gravar o mês (ele continua no site,
   estendido a partir do último mês gravado) e entra um aviso.
 - Segunda fonte fora do ar: o mês espera; depois de 10 dias do fim do mês é gravado marcado
