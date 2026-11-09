@@ -42,6 +42,8 @@ ATIVOS = [
      "fontes": [("yahoo", "NVDA"), ("tiingo", "NVDA")]},
     {"id": "AMZN", "nome": "Amazon", "tipo": "acao", "mercado": "EUA", "moeda": "USD",
      "fontes": [("yahoo", "AMZN"), ("tiingo", "AMZN")]},
+    {"id": "MU", "nome": "Micron", "tipo": "acao", "mercado": "EUA", "moeda": "USD",
+     "fontes": [("yahoo", "MU"), ("tiingo", "MU")]},
     {"id": "QQQ", "nome": "QQQ", "tipo": "etf", "mercado": "EUA", "moeda": "USD",
      "fontes": [("yahoo", "QQQ"), ("tiingo", "QQQ")]},
     {"id": "SPY", "nome": "S&P 500", "tipo": "etf", "mercado": "EUA", "moeda": "USD",
