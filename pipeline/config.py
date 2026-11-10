@@ -44,6 +44,9 @@ ATIVOS = [
      "fontes": [("yahoo", "AMZN"), ("tiingo", "AMZN")]},
     {"id": "MU", "nome": "Micron", "tipo": "acao", "mercado": "EUA", "moeda": "USD",
      "fontes": [("yahoo", "MU"), ("tiingo", "MU")]},
+    # Palantir: listagem direta na NYSE em 30/set/2020 (hoje na Nasdaq).
+    {"id": "PLTR", "nome": "Palantir", "tipo": "acao", "mercado": "EUA", "moeda": "USD",
+     "fontes": [("yahoo", "PLTR"), ("tiingo", "PLTR")]},
     {"id": "QQQ", "nome": "QQQ", "tipo": "etf", "mercado": "EUA", "moeda": "USD",
      "fontes": [("yahoo", "QQQ"), ("tiingo", "QQQ")]},
     {"id": "SPY", "nome": "S&P 500", "tipo": "etf", "mercado": "EUA", "moeda": "USD",
