@@ -16,7 +16,7 @@ Três cartões com links para as páginas e a data dos dados.
 - Filtros: período (desde o IPO do Google, 20 anos, 15 anos, desde o DIVO11, 10 anos, 5 anos), moeda (dólar ou
   real), escala (linear ou logarítmica), ativos (um a um, ou ações e ETFs em grupo).
 - O endereço guarda os filtros (`#periodo=10a&moeda=BRL&escala=log`).
-- "Adicionar ativo": qualquer um dos 169 do catálogo (busca por código ou nome). A escolha fica
+- "Adicionar ativo": qualquer um dos 170 do catálogo (busca por código ou nome). A escolha fica
   guardada só no navegador (`analises-carteira:comparador`); o × tira.
 - O texto de abertura é **gerado a partir dos números**: maiores retornos anuais, S&P 500 e
   QQQ, melhor e pior ação brasileira, CDI, dólar. Assim ele não fica errado quando os dados mudam.
@@ -36,7 +36,7 @@ Três cartões com links para as páginas e a data dos dados.
 - Várias carteiras com nome; criar, renomear, duplicar, apagar.
 - **Por categoria**: patrimônio e percentual de cada categoria.
 - **Por ativo**: linhas com código, nome, categoria, quantidade, valor e moeda.
-  - Ativo da base de preços (os 16 do comparador e os 169 do catálogo): basta a quantidade; o
+  - Ativo da base de preços (os 21 do comparador e os 170 do catálogo): basta a quantidade; o
     valor sai do último preço e a categoria vem preenchida. O risco usa a série do próprio ativo.
   - Outros (Tesouro, CDB, fundos): informa o valor.
   - Importa CSV (vírgula ou ponto e vírgula; aceita decimal com vírgula), exporta CSV,

@@ -88,12 +88,12 @@ Retornos mensais em reais por categoria. Para meses novos:
 - Bitcoin: BTC-USD, em reais, desde nov/2009 (antes disso o bitcoin não tinha preço; as páginas
   usam o CDI no lugar).
 
-## Catálogo (169 ativos que o usuário escolhe)
+## Catálogo (170 ativos que o usuário escolhe)
 
 Definido em `pipeline/catalogo.py`: as ações do Ibovespa (composição oficial da B3 em
 04/nov/2026), ETFs da B3 (BOVA11, SMAL11, IVVB11, SPXI11, NASD11, ACWI11, HASH11, GOLD11),
 ETFs americanos (ações, títulos, setores, ouro, prata, bitcoin), ~50 das maiores ações
-americanas (e TSMC, ASML, Mercado Livre, Nubank) e o ether. Histórico em
+americanas (e TSMC, ASML, Mercado Livre, Nubank e, desde 10/nov/2026, a SpaceX) e o ether. Histórico em
 `dados/historico/catalogo.csv`; saídas em `public/data/catalogo.json` (índice) e
 `public/data/catalogo/<ID>.json` (série de cada ativo).
 
@@ -124,7 +124,7 @@ EUA pelo Nasdaq (para ETFs e ações da NYSE, o retorno ajustado deve ficar entr
 preço e esse + 2,5 pontos); VHYL pela linha em libras convertida; cripto pela CoinGecko.
 Tolerância de 0,5 ponto (1 ponto para cripto e Londres).
 
-- Divergência num dos 18 ativos do comparador: nada é gravado e o Action falha.
+- Divergência num dos 21 ativos do comparador: nada é gravado e o Action falha.
 - Divergência num ativo do catálogo: só aquele ativo deixa de gravar o mês (ele continua no site,
   estendido a partir do último mês gravado) e entra um aviso.
 - Segunda fonte fora do ar: o mês espera; depois de 10 dias do fim do mês é gravado marcado

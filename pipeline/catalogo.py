@@ -163,6 +163,8 @@ CATALOGO = [
     {"id": "NKE", "yahoo": "NKE", "nome": "NIKE", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "PFE", "yahoo": "PFE", "nome": "Pfizer", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "T", "yahoo": "T", "nome": "AT&T", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
+    # SpaceX: estreou na Nasdaq em 12/jun/2026 (entrou em 10/nov/2026, conferida contra o Nasdaq).
+    {"id": "SPCX", "yahoo": "SPCX", "nome": "SpaceX", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "VZ", "yahoo": "VZ", "nome": "Verizon Communications", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "IBM", "yahoo": "IBM", "nome": "IBM", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "MS", "yahoo": "MS", "nome": "Morgan Stanley", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},

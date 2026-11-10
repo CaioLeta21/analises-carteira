@@ -27928,6 +27928,11 @@ mes,ativo,moeda,preco_ajustado,fonte
 2026-08,T,USD,25.6006,yahoo:T
 2026-09,T,USD,24.1273,yahoo:T
 2026-10,T,USD,21.41,yahoo:T
+2026-06,SPCX,USD,170.86,yahoo:SPCX (conferido: Nasdaq)
+2026-07,SPCX,USD,108.37,yahoo:SPCX (conferido: Nasdaq)
+2026-08,SPCX,USD,143.69,yahoo:SPCX (conferido: Nasdaq)
+2026-09,SPCX,USD,150.86,yahoo:SPCX (conferido: Nasdaq)
+2026-10,SPCX,USD,134.72,yahoo:SPCX (conferido: Nasdaq)
 2004-08,VZ,USD,11.3201,yahoo:VZ
 2004-09,VZ,USD,11.3576,yahoo:VZ
 2004-10,VZ,USD,11.3833,yahoo:VZ
