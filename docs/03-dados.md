@@ -116,6 +116,19 @@ ativo em `dados/correcoes/2026-11-04-catalogo.csv`):
   Antes de 2016 vale o Yahoo, pelo mesmo motivo.
 - **Ether:** CoinGecko nos últimos 12 meses (até 0,6 ponto; o "fechamento" de cripto depende do minuto).
 
+## Setores do S&P 500 e do Nasdaq-100 (`setores.json`)
+
+Usado só pela área privada (carteira.letabuild.com). `pipeline/setores.py` roda no mesmo Action, todo dia:
+
+- Setores GICS: os 11 fundos setoriais da State Street (XLK, XLC, XLY, XLP, XLV, XLF, XLI, XLE, XLU, XLB, XLRE),
+  que juntos têm exatamente as ações do S&P 500.
+- SPY: pesos do arquivo diário de carteira do SPY (State Street). Conferido refazendo a conta pelo valor de
+  mercado da Nasdaq; diferença tolerada de 2 p.p. por setor (o S&P só conta ações em circulação livre).
+- QQQ: as ações do Nasdaq-100 (lista da Nasdaq), pesadas pelo valor de mercado com a regra de tetos do índice.
+  Ações fora do S&P 500 recebem o setor pela classificação da Nasdaq (listadas em `fora_do_sp500`).
+  Classes da mesma empresa (GOOG e GOOGL) dividem o valor de mercado para não contar duas vezes.
+- Se alguma checagem falhar (poucas ações, setores sem somar 100%, mais de 2% sem setor), o arquivo anterior fica.
+
 ## Conferência mensal (antes de gravar um mês no histórico)
 
 `pipeline/conferir.py` compara o retorno do mês fechado de cada ativo com uma segunda fonte:

@@ -31,6 +31,9 @@ jobs:
           TIINGO_TOKEN: ${{ secrets.TIINGO_TOKEN }}
           COINGECKO_KEY: ${{ secrets.COINGECKO_KEY }}
         run: python -m pipeline.atualizar
+      - name: Setores do S&P 500 e do Nasdaq-100 (para a carteira privada)
+        # falha aqui não segura os outros dados: o setores.json anterior continua publicado
+        run: python -m pipeline.setores || echo "::warning::setores.json não foi atualizado hoje"
       - name: Gravar no repositório (o Cloudflare Pages publica sozinho)
         run: |
           git config user.name "atualizador-de-dados"
