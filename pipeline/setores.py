@@ -193,6 +193,12 @@ def montar():
                        "setor": MANUAL.get(tk) or NASDAQ_GICS.get(tela.get(tk, {}).get("setor"), "Sem classificação"),
                        "classificacao": "manual" if tk in MANUAL else "Nasdaq"} for tk, _ in nq if tk not in mapa),
                      key=lambda x: -x["peso"])
+    # peso de cada ação no índice e, para empresas com mais de uma classe (GOOG e GOOGL), o total da empresa
+    grupos = {}
+    for tk, _ in nq:
+        grupos.setdefault(empresa(nomes_nq.get(tk)) or tk, []).append(tk)
+    pesos_acoes = {tk: {"peso": round(pq[tk], 3), "empresa": round(sum(pq[o] for o in g), 3), "classes": g}
+                   for g in grupos.values() for tk in g}
     agora = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()
     return {
         "versao": 1, "atualizado_em": agora,
@@ -200,6 +206,7 @@ def montar():
                 "fonte": "pesos: carteira diária do SPY (State Street); setores GICS: fundos setoriais da State Street",
                 "conferencia": {"metodo": "mesmas ações pesadas pelo valor de mercado (Nasdaq)", "maior_diferenca_pp": max(abs(v) for v in difs.values())}},
         "QQQ": {"nome": "Nasdaq-100 (QQQ)", "data": data_nq, "acoes": len(nq), "setores": s_qqq, "sem_setor": sem_qqq, "fora_do_sp500": fora_sp,
+                "pesos": pesos_acoes,
                 "fonte": "ações e valor de mercado: lista do Nasdaq-100 (Nasdaq); setores GICS: fundos setoriais da State Street",
                 "aproximacao": "valor de mercado com a regra de tetos do índice (maiores empresas limitadas); pode diferir alguns décimos do fundo"},
     }
@@ -215,6 +222,9 @@ def checar(d):
             erros.append(f"{k}: setores somam {sum(x['setores'].values())}")
         if x["setores"].get("Sem classificação", 0) > 2:
             erros.append(f"{k}: {x['setores']['Sem classificação']}% sem setor")
+    soma_qqq = sum(x["peso"] for x in d["QQQ"].get("pesos", {}).values())
+    if abs(soma_qqq - 100) > 0.5:
+        erros.append(f"QQQ: pesos das ações somam {round(soma_qqq, 2)}")
     # O S&P pesa só as ações em circulação livre (Walmart, Tesla, Alphabet e Meta têm donos grandes e pesam
     # menos que o valor de mercado total); por isso os dois cálculos diferem até ~1,5 p.p. num setor.
     if d["SPY"]["conferencia"]["maior_diferenca_pp"] > 2.0:
