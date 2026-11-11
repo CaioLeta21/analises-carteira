@@ -125,7 +125,8 @@ Usado só pela área privada (carteira.letabuild.com). `pipeline/setores.py` rod
 - SPY: pesos do arquivo diário de carteira do SPY (State Street). Conferido refazendo a conta pelo valor de
   mercado da Nasdaq; diferença tolerada de 2 p.p. por setor (o S&P só conta ações em circulação livre).
 - QQQ: as ações do Nasdaq-100 (lista da Nasdaq), pesadas pelo valor de mercado com a regra de tetos do índice.
-  Ações fora do S&P 500 recebem o setor pela classificação da Nasdaq (listadas em `fora_do_sp500`).
+  Ações fora do S&P 500 recebem o setor pela classificação da Nasdaq (listadas em `fora_do_sp500`),
+  salvo exceções em `MANUAL` (SpaceX como Industriais: aeroespacial; a Nasdaq a põe em Technology).
   Classes da mesma empresa (GOOG e GOOGL) dividem o valor de mercado para não contar duas vezes.
 - Se alguma checagem falhar (poucas ações, setores sem somar 100%, mais de 2% sem setor), o arquivo anterior fica.
 

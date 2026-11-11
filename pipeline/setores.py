@@ -31,6 +31,9 @@ FUNDOS_SETOR = {
     "XLV": "Saúde", "XLF": "Financeiro", "XLI": "Industriais", "XLE": "Energia", "XLU": "Utilidades",
     "XLB": "Materiais", "XLRE": "Imobiliário",
 }
+# Empresas que ainda não têm setor GICS e cuja classificação da Nasdaq foge do negócio principal.
+# SpaceX: foguetes e satélites (aeroespacial), como a classificaria o GICS; a Nasdaq põe em Technology.
+MANUAL = {"SPCX": "Industriais"}
 # Classificação da Nasdaq → GICS, só para ações do Nasdaq-100 que não estão no S&P 500.
 NASDAQ_GICS = {
     "Technology": "Tecnologia", "Telecommunications": "Comunicação", "Consumer Discretionary": "Consumo discricionário",
@@ -164,7 +167,7 @@ def somar(pesos, mapa, reserva=None):
     for tk, p in pesos:
         if p <= 0:
             continue
-        s = mapa.get(tk) or mapa.get(tk.replace("-", "")) or (NASDAQ_GICS.get(reserva.get(tk, {}).get("setor")) if reserva else None)
+        s = mapa.get(tk) or mapa.get(tk.replace("-", "")) or MANUAL.get(tk) or (NASDAQ_GICS.get(reserva.get(tk, {}).get("setor")) if reserva else None)
         if not s:
             sem.append(tk)
             s = "Sem classificação"
@@ -187,7 +190,8 @@ def montar():
     s_qqq, sem_qqq = somar(pesos_qqq, mapa, tela)
     pq = dict(pesos_qqq)
     fora_sp = sorted(({"ticker": tk, "nome": nomes_nq.get(tk, ""), "peso": round(pq[tk], 2),
-                       "setor": NASDAQ_GICS.get(tela.get(tk, {}).get("setor"), "Sem classificação")} for tk, _ in nq if tk not in mapa),
+                       "setor": MANUAL.get(tk) or NASDAQ_GICS.get(tela.get(tk, {}).get("setor"), "Sem classificação"),
+                       "classificacao": "manual" if tk in MANUAL else "Nasdaq"} for tk, _ in nq if tk not in mapa),
                      key=lambda x: -x["peso"])
     agora = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()
     return {
