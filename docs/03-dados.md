@@ -88,12 +88,12 @@ Retornos mensais em reais por categoria. Para meses novos:
 - Bitcoin: BTC-USD, em reais, desde nov/2009 (antes disso o bitcoin não tinha preço; as páginas
   usam o CDI no lugar).
 
-## Catálogo (170 ativos que o usuário escolhe)
+## Catálogo (177 ativos que o usuário escolhe)
 
 Definido em `pipeline/catalogo.py`: as ações do Ibovespa (composição oficial da B3 em
 04/nov/2026), ETFs da B3 (BOVA11, SMAL11, IVVB11, SPXI11, NASD11, ACWI11, HASH11, GOLD11),
 ETFs americanos (ações, títulos, setores, ouro, prata, bitcoin), ~50 das maiores ações
-americanas (e TSMC, ASML, Mercado Livre, Nubank e, desde 10/nov/2026, a SpaceX) e o ether. Histórico em
+americanas (e TSMC, ASML, Mercado Livre, Nubank e, desde 10/nov/2026, a SpaceX), o ether e, desde 12/nov/2026, sete ações do radar (AutoZone, GE Aerospace, Stryker, Duolingo, Chipotle, Excelerate e Bloom Energy; a GE só desde abr/2024, porque nas cisões o Yahoo não soma as ações distribuídas). Histórico em
 `dados/historico/catalogo.csv`; saídas em `public/data/catalogo.json` (índice) e
 `public/data/catalogo/<ID>.json` (série de cada ativo).
 

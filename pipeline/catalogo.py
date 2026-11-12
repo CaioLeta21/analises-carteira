@@ -179,4 +179,14 @@ CATALOGO = [
     {"id": "MELI", "yahoo": "MELI", "nome": "Mercado Livre", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "NU", "yahoo": "NU", "nome": "Nubank", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "ETH", "yahoo": "ETH-USD", "nome": "Ether", "tipo": "cripto", "mercado": "Global", "moeda": "USD", "categoria": "btc"},
+    # Do radar (entraram em 12/nov/2026; preço e dividendos conferidos contra o Nasdaq mês a mês).
+    # GE só desde abr/2024: nas cisões (Wabtec 2019, GE HealthCare 2023, GE Vernova 2024) o Yahoo
+    # não soma as ações distribuídas e o retorno do mês fica errado.
+    {"id": "AZO", "yahoo": "AZO", "nome": "AutoZone", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
+    {"id": "GE", "yahoo": "GE", "nome": "GE Aerospace", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
+    {"id": "SYK", "yahoo": "SYK", "nome": "Stryker", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
+    {"id": "DUOL", "yahoo": "DUOL", "nome": "Duolingo", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
+    {"id": "CMG", "yahoo": "CMG", "nome": "Chipotle", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
+    {"id": "EE", "yahoo": "EE", "nome": "Excelerate Energy", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
+    {"id": "BE", "yahoo": "BE", "nome": "Bloom Energy", "tipo": "acao", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
 ]
