@@ -176,6 +176,44 @@ def somar(pesos, mapa, reserva=None):
     return {k: round(v / tot * 100, 2) for k, v in sorted(por.items(), key=lambda x: -x[1])}, sem
 
 
+UA_NAV = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
+
+
+def pe_fwd_indice(pesos):
+    """P/L à frente do índice pelas ações: 1 / soma(peso × lucro esperado ÷ preço), com o EPS dos
+    próximos 12 meses do consenso (Yahoo quote v7, forwardEps). Ações com prejuízo esperado entram
+    com rendimento negativo, como nos agregados oficiais. Exige 95% do peso com dado."""
+    s = requests.Session()
+    s.headers.update({"User-Agent": UA_NAV})
+    try:
+        s.get("https://fc.yahoo.com", timeout=30)
+    except requests.RequestException:
+        pass
+    crumb = s.get("https://query1.finance.yahoo.com/v1/test/getcrumb", timeout=30)
+    crumb.raise_for_status()
+    tks = [tk for tk, _ in pesos]
+    cot = {}
+    for i in range(0, len(tks), 50):
+        r = s.get("https://query2.finance.yahoo.com/v7/finance/quote", timeout=60,
+                  params={"symbols": ",".join(tks[i:i + 50]), "crumb": crumb.text, "fields": "regularMarketPrice,epsForward,forwardPE,trailingPE"})
+        r.raise_for_status()
+        for q in r.json()["quoteResponse"]["result"]:
+            cot[q["symbol"].replace(".", "-").upper()] = q
+    soma_p, soma_y, sem = 0.0, 0.0, []
+    for tk, p in pesos:
+        q = cot.get(tk) or {}
+        eps, preco = q.get("epsForward"), q.get("regularMarketPrice")
+        if isinstance(eps, (int, float)) and preco:
+            soma_p += p
+            soma_y += p * eps / preco
+        else:
+            sem.append(tk)
+    if soma_p < 95 or soma_y <= 0:
+        raise RuntimeError(f"cobertura de {round(soma_p, 1)}% do peso (sem dado: {', '.join(sem[:10])})")
+    return {"pe_fwd": round(soma_p / soma_y, 2), "cobertura": round(soma_p, 1), "sem_dado": sem,
+            "fonte": "EPS dos próximos 12 meses do consenso (Yahoo), ponderado pelos pesos acima"}
+
+
 def montar():
     mapa = mapa_gics()
     spy, data_spy = carteira_ssga("SPY")
@@ -200,13 +238,18 @@ def montar():
     pesos_acoes = {tk: {"peso": round(pq[tk], 3), "empresa": round(sum(pq[o] for o in g), 3), "classes": g}
                    for g in grupos.values() for tk in g}
     agora = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()
+    try:  # falha aqui não segura os setores: só fica sem o P/L do índice hoje
+        pl_qqq = pe_fwd_indice(pesos_qqq)
+    except Exception as e:
+        pl_qqq = {"erro": f"{type(e).__name__}: {e}"}
+        print("P/L à frente do Nasdaq-100 indisponível:", pl_qqq["erro"], file=sys.stderr)
     return {
         "versao": 1, "atualizado_em": agora,
         "SPY": {"nome": "S&P 500 (SPY)", "data": data_spy, "acoes": len(spy), "setores": s_spy, "sem_setor": sem_spy,
                 "fonte": "pesos: carteira diária do SPY (State Street); setores GICS: fundos setoriais da State Street",
                 "conferencia": {"metodo": "mesmas ações pesadas pelo valor de mercado (Nasdaq)", "maior_diferenca_pp": max(abs(v) for v in difs.values())}},
         "QQQ": {"nome": "Nasdaq-100 (QQQ)", "data": data_nq, "acoes": len(nq), "setores": s_qqq, "sem_setor": sem_qqq, "fora_do_sp500": fora_sp,
-                "pesos": pesos_acoes,
+                "pesos": pesos_acoes, "pl_frente": pl_qqq,
                 "fonte": "ações e valor de mercado: lista do Nasdaq-100 (Nasdaq); setores GICS: fundos setoriais da State Street",
                 "aproximacao": "valor de mercado com a regra de tetos do índice (maiores empresas limitadas); pode diferir alguns décimos do fundo"},
     }
@@ -222,6 +265,9 @@ def checar(d):
             erros.append(f"{k}: setores somam {sum(x['setores'].values())}")
         if x["setores"].get("Sem classificação", 0) > 2:
             erros.append(f"{k}: {x['setores']['Sem classificação']}% sem setor")
+    pf = d["QQQ"].get("pl_frente") or {}
+    if "pe_fwd" in pf and not 12 <= pf["pe_fwd"] <= 45:
+        erros.append(f"QQQ: P/L à frente de {pf['pe_fwd']} fora da faixa plausível (12–45)")
     soma_qqq = sum(x["peso"] for x in d["QQQ"].get("pesos", {}).values())
     if abs(soma_qqq - 100) > 0.5:
         erros.append(f"QQQ: pesos das ações somam {round(soma_qqq, 2)}")
