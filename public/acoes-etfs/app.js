@@ -8,18 +8,27 @@ const CHAVE_EXTRAS = 'analises-carteira:comparador';
 const lerExtras = () => { try { return JSON.parse(localStorage.getItem(CHAVE_EXTRAS) || '[]').filter((x) => typeof x === 'string'); } catch (e) { return []; } };
 const gravarExtras = (l) => { try { localStorage.setItem(CHAVE_EXTRAS, JSON.stringify(l)); } catch (e) { /* sem armazenamento: vale só nesta visita */ } };
 let extras = lerExtras();
+// radar (lista mandada pela carteira): os ativos dele que não estão no comparador entram desligados
+let radarIds = [], radarSo = [];
 try {
-  [M, CAT] = await Promise.all([Dados.buscarJSON('/data/mercado.json'), Dados.buscarJSON('/data/catalogo.json').catch(() => null)]);
+  let RADAR;
+  [M, CAT, RADAR] = await Promise.all([Dados.buscarJSON('/data/mercado.json'), Dados.buscarJSON('/data/catalogo.json').catch(() => null), Dados.buscarJSON('/data/radar.json').catch(() => null)]);
   const doCatalogo = CAT && CAT.ultimo_mes === M.ultimo_mes ? Object.fromEntries(CAT.ativos.map((a) => [a.id, a])) : {};
-  extras = extras.filter((id) => doCatalogo[id] && !M.ativos.some((a) => a.id === id));
-  const series = await Promise.all(extras.map((id) => Dados.buscarJSON('/data/catalogo/' + encodeURIComponent(id) + '.json').catch(() => null)));
-  extras = extras.filter((id, i) => series[i] && series[i].fim === M.ultimo_mes);
+  const naBase = (id) => M.ativos.some((a) => a.id === id);
+  extras = extras.filter((id) => doCatalogo[id] && !naBase(id));
+  radarIds = [...new Set(((RADAR && RADAR.itens) || []).map((i) => i.site_id).filter((id) => id && (naBase(id) || doCatalogo[id])))];
+  radarSo = radarIds.filter((id) => !naBase(id) && !extras.includes(id));
+  const pedir = extras.concat(radarSo);
+  const series = await Promise.all(pedir.map((id) => Dados.buscarJSON('/data/catalogo/' + encodeURIComponent(id) + '.json').catch(() => null)));
+  const okId = new Set(pedir.filter((id, i) => series[i] && series[i].fim === M.ultimo_mes));
+  extras = extras.filter((id) => okId.has(id)); radarSo = radarSo.filter((id) => okId.has(id)); radarIds = radarIds.filter((id) => naBase(id) || okId.has(id));
   series.filter((x) => x && x.fim === M.ultimo_mes).forEach((x, i) => {
     const a = doCatalogo[x.id];
     M.ativos.push({ id: x.id, nome: a.nome, tipo: a.tipo, mercado: a.mercado, moeda: a.moeda, inicio: x.inicio, precos: x.precos });
     if (CA.corFixa[x.id] == null && CA.paleta[x.id] == null) CA.paleta[x.id] = i % 8;
   });
-  D = Dados.derivar(M, CA.ordem.concat(extras));
+  CA.grupos.radar = radarIds;
+  D = Dados.derivar(M, CA.ordem.concat(extras, radarSo));
   dash = window.dash = criarDash(D);
 } catch (e) {
   document.getElementById('atualizacao').outerHTML = '<p class="erro-carga">Não foi possível carregar os dados agora. Tente de novo em alguns minutos.</p>';
@@ -33,7 +42,10 @@ const DZ = window.DZ = {
   cor: (t) => CA.corFixa[t] || dash.colors[CA.paleta[t] ?? 0],
 };
 DZ.swatch = (t) => { const c = DZ.cor(t), d = CA.traco[t]; if (!d) return c; const seg = d === '6 4' ? [4, 2] : [5, 2, 2, 2]; let x = 0; const st = seg.map((w, i) => { const r = (i % 2 ? 'transparent' : c) + ' ' + x + 'px ' + (x + w) + 'px'; x += w; return r; }); return 'repeating-linear-gradient(90deg,' + st.join(',') + ')'; };
-DZ.p = () => ({ moeda: dash.params().moeda || 'USD', escala: dash.params().escala || 'lin', periodo: ({ '25a': 'ipo' })[dash.params().periodo] || dash.params().periodo || 'ipo', fora: new Set(String(dash.params().fora || '').split(',').filter(Boolean)) });
+// "fora" ausente do endereço = padrão (os ativos que só estão no radar começam desligados);
+// "-" = nenhum desligado
+const listaFora = (f) => (f.size ? [...f].join(',') : '-');
+DZ.p = () => { const P = dash.params(); return { moeda: P.moeda || 'USD', escala: P.escala || 'lin', periodo: ({ '25a': 'ipo' })[P.periodo] || P.periodo || 'ipo', fora: P.fora == null ? new Set(radarSo) : new Set(String(P.fora).split(',').filter((t) => t && t !== '-')) }; };
 DZ.vis = (t) => !DZ.p().fora.has(t);
 DZ.rows = (id) => dash.data(id).data;
 DZ.num = (x) => (x === '' || x == null || isNaN(Number(x))) ? null : Number(x);
@@ -67,7 +79,7 @@ const chips = document.getElementById('chips');
 for (const id of D.ids) {
   const b = document.createElement('button'); b.className = 'chip lx-leg'; b.dataset.t = id;
   const s = document.createElement('span'); s.className = 'sw lx-sw'; s.dataset.t = id;
-  b.append(s, document.createTextNode(CA.rotulo[id] || (NOMES[id] + (extras.includes(id) ? ' (' + id + ')' : ''))));
+  b.append(s, document.createTextNode(CA.rotulo[id] || (NOMES[id] + (extras.includes(id) || radarSo.includes(id) ? ' (' + id + ')' : ''))));
   chips.appendChild(b);
   if (extras.includes(id)) {
     const x = document.createElement('button'); x.className = 'rem-ext'; x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Tirar ' + NOMES[id] + ' do comparador');
@@ -98,6 +110,12 @@ for (const [g, txt] of [['acoes', 'ações'], ['etfs', 'ETFs']]) {
   b.innerHTML = '<span class="lx-g-on">Esconder ' + txt + '</span><span class="lx-g-off" hidden>Mostrar ' + txt + '</span>';
   chips.appendChild(b);
 }
+// radar: liga só os ativos do radar (e desliga o resto); de novo, volta ao padrão
+const naoRadar = () => D.ids.filter((t) => !radarIds.includes(t));
+const soRadar = () => { const f = DZ.p().fora; return radarIds.length > 0 && radarIds.every((t) => !f.has(t)) && naoRadar().every((t) => f.has(t)); };
+const btRadar = document.createElement('button'); btRadar.className = 'lnk lx-radar'; btRadar.type = 'button'; btRadar.hidden = !radarIds.length;
+btRadar.title = 'Ativos acompanhados no radar (ativos.letabuild.com/radar)';
+chips.appendChild(btRadar);
 const todos = document.createElement('button'); todos.className = 'lnk lx-todos'; todos.hidden = true; todos.textContent = 'Mostrar todos'; chips.appendChild(todos);
 
 // texto de abertura, gerado a partir dos números (não fica velho quando os dados mudam)
@@ -113,10 +131,10 @@ function gerarLede() {
   const ini = p.periodo === 'ipo' ? 'Desde ago/2004, mês do IPO do Google,' : p.periodo === 'divo' ? 'Desde nov/2015, lançamento do DIVO11,' : 'De ' + DZ.mes(per.inicio) + ' a ' + DZ.mes(D.fim) + (M.parcial ? ' (parcial)' : '') + ',';
   const resumo = (r) => DZ.dec(r['cagr_' + k], 1) + '% a.a., ' + m(r) + estreia(r);
   txt(ini + ' em ' + (k === 'usd' ? 'dólar' : 'reais') + ' e com dividendos reinvestidos, os maiores retornos anuais foram de ');
-  const top = L.filter((r) => r.ativo !== 'CDI').sort((a, b) => b['cagr_' + k] - a['cagr_' + k]).slice(0, 3);
+  const top = L.filter((r) => r.ativo !== 'CDI' && DZ.vis(r.ativo)).sort((a, b) => b['cagr_' + k] - a['cagr_' + k]).slice(0, 3);
   top.forEach((r, i) => { txt((i ? (i === top.length - 1 ? ' e ' : ', ') : '') + NOMES[r.ativo] + ' ('); neg(resumo(r)); txt(')'); });
   txt('. O S&P 500 multiplicou o capital por '); neg(m(by.SPY)); txt(' e o QQQ, por '); neg(m(by.QQQ)); txt('. ');
-  const br = L.filter((r) => D.info[r.ativo].mercado === 'Brasil' && D.info[r.ativo].tipo === 'acao').sort((a, b) => b['cagr_' + k] - a['cagr_' + k]);
+  const br = L.filter((r) => D.info[r.ativo].mercado === 'Brasil' && D.info[r.ativo].tipo === 'acao' && DZ.vis(r.ativo)).sort((a, b) => b['cagr_' + k] - a['cagr_' + k]);
   if (br.length > 1) { txt('Entre as ações brasileiras, a melhor foi ' + NOMES[br[0].ativo] + ' ('); neg(resumo(br[0])); txt(') e a pior, ' + NOMES[br[br.length - 1].ativo] + ' ('); neg(resumo(br[br.length - 1])); txt('). '); }
   txt('O CDI multiplicou o capital por '); neg(DZ.mult(by.CDI.multiplicador_brl)); txt(' em reais e por '); neg(DZ.mult(by.CDI.multiplicador_usd)); txt(' em dólar. ');
   if (cam) { txt('O dólar ' + (cam.alta_dolar_pct >= 0 ? 'subiu ' : 'caiu ')); neg(DZ.dec(Math.abs(cam.alta_dolar_pct), 1) + '%'); txt(' contra o real no período, de R$ ' + DZ.dec(cam.usdbrl_inicio, 2) + ' para R$ ' + DZ.dec(cam.usdbrl_fim, 2) + '.'); }
@@ -147,7 +165,9 @@ dash.onData(() => {
   document.querySelectorAll('.lx-sw').forEach((w) => { w.style.background = DZ.swatch(w.dataset.t); });
   document.querySelectorAll('.lx-leg').forEach((b) => { const on = !p.fora.has(b.dataset.t); b.classList.toggle('off', !on); b.setAttribute('aria-pressed', String(on)); });
   document.querySelectorAll('.lx-grupo').forEach((b) => { const ts = CA.grupos[b.dataset.g] || []; const algum = ts.some((t) => !p.fora.has(t)); b.setAttribute('aria-pressed', String(algum)); b.querySelector('.lx-g-on').hidden = !algum; b.querySelector('.lx-g-off').hidden = algum; });
-  todos.hidden = !p.fora.size;
+  todos.hidden = !p.fora.size || soRadar() || dash.params().fora == null; // no padrão, nada a mostrar
+  btRadar.textContent = soRadar() ? 'Sair do radar' : 'Só o radar (' + radarIds.length + ')';
+  btRadar.setAttribute('aria-pressed', String(soRadar()));
   textosDoPeriodo();
   gerarLede();
 });
@@ -155,10 +175,13 @@ dash.onData(() => {
 document.querySelectorAll('.lx-leg').forEach((it) => {
   it.addEventListener('pointerenter', () => { if (!DZ.vis(it.dataset.t)) return; DZ.hl = it.dataset.t; dash.draw('linhas'); });
   it.addEventListener('pointerleave', () => { if (DZ.hl === null) return; DZ.hl = null; dash.draw('linhas'); });
-  it.addEventListener('click', () => { const f = DZ.p().fora, t = it.dataset.t; if (f.has(t)) f.delete(t); else f.add(t); DZ.hl = null; dash.setParams({ fora: [...f].join(',') }); });
+  it.addEventListener('click', () => { const f = DZ.p().fora, t = it.dataset.t; if (f.has(t)) f.delete(t); else f.add(t); DZ.hl = null; dash.setParams({ fora: listaFora(f) }); });
 });
-todos.addEventListener('click', () => dash.setParams({ fora: '' }));
-document.querySelectorAll('.lx-grupo').forEach((b) => b.addEventListener('click', () => { const ts = CA.grupos[b.dataset.g] || []; const f = DZ.p().fora; const algum = ts.some((t) => !f.has(t)); ts.forEach((t) => { if (algum) f.add(t); else f.delete(t); }); DZ.hl = null; dash.setParams({ fora: [...f].join(',') }); }));
+todos.addEventListener('click', () => dash.setParams({ fora: '-' }));
+btRadar.addEventListener('click', () => { DZ.hl = null; dash.setParams({ fora: soRadar() ? '' : listaFora(new Set(naoRadar())) }); });
+// vindo da página do radar (#radar=1): abre só com o radar
+if (dash.params().radar === '1') dash.setParams({ radar: '', fora: listaFora(new Set(naoRadar())) });
+document.querySelectorAll('.lx-grupo').forEach((b) => b.addEventListener('click', () => { const ts = CA.grupos[b.dataset.g] || []; const f = DZ.p().fora; const algum = ts.some((t) => !f.has(t)); ts.forEach((t) => { if (algum) f.add(t); else f.delete(t); }); DZ.hl = null; dash.setParams({ fora: listaFora(f) }); }));
 
 dash.draw('linhas', (el) => {
   el.replaceChildren();

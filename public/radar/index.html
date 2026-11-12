@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radar de ações e ETFs</title>
+<meta name="description" content="Ações e ETFs acompanhados, com o preço-alvo de cada um e como ele foi definido. Preços atualizados todo dia.">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/fontes.css">
+<link rel="stylesheet" href="/radar/radar.css">
+<link rel="icon" href="/assets/icones/icone.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/icones/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/assets/icones/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1F3864">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Ativos · letabuild">
+<meta property="og:title" content="Radar de ações e ETFs">
+<meta property="og:description" content="Ações e ETFs acompanhados, com o preço-alvo de cada um e como ele foi definido.">
+<meta property="og:url" content="https://ativos.letabuild.com/radar/">
+<meta property="og:image" content="https://ativos.letabuild.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<nav class="site-nav" aria-label="Páginas"><a href="/">Início</a><a href="/acoes-etfs/">Ações e ETFs</a><a href="/radar/" aria-current="page">Radar</a><a href="/simulador/">Simulador</a><a href="/carteira/">Minha carteira</a></nav>
+<main class="pagina">
+  <h1>Radar</h1>
+  <p class="atualizacao" id="atualizacao">Carregando…</p>
+  <p class="lede">Ações e ETFs acompanhados para talvez comprar. Cada um tem um preço-alvo: até ali vale a pena aportar sem pagar caro demais. Clique no <b>?</b> de um cartão para ver como o alvo foi definido.</p>
+  <div class="resumo" id="resumo"></div>
+  <div class="barra">
+    <span class="seg" role="group" aria-label="Quais ativos mostrar" id="filtro">
+      <button type="button" data-f="todos" aria-pressed="true">Todos</button><button type="button" data-f="BR" aria-pressed="false">Brasil</button><button type="button" data-f="EXT" aria-pressed="false">Exterior</button>
+    </span>
+    <label class="ordem">Ordenar por <select id="ordem"><option value="alvo">Mais perto do alvo</option><option value="a12">12 meses</option><option value="codigo">Código</option></select></label>
+    <a class="lnk" id="ver-comparador" href="/acoes-etfs/#radar=1">Ver o radar no comparador</a>
+  </div>
+  <div class="grade" id="grade"></div>
+  <p class="nota">Preço do último fechamento nos dados do site (Yahoo Finance, conferido mês a mês contra uma segunda fonte). "12 meses": fechamento de hoje contra o do mesmo mês do ano passado, com dividendos. O alvo é o teto para começar uma posição nova e precisa ser recalculado a cada balanço, porque o lucro muda. O passado não garante o futuro. Não é recomendação de investimento.</p>
+</main>
+<footer class="rodape"><a href="https://github.com/CaioLeta21/analises-carteira">Confira o código: nada sai do seu navegador.</a></footer>
+<script src="/assets/js/dados.js"></script>
+<script src="/radar/app.js"></script>
+</body>
+</html>

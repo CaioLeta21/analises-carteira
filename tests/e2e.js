@@ -35,7 +35,7 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     p.on('request', (r) => { if (!r.url().startsWith(BASE) && !r.url().startsWith('blob:') && !r.url().startsWith('data:') && !r.url().startsWith(CF)) externos.push(r.url()); });
     p.on('dialog', (d) => d.accept());
 
-    for (const pg of ['/', '/acoes-etfs/', '/simulador/', '/carteira/']) {
+    for (const pg of ['/', '/acoes-etfs/', '/radar/', '/simulador/', '/carteira/']) {
       await p.goto(BASE + pg); await p.waitForTimeout(1200);
       ok((await p.evaluate(() => window.__csp)).length === 0, pg + ' sem violação de CSP');
     }
@@ -54,6 +54,33 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     ok((await p.$$eval('#tabela-longa tbody tr td:first-child, #tabela tbody tr td:first-child', (t) => t.map((x) => x.textContent))).includes('PETR4'), 'ativo adicionado entra na tabela');
     await p.click('.rem-ext'); await p.waitForLoadState('load'); await p.waitForTimeout(1000);
     ok(await p.$('.lx-leg[data-t="PETR4"]') === null, 'comparador tira o ativo adicionado');
+
+    // radar: lista vinda da carteira, cartões com "?" e o botão "Só o radar" no comparador
+    const radarJson = JSON.parse(require('fs').readFileSync(path.join(__dirname, '..', 'public', 'data', 'radar.json'), 'utf8'));
+    await p.goto(BASE + '/acoes-etfs/'); await p.waitForTimeout(1500);
+    const padrao = await p.$$eval('[data-draw="linhas"] svg path[stroke-width]', (x) => x.length);
+    ok(await p.$('.lx-todos[hidden]') !== null, 'comparador no padrão: ativos só do radar desligados, sem "Mostrar todos"');
+    await p.click('.lx-radar'); await p.waitForTimeout(300);
+    const ligados = await p.$$eval('.lx-leg[aria-pressed="true"]', (x) => x.map((b) => b.dataset.t));
+    const doRadar = radarJson.itens.map((i) => i.site_id).filter(Boolean);
+    ok(ligados.length > 0 && ligados.every((t) => doRadar.includes(t)) && (await p.$eval('.lx-radar', (e) => e.textContent)) === 'Sair do radar', 'comparador: "Só o radar" liga só os ativos do radar ' + ligados.length);
+    await p.click('.lx-radar'); await p.waitForTimeout(300);
+    ok((await p.$$eval('[data-draw="linhas"] svg path[stroke-width]', (x) => x.length)) === padrao, 'comparador: sair do radar volta ao padrão');
+    await p.goto(BASE + '/radar/'); await p.waitForTimeout(1500);
+    const nCartoes = await p.$$eval('.cartao', (x) => x.length);
+    ok(nCartoes === radarJson.itens.length, 'radar: um cartão por ativo (' + nCartoes + ')');
+    const comPreco = await p.$$eval('.cartao', (cs) => cs.filter((c) => !/Sem cotação/.test(c.textContent) && /(US\$|R\$) \d/.test(c.querySelector('.p strong').textContent)).length);
+    ok(comPreco >= radarJson.itens.filter((i) => i.site_id).length - 1, 'radar: cartões com preço do site ' + comPreco);
+    const bt = p.locator('.ajuda').first();
+    await bt.click(); await p.waitForTimeout(100);
+    const pop = await p.$eval('.pop:not([hidden])', (e) => e.textContent).catch(() => '');
+    ok(/Como o alvo foi definido/.test(pop) && pop.length > 40 && (await bt.getAttribute('aria-expanded')) === 'true', 'radar: o "?" mostra como o alvo foi definido');
+    await p.keyboard.press('Escape'); await p.waitForTimeout(100);
+    ok(await p.$('.pop:not([hidden])') === null, 'radar: Esc fecha a explicação');
+    await p.click('#filtro [data-f="BR"]'); await p.waitForTimeout(100);
+    ok((await p.$$eval('.cartao', (x) => x.length)) === radarJson.itens.filter((i) => i.mercado === 'BR').length, 'radar: filtro Brasil');
+    await p.click('#filtro [data-f="todos"]');
+    ok(!/nota|entrada/i.test(JSON.stringify(radarJson.itens.map((i) => Object.keys(i)))), 'radar.json sem anotação nem preço de entrada');
 
     await p.goto(BASE + '/simulador/'); await p.waitForTimeout(1000);
     ok(/%$/.test(await p.$eval('#mVol', (e) => e.textContent)), 'simulador calcula a volatilidade');
@@ -101,7 +128,7 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     await ctx2.close();
 
     const cel = await b.newPage({ viewport: { width: 390, height: 900 }, colorScheme: 'dark' });
-    for (const pg of ['/', '/acoes-etfs/', '/simulador/', '/carteira/']) {
+    for (const pg of ['/', '/acoes-etfs/', '/radar/', '/simulador/', '/carteira/']) {
       await cel.goto(BASE + pg); await cel.waitForTimeout(1000);
       ok(!(await cel.evaluate(() => document.documentElement.scrollWidth > innerWidth)), pg + ' sem rolagem lateral em 390 px');
     }
@@ -157,7 +184,7 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     await p.click('#corpo tr:last-child .rem'); await p.waitForTimeout(200);
     for (const tema of ['light', 'dark']) {
       const pa = await b.newPage({ viewport: { width: 1280, height: 900 }, colorScheme: tema });
-      for (const pg of ['/', '/acoes-etfs/', '/simulador/', '/carteira/']) { await pa.goto(BASE + pg); await pa.waitForTimeout(800); await auditar(pa, pg + ' (' + tema + ')'); }
+      for (const pg of ['/', '/acoes-etfs/', '/radar/', '/simulador/', '/carteira/']) { await pa.goto(BASE + pg); await pa.waitForTimeout(800); await auditar(pa, pg + ' (' + tema + ')'); }
       await pa.close();
     }
     // abas da carteira pelo teclado

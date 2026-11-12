@@ -1,0 +1,35 @@
+name: Radar
+
+# A carteira privada (carteira.letabuild.com) dispara este evento a cada mudança no radar,
+# com a lista pública (ativo, alvo e explicação do alvo). O Pages publica sozinho depois do push.
+on:
+  repository_dispatch:
+    types: [radar]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: radar
+  cancel-in-progress: false
+
+jobs:
+  gravar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pipeline.radar "$GITHUB_EVENT_PATH"
+      - name: Gravar no repositório
+        run: |
+          git config user.name "atualizador-de-dados"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/data/radar.json
+          if git diff --cached --quiet; then echo "Sem mudanças."; exit 0; fi
+          git commit -m "radar: atualizado pela carteira"
+          # a atualização diária pode ter gravado no meio: tenta de novo por cima
+          for i in 1 2 3; do git push && exit 0; git pull --rebase; done
+          exit 1
