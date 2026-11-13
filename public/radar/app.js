@@ -22,24 +22,39 @@ try {
   $('#atualizacao').replaceWith(el('p', { class: 'erro-carga', text: 'Não foi possível carregar o radar agora. Tente de novo em alguns minutos.' }));
   return;
 }
-// preços: ativos do comparador vêm no mercado.json; os do catálogo, um arquivo por ativo
+// preços: ativos do comparador vêm no mercado.json; os do catálogo, um arquivo por ativo;
+// os que não estão em nenhum dos dois (ex.: ETFs de Londres) trazem "cotacao" do Yahoo no próprio radar.json
 const base = Object.fromEntries(M.ativos.map((a) => [a.id, a]));
 const doCat = CAT ? Object.fromEntries(CAT.ativos.map((a) => [a.id, a])) : {};
+const infoDe = (id) => base[id] || doCat[id] || null;
+
+// ativos que o visitante adicionou: guardados só neste navegador, como no comparador
+const CHAVE_MEUS = 'radar:meus';
+const lerMeus = () => { try { const l = JSON.parse(localStorage.getItem(CHAVE_MEUS) || '[]'); return Array.isArray(l) ? l.filter((x) => x && typeof x.id === 'string' && infoDe(x.id)).map((x) => ({ id: x.id, alvo: typeof x.alvo === 'number' && x.alvo > 0 ? x.alvo : null })) : []; } catch (e) { return []; } };
+const gravarMeus = (l) => { try { localStorage.setItem(CHAVE_MEUS, JSON.stringify(l)); } catch (e) { /* sem armazenamento: vale só nesta visita */ } };
+const noRadar = new Set(R.itens.map((i) => i.site_id).filter(Boolean));
+const meus = lerMeus().filter((x) => !noRadar.has(x.id));
+const itens = R.itens.concat(meus.map((x) => {
+  const a = infoDe(x.id);
+  return { codigo: x.id, nome: a.nome, tipo: a.tipo, mercado: a.mercado === 'Brasil' ? 'BR' : 'EXT', moeda: a.moeda, preco_alvo: x.alvo, site_id: x.id, meu: true };
+}));
+
 const series = {};
-await Promise.all(R.itens.map(async (i) => {
+await Promise.all(itens.map(async (i) => {
   const id = i.site_id;
-  if (!id) return;
+  if (!id || series[id]) return;
   if (base[id]) { series[id] = base[id]; return; }
   if (doCat[id]) { try { series[id] = await Dados.buscarJSON('/data/catalogo/' + encodeURIComponent(id) + '.json'); } catch (e) { /* sem série */ } }
 }));
-const linhas = R.itens.map((i) => {
+const linhas = itens.map((i) => {
   const s = i.site_id && series[i.site_id];
   const p = s && s.precos && s.precos.length ? s.precos : null;
-  const preco = p ? p[p.length - 1] : null;
-  const a12 = p && p.length > 12 ? preco / p[p.length - 13] - 1 : null;
+  const c = !p && i.cotacao && i.cotacao.preco > 0 ? i.cotacao : null;
+  const preco = p ? p[p.length - 1] : c ? c.preco : null;
+  const a12 = p && p.length > 12 ? preco / p[p.length - 13] - 1 : c && c.a12 != null ? c.a12 : null;
   const alvoDist = preco != null && i.preco_alvo ? preco / i.preco_alvo - 1 : null;
   const moeda = i.moeda || (s && s.moeda) || null;
-  return { i, preco, a12, alvoDist, moeda };
+  return { i, preco, a12, alvoDist, moeda, soYahoo: c ? c.data : null };
 });
 
 const dref = new Date(M.data_ref + 'T12:00:00');
@@ -67,8 +82,15 @@ function cartao(x) {
       el('span', { class: 'p' }, el('span', { class: 'r', text: 'Hoje' }), el('strong', { text: dinheiro(x.preco, x.moeda) })),
       el('span', { class: 'p alvo' }, el('span', { class: 'r', text: 'Alvo' }), el('strong', { text: i.preco_alvo ? dinheiro(i.preco_alvo, x.moeda) : '—' }))),
     el('span', { class: 'sit', text: s.t }),
-    x.a12 != null ? el('span', { class: 'a12' }, '12 meses: ', el('span', { class: x.a12 > 0 ? 'pos' : x.a12 < 0 ? 'neg' : null, text: pct(x.a12) })) : null);
-  if (i.alvo_explicacao) {
+    x.a12 != null ? el('span', { class: 'a12' }, '12 meses: ', el('span', { class: x.a12 > 0 ? 'pos' : x.a12 < 0 ? 'neg' : null, text: pct(x.a12) })) : null,
+    x.soYahoo ? el('span', { class: 'fonte', title: 'Ativo fora do catálogo do site: preço só do Yahoo Finance, sem conferência com segunda fonte.', text: 'Só Yahoo · fechamento de ' + new Date(x.soYahoo + 'T12:00:00').toLocaleDateString('pt-BR') }) : null,
+    i.meu ? el('span', { class: 'fonte', text: 'Adicionado por você · só neste navegador' }) : null);
+  if (i.meu) {
+    c.classList.add('meu');
+    const b = el('button', { type: 'button', class: 'ajuda tirar', 'aria-label': 'Tirar ' + i.codigo + ' do radar', title: 'Tirar do radar', text: '×' });
+    b.addEventListener('click', () => { gravarMeus(lerMeus().filter((m) => m.id !== i.codigo)); location.reload(); });
+    c.append(b);
+  } else if (i.alvo_explicacao) {
     const id = 'pop-' + i.codigo.replace(/[^\w-]/g, '_');
     const pop = el('div', { class: 'pop', id, role: 'note', hidden: true }, el('strong', { text: 'Como o alvo foi definido' }), i.alvo_explicacao);
     const b = el('button', { type: 'button', class: 'ajuda', 'aria-expanded': 'false', 'aria-controls': id, 'aria-label': 'Como foi definido o alvo de ' + i.codigo, title: 'Como foi definido o alvo', text: '?' });
@@ -101,5 +123,33 @@ $('#filtro').addEventListener('click', (ev) => { const b = ev.target.closest('bu
 $('#ordem').addEventListener('change', (ev) => { ordem = ev.target.value; guardar('ordem', ordem); desenhar(); });
 document.addEventListener('click', (ev) => { if (!ev.target.closest('.pop, .ajuda')) fecharPops(); });
 document.addEventListener('keydown', (ev) => { if (ev.key !== 'Escape') return; const aberto = document.querySelector('.pop:not([hidden])'); if (!aberto) return; fecharPops(); const b = document.querySelector(`[aria-controls="${aberto.id}"]`); if (b) b.focus(); });
+
+// adicionar ativo do comparador ou do catálogo ao radar (só neste navegador)
+(function () {
+  const f = $('#f-add'), inp = $('#add-codigo'), alvo = $('#add-alvo'), msg = $('#add-msg'), lista = $('#lista-add');
+  const opcoes = Object.values(Object.assign({}, doCat, base)).filter((a) => (a.tipo === 'acao' || a.tipo === 'etf') && !noRadar.has(a.id) && !meus.some((m) => m.id === a.id))
+    .sort((a, b) => a.id.localeCompare(b.id));
+  for (const a of opcoes) { const o = document.createElement('option'); o.value = a.id; o.label = a.nome; o.textContent = a.nome; lista.appendChild(o); }
+  const todosAtivos = Object.values(Object.assign({}, doCat, base));
+  const achar = (t) => {
+    const q = t.trim().toUpperCase(); if (!q) return null;
+    const porNome = todosAtivos.filter((a) => a.nome.toUpperCase().includes(q));
+    return todosAtivos.find((a) => a.id === q || a.id === q.replace('-', '.')) || todosAtivos.find((a) => a.nome.toUpperCase() === q) || (porNome.length === 1 ? porNome[0] : null);
+  };
+  f.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const a = achar(inp.value);
+    if (!a || (a.tipo !== 'acao' && a.tipo !== 'etf')) { msg.textContent = 'Não achei essa ação ou ETF nos dados do site. Escolha um da lista.'; return; }
+    if (noRadar.has(a.id) || meus.some((m) => m.id === a.id)) { msg.textContent = a.nome + ' já está no radar.'; return; }
+    // "1.620" e "1.620,50" (formato brasileiro) e também "25.50"
+    const s = alvo.value.trim().replace(/\s|R\$|US\$/g, '');
+    const t = s.includes(',') ? s.replace(/\./g, '').replace(',', '.') : /^\d{1,3}(\.\d{3})+$/.test(s) ? s.replace(/\./g, '') : s;
+    const v = t ? Number(t) : null;
+    if (t && !(v > 0)) { msg.textContent = 'Preço-alvo inválido. Use só números, como 25,50.'; return; }
+    gravarMeus(lerMeus().filter((m) => m.id !== a.id).concat([{ id: a.id, alvo: v }]));
+    msg.textContent = 'Adicionando ' + a.nome + '…';
+    location.reload();
+  });
+})();
 desenhar();
 })();

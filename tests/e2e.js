@@ -80,6 +80,22 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     await p.click('#filtro [data-f="BR"]'); await p.waitForTimeout(100);
     ok((await p.$$eval('.cartao', (x) => x.length)) === radarJson.itens.filter((i) => i.mercado === 'BR').length, 'radar: filtro Brasil');
     await p.click('#filtro [data-f="todos"]');
+    // fora do catálogo (ETFs de Londres): preço do Yahoo vindo no radar.json, com aviso
+    const comCot = radarJson.itens.filter((i) => !i.site_id && i.cotacao);
+    if (comCot.length) {
+      const txt = await p.locator('.cartao', { has: p.locator('.id strong', { hasText: new RegExp('^' + comCot[0].codigo.replace('.', '\\.') + '$') }) }).textContent();
+      ok(!/Sem cotação/.test(txt) && /Só Yahoo/.test(txt) && /12 meses/.test(txt), 'radar: ' + comCot[0].codigo + ' com preço só do Yahoo');
+    }
+    // visitante adiciona ao radar (só no navegador), com alvo, e tira
+    const novo = await p.$eval('#lista-add option', (o) => o.value);
+    await p.fill('#add-codigo', novo); await p.fill('#add-alvo', '1.234,5');
+    await Promise.all([p.waitForNavigation(), p.click('#f-add button')]); await p.waitForTimeout(1500);
+    const meu = p.locator('.cartao.meu');
+    ok((await p.$$eval('.cartao', (x) => x.length)) === radarJson.itens.length + 1 && (await meu.count()) === 1 && /Adicionado por você/.test(await meu.textContent()) && /1\.235/.test(await meu.locator('.alvo').textContent()), 'radar: adicionar ' + novo + ' com alvo 1.234,5 → 1.235 (só neste navegador)');
+    await p.fill('#add-codigo', novo); await p.click('#f-add button'); await p.waitForTimeout(200);
+    ok(/já está no radar/.test(await p.textContent('#add-msg')), 'radar: não adiciona repetido');
+    await Promise.all([p.waitForNavigation(), meu.locator('.tirar').click()]); await p.waitForTimeout(1500);
+    ok((await p.$$eval('.cartao', (x) => x.length)) === radarJson.itens.length, 'radar: o × tira o adicionado');
     ok(!/nota|entrada/i.test(JSON.stringify(radarJson.itens.map((i) => Object.keys(i)))), 'radar.json sem anotação nem preço de entrada');
 
     await p.goto(BASE + '/simulador/'); await p.waitForTimeout(1000);

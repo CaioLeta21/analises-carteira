@@ -38,3 +38,16 @@ h1{font-family:var(--font-serif);font-weight:400;font-size:var(--fs-title);margi
 .pop[hidden]{display:none}
 .pop strong{display:block;margin-bottom:4px}
 .erro-carga{color:var(--color-bad)}
+.cartao .fonte{font-size:10px;color:var(--color-fg-muted)}
+.cartao.meu{border-style:dashed;border-top-style:solid}
+.ajuda.tirar{font-size:15px;line-height:17px}
+.ajuda.tirar:hover{color:var(--color-bad);border-color:var(--color-bad)}
+/* adicionar ao radar (só neste navegador) */
+.add{display:grid;grid-template-columns:minmax(0,1fr) minmax(8rem,12rem) auto;gap:8px 10px;align-items:end;margin:0 0 var(--gap-md);max-width:46rem}
+.add .campo{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--color-fg-muted);min-width:0}
+.add input{font:inherit;font-size:14px;color:var(--color-fg);background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:6px;padding:6px 8px;min-width:0}
+.add button{font:inherit;font-size:14px;font-weight:600;background:var(--color-accent);color:var(--color-panel);border:0;border-radius:6px;padding:7px 14px;cursor:pointer}
+.add button:focus-visible,.add input:focus-visible{outline:2px solid var(--color-accent);outline-offset:1px}
+.add .msg{grid-column:1/-1;margin:0;font-size:12px;color:var(--color-fg-muted)}
+.add .msg:empty{display:none}
+@media (max-width:560px){.add{grid-template-columns:minmax(0,1fr) auto}.add .campo:first-child{grid-column:1/-1}}

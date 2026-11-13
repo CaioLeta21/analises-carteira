@@ -36,8 +36,16 @@
     <label class="ordem">Ordenar por <select id="ordem"><option value="alvo">Mais perto do alvo</option><option value="a12">12 meses</option><option value="codigo">Código</option></select></label>
     <a class="lnk" id="ver-comparador" href="/acoes-etfs/#radar=1">Ver o radar no comparador</a>
   </div>
+  <form class="add" id="f-add" novalidate>
+    <label class="campo">Adicionar ao radar <input id="add-codigo" list="lista-add" autocomplete="off" placeholder="Código ou nome: WEGE3, Microsoft, VOO"></label>
+    <label class="campo alvo">Preço-alvo (opcional) <input id="add-alvo" inputmode="decimal" placeholder="na moeda do ativo"></label>
+    <button type="submit">Adicionar</button>
+    <datalist id="lista-add"></datalist>
+    <p class="msg" id="add-msg" role="status"></p>
+  </form>
   <div class="grade" id="grade"></div>
-  <p class="nota">Preço do último fechamento nos dados do site (Yahoo Finance, conferido mês a mês contra uma segunda fonte). "12 meses": fechamento de hoje contra o do mesmo mês do ano passado, com dividendos. O alvo é o teto para começar uma posição nova e precisa ser recalculado a cada balanço, porque o lucro muda. O passado não garante o futuro. Não é recomendação de investimento.</p>
+  <p class="nota">Você pode adicionar ao radar qualquer ação ou ETF do comparador e do catálogo do site, com um preço-alvo seu. Eles ficam só neste navegador (nada é enviado) e saem no ×.</p>
+  <p class="nota">Preço do último fechamento nos dados do site (Yahoo Finance, conferido mês a mês contra uma segunda fonte). Ativos fora do catálogo, como os ETFs da bolsa de Londres, mostram o fechamento do Yahoo sem segunda fonte ("Só Yahoo"). "12 meses": fechamento de hoje contra o do mesmo mês do ano passado, com dividendos. O alvo é o teto para começar uma posição nova e precisa ser recalculado a cada balanço, porque o lucro muda. O passado não garante o futuro. Não é recomendação de investimento.</p>
 </main>
 <footer class="rodape"><a href="https://github.com/CaioLeta21/analises-carteira">Confira o código: nada sai do seu navegador.</a></footer>
 <script src="/assets/js/dados.js"></script>

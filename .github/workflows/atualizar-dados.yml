@@ -34,6 +34,8 @@ jobs:
       - name: Setores do S&P 500 e do Nasdaq-100 (para a carteira privada)
         # falha aqui não segura os outros dados: o setores.json anterior continua publicado
         run: python -m pipeline.setores || echo "::warning::setores.json não foi atualizado hoje"
+      - name: Cotações do radar fora do catálogo (só Yahoo, só para o radar)
+        run: python -m pipeline.radar --cotar || echo "::warning::cotações do radar não foram atualizadas hoje"
       - name: Gravar no repositório (o Cloudflare Pages publica sozinho)
         run: |
           git config user.name "atualizador-de-dados"

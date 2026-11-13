@@ -88,6 +88,16 @@ Retornos mensais em reais por categoria. Para meses novos:
 - Bitcoin: BTC-USD, em reais, desde nov/2009 (antes disso o bitcoin não tinha preço; as páginas
   usam o CDI no lugar).
 
+## Radar (`public/data/radar.json`)
+
+Lista mandada pela carteira privada a cada mudança (`pipeline/radar.py`, workflow `radar.yml`):
+só ativo, alvo e explicação do alvo. O preço vem do comparador ou do catálogo. Ativo que não
+está em nenhum dos dois (desde 13/nov/2026: os ETFs de Londres SGLD.L e CNDX.L, sem segunda
+fonte para entrar no catálogo) ganha `cotacao` = último fechamento e variação em 12 meses do
+Yahoo, atualizada todo dia (`python -m pipeline.radar --cotar`) e mostrada como "Só Yahoo". Não
+entra no histórico nem no comparador. Ações e ETFs que o visitante adiciona ao radar ficam só no
+navegador dele (`localStorage`, chave `radar:meus`), como os ativos extras do comparador.
+
 ## Catálogo (177 ativos que o usuário escolhe)
 
 Definido em `pipeline/catalogo.py`: as ações do Ibovespa (composição oficial da B3 em
