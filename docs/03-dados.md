@@ -88,15 +88,29 @@ Retornos mensais em reais por categoria. Para meses novos:
 - Bitcoin: BTC-USD, em reais, desde nov/2009 (antes disso o bitcoin não tinha preço; as páginas
   usam o CDI no lugar).
 
-## Radar (`public/data/radar.json`)
+## Radar (`/api/radar`, banco D1 `ativos-radar`)
 
-Lista mandada pela carteira privada a cada mudança (`pipeline/radar.py`, workflow `radar.yml`):
-só ativo, alvo e explicação do alvo. O preço vem do comparador ou do catálogo. Ativo que não
-está em nenhum dos dois (desde 13/nov/2026: os ETFs de Londres SGLD.L e CNDX.L, sem segunda
-fonte para entrar no catálogo) ganha `cotacao` = último fechamento e variação em 12 meses do
-Yahoo, atualizada todo dia (`python -m pipeline.radar --cotar`) e mostrada como "Só Yahoo". Não
-entra no histórico nem no comparador. Ações e ETFs que o visitante adiciona ao radar ficam só no
-navegador dele (`localStorage`, chave `radar:meus`), como os ativos extras do comparador.
+Desde 15/nov/2026 o radar mora no próprio site: banco D1 `ativos-radar` (esquema em
+`db/schema.sql`), editado pelo dono em `/admin/` (atrás do Cloudflare Access) e servido em
+`/api/radar` (público, só leitura). Só ativo, alvo e explicação do alvo; anotações e preço de
+entrada ficam na carteira privada, que só espelha `/api/radar`.
+
+- **Preço de agora:** Yahoo "spark" (até 20 símbolos por pedido; B3 com ~15 min de atraso); o
+  bitcoin, Binance ou Coinbase. A resposta inteira fica 1 minuto no cache da borda e a página
+  busca de novo a cada minuto enquanto está aberta. É preço de exibição, sem segunda fonte; os
+  "12 meses" dos ativos do catálogo continuam vindo das séries conferidas.
+- **Alvo automático** (`functions/_alvo.js`, `functions/_btc.js`): sem alvo digitado, o bitcoin
+  usa o Termômetro do Bitcoin (letabuild.com/btc; alvo = preço em que o score zera pelos
+  indicadores de preço) e as ações, o Gemini pela metodologia do dono (segredo
+  `GEMINI_API_KEY`). A 1ª visita do dia dispara `/api/radar/recalcular`: BTC todo dia, ações
+  quando sai balanço novo. Alvo digitado (`alvo_auto` nulo) nunca é trocado. Indicadores do
+  termômetro ficam 3 horas em cache (saem uma vez por dia); o score do cartão usa o preço de agora.
+- **Cópia no Git:** o Action diário baixa `/api/radar` e grava `public/data/radar.json`
+  (`python -m pipeline.radar --baixar`). A página usa a cópia se a API falhar; ativo fora do
+  catálogo (ex.: SGLD.L, CNDX.L) ganha ali `cotacao` = último fechamento do Yahoo ("Só Yahoo").
+
+Ações e ETFs que o visitante adiciona ao radar ficam só no navegador dele (`localStorage`,
+chave `radar:meus`), como os ativos extras do comparador.
 
 ## Catálogo (177 ativos que o usuário escolhe)
 

@@ -9,7 +9,7 @@
 
 | Camada | O que garante |
 |---|---|
-| Sem servidor de aplicação | O site é só arquivo estático. Não existe endpoint que receba dados. |
+| Nada recebe dado de visitante | As páginas são arquivo estático. A única função aberta é `GET /api/radar`, que só devolve o radar público (não lê corpo, parâmetro nem cookie). A edição do radar (`/admin/`) aceita escrita só com o login do dono (Cloudflare Access + conferência do token na função). |
 | IndexedDB | A carteira é gravada no armazenamento local do navegador, na origem do site. |
 | Modo "só arquivo" | Opcional: nada da carteira fica no aparelho; ela vive só na memória da página e num arquivo do usuário (backup, com senha opcional). O único registro local é o marcador `analises-carteira:modo` (sem dados). |
 | CSP `connect-src 'self'` | O navegador bloqueia qualquer tentativa de script enviar dados a outro domínio. |

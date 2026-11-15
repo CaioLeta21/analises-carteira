@@ -16,7 +16,9 @@ Leia antes de mexer: `docs/01-produto.md`, `docs/02-arquitetura.md`, `docs/03-da
 
 1. **A carteira do usuário nunca sai do navegador.** Nenhum `fetch`, `XMLHttpRequest`,
    `sendBeacon`, `WebSocket`, formulário ou imagem que envie dados do usuário. As únicas
-   requisições permitidas são `GET` de arquivos do próprio site (`/data/*.json`, `/assets/*`).
+   requisições permitidas são `GET` do próprio site: arquivos (`/data/*.json`, `/assets/*`) e
+   `/api/radar` (radar público, só leitura). Escrita só em `/admin/` (edição do radar pelo dono,
+   atrás do Cloudflare Access); nenhuma função pode ler ou guardar dado de visitante.
 2. **Sem scripts de terceiros.** Nada de analytics, pixels, fontes do Google, CDNs ou widgets.
    Bibliotecas ficam copiadas em `public/assets/vendor/` com a versão no nome do arquivo.
 3. **A política de segurança (`public/_headers`) continua com `connect-src 'self'` e

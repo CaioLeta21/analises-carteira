@@ -25,11 +25,15 @@ flowchart LR
 | Site | `public/` | HTML, CSS e JS sem build. Lê `/data/*.json`. |
 | Hospedagem | Cloudflare Pages | Publica `public/` a cada push na branch principal. Aplica `public/_headers`. |
 | Carteiras | IndexedDB do navegador | Guardadas pelo `carteira-armazenamento.js`. Nunca vão para o servidor. |
+| Radar | `functions/` + D1 `ativos-radar` | `/api/radar` (público, só leitura, preço de agora) e `/admin/` (edição, só o dono, Cloudflare Access). Ver `03-dados.md`. |
 
 ## Por que assim
 
-- **Sem servidor de aplicação.** O site é só arquivo estático: barato (plano grátis do
-  Cloudflare), rápido e sem lugar para guardar dado de usuário. É o que garante a privacidade.
+- **Sem servidor que receba dado de visitante.** O comparador, o simulador e a carteira são só
+  arquivo estático: barato (plano grátis do Cloudflare), rápido e sem lugar para guardar dado de
+  usuário. É o que garante a privacidade. A única parte com servidor é o radar (desde
+  15/nov/2026): `/api/radar` só devolve dados públicos e não aceita nada do visitante; a escrita
+  existe só em `/admin/`, atrás do login do dono.
 - **Cálculo no navegador.** `dados.js` deriva base 100, retornos e risco a partir dos preços
   mensais. As janelas (5, 10, 15 anos) andam sozinhas quando entra um mês novo.
 - **Pipeline em Python no GitHub Actions.** Grátis, com histórico de execuções e e-mail

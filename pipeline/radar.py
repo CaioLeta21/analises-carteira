@@ -1,7 +1,8 @@
-"""Radar público: grava public/data/radar.json com a lista que a carteira privada manda.
+"""Cópia do radar em public/data/radar.json.
 
-A carteira (carteira.letabuild.com) dispara um repository_dispatch "radar" a cada mudança no
-radar, com client_payload = {"radar": [...], "em": "..."}. Aqui só passam os campos públicos
+O radar mora no banco do próprio site (D1 ativos-radar), servido ao vivo em /api/radar e editado
+em /admin/. Todo dia o Action baixa /api/radar e grava esta cópia: ela fica no Git (o radar nunca
+existe só no banco) e é o que a página mostra se a API falhar. Só passam os campos públicos
 (ativo, nome, tipo, mercado, moeda, alvo e explicação do alvo); qualquer outro campo é ignorado.
 Cada ativo ganha "site_id": o código dele nos dados deste site (comparador ou catálogo), ou null.
 
@@ -9,8 +10,8 @@ Ativo sem dados no site (site_id null, ex.: ETFs de Londres, que ficaram fora do
 falta de segunda fonte) ganha "cotacao": último fechamento do Yahoo e a variação em 12 meses,
 só para mostrar no radar. Não entra no histórico nem no comparador, e a página avisa "só Yahoo".
 
-Uso: python -m pipeline.radar ARQUIVO_DO_EVENTO   (o $GITHUB_EVENT_PATH do Action)
-     python -m pipeline.radar --cotar             (atualização diária das cotações)
+Uso: python -m pipeline.radar --baixar   (diário: baixa /api/radar, cota e grava a cópia)
+     python -m pipeline.radar --cotar    (só refaz as cotações da cópia que já existe)
 """
 import datetime as dt
 import json
@@ -92,13 +93,23 @@ def gravar(dado):
     os.replace(tmp, SAIDA)
 
 
-def main(evento):
-    payload = json.load(open(evento)).get("client_payload") or {}
-    itens = limpar(payload.get("radar"))
+API = "https://ativos.letabuild.com/api/radar"
+
+
+def baixar(buscar_json=None):
+    """Baixa o radar ao vivo e grava a cópia. Falha na API não apaga a cópia que já existe."""
+    if buscar_json is None:
+        import requests
+        def buscar_json(url):
+            r = requests.get(url, timeout=60, headers={"User-Agent": "ativos-letabuild-copia-do-radar"})
+            r.raise_for_status()
+            return r.json()
+    dado = buscar_json(API)
+    itens = limpar(dado.get("itens"))
     if not itens:
         raise SystemExit("radar vazio ou inválido: nada gravado")
     cotar(itens)
-    gravar({"atualizado_em": str(payload.get("em") or "")[:30], "itens": itens})
+    gravar({"atualizado_em": str(dado.get("atualizado_em") or "")[:30], "itens": itens})
     print(len(itens), "ativos no radar;", sum(1 for i in itens if i["site_id"]), "com dados no site;",
           sum(1 for i in itens if i.get("cotacao")), "com cotação só do Yahoo")
 
@@ -115,5 +126,7 @@ def atualizar_cotacoes():
 if __name__ == "__main__":
     if sys.argv[1] == "--cotar":
         atualizar_cotacoes()
+    elif sys.argv[1] == "--baixar":
+        baixar()
     else:
-        main(sys.argv[1])
+        raise SystemExit("uso: python -m pipeline.radar --baixar | --cotar")

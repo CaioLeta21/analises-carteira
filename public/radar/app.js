@@ -1,5 +1,7 @@
-/* Página do radar: lê /data/radar.json (mandado pela carteira a cada mudança) e os preços do
-   próprio site (/data/mercado.json e /data/catalogo/<ID>.json). Texto dos dados só por textContent. */
+/* Página do radar: lê /api/radar (o radar do próprio site, com o preço de agora e o termômetro do
+   bitcoin; atualiza a cada minuto) e, se a API falhar, a cópia /data/radar.json. A variação de 12 meses
+   dos ativos do site vem das séries conferidas (/data/mercado.json e /data/catalogo/<ID>.json).
+   Só pedidos GET ao próprio site. Texto dos dados só por textContent. */
 (async function () {
 'use strict';
 const $ = (s) => document.querySelector(s);
@@ -15,9 +17,23 @@ const dinheiro = (v, moeda) => (v == null ? '—' : (moeda === 'BRL' ? 'R$ ' : m
 const lembrar = (k, p) => { try { return localStorage.getItem('radar:' + k) || p; } catch (e) { return p; } };
 const guardar = (k, v) => { try { localStorage.setItem('radar:' + k, v); } catch (e) { /* sem armazenamento */ } };
 
+// radar ao vivo (API do site); sem ela, a cópia do dia em /data/radar.json
+async function lerRadar() {
+  try {
+    const r = await fetch('/api/radar', { headers: { Accept: 'application/json' } });
+    if (!r.ok || !/json/.test(r.headers.get('content-type') || '')) throw new Error('api ' + r.status);
+    const j = await r.json();
+    if (!j || !Array.isArray(j.itens)) throw new Error('api sem itens');
+    j.aoVivo = true;
+    return j;
+  } catch (e) {
+    return Dados.buscarJSON('/data/radar.json');
+  }
+}
+
 let R, M, CAT;
 try {
-  [R, M, CAT] = await Promise.all([Dados.buscarJSON('/data/radar.json'), Dados.buscarJSON('/data/mercado.json'), Dados.buscarJSON('/data/catalogo.json').catch(() => null)]);
+  [R, M, CAT] = await Promise.all([lerRadar(), Dados.buscarJSON('/data/mercado.json'), Dados.buscarJSON('/data/catalogo.json').catch(() => null)]);
 } catch (e) {
   $('#atualizacao').replaceWith(el('p', { class: 'erro-carga', text: 'Não foi possível carregar o radar agora. Tente de novo em alguns minutos.' }));
   return;
@@ -27,38 +43,48 @@ try {
 const base = Object.fromEntries(M.ativos.map((a) => [a.id, a]));
 const doCat = CAT ? Object.fromEntries(CAT.ativos.map((a) => [a.id, a])) : {};
 const infoDe = (id) => base[id] || doCat[id] || null;
+// código do ativo nos dados do site (BRK-B pode estar como BRK.B); a API não manda, a cópia já traz
+const idNoSite = (i) => (i.site_id !== undefined ? i.site_id : infoDe(i.codigo) ? i.codigo : infoDe(i.codigo.replace('-', '.')) ? i.codigo.replace('-', '.') : null);
+R.itens.forEach((i) => { i.site_id = idNoSite(i); });
 
 // ativos que o visitante adicionou: guardados só neste navegador, como no comparador
 const CHAVE_MEUS = 'radar:meus';
 const lerMeus = () => { try { const l = JSON.parse(localStorage.getItem(CHAVE_MEUS) || '[]'); return Array.isArray(l) ? l.filter((x) => x && typeof x.id === 'string' && infoDe(x.id)).map((x) => ({ id: x.id, alvo: typeof x.alvo === 'number' && x.alvo > 0 ? x.alvo : null })) : []; } catch (e) { return []; } };
 const gravarMeus = (l) => { try { localStorage.setItem(CHAVE_MEUS, JSON.stringify(l)); } catch (e) { /* sem armazenamento: vale só nesta visita */ } };
-const noRadar = new Set(R.itens.map((i) => i.site_id).filter(Boolean));
-const meus = lerMeus().filter((x) => !noRadar.has(x.id));
-const itens = R.itens.concat(meus.map((x) => {
-  const a = infoDe(x.id);
-  return { codigo: x.id, nome: a.nome, tipo: a.tipo, mercado: a.mercado === 'Brasil' ? 'BR' : 'EXT', moeda: a.moeda, preco_alvo: x.alvo, site_id: x.id, meu: true };
-}));
-
+let noRadar, meus, linhas;
 const series = {};
-await Promise.all(itens.map(async (i) => {
-  const id = i.site_id;
-  if (!id || series[id]) return;
-  if (base[id]) { series[id] = base[id]; return; }
-  if (doCat[id]) { try { series[id] = await Dados.buscarJSON('/data/catalogo/' + encodeURIComponent(id) + '.json'); } catch (e) { /* sem série */ } }
-}));
-const linhas = itens.map((i) => {
-  const s = i.site_id && series[i.site_id];
-  const p = s && s.precos && s.precos.length ? s.precos : null;
-  const c = !p && i.cotacao && i.cotacao.preco > 0 ? i.cotacao : null;
-  const preco = p ? p[p.length - 1] : c ? c.preco : null;
-  const a12 = p && p.length > 12 ? preco / p[p.length - 13] - 1 : c && c.a12 != null ? c.a12 : null;
-  const alvoDist = preco != null && i.preco_alvo ? preco / i.preco_alvo - 1 : null;
-  const moeda = i.moeda || (s && s.moeda) || null;
-  return { i, preco, a12, alvoDist, moeda, soYahoo: c ? c.data : null };
-});
-
-const dref = new Date(M.data_ref + 'T12:00:00');
-$('#atualizacao').textContent = 'Preços até ' + dref.toLocaleDateString('pt-BR') + '. Radar atualizado em ' + (R.atualizado_em ? new Date(R.atualizado_em).toLocaleDateString('pt-BR') : '—') + '.';
+async function montar() {
+  noRadar = new Set(R.itens.map((i) => i.site_id).filter(Boolean));
+  meus = lerMeus().filter((x) => !noRadar.has(x.id));
+  const itens = R.itens.concat(meus.map((x) => {
+    const a = infoDe(x.id);
+    return { codigo: x.id, nome: a.nome, tipo: a.tipo, mercado: a.mercado === 'Brasil' ? 'BR' : 'EXT', moeda: a.moeda, preco_alvo: x.alvo, site_id: x.id, meu: true };
+  }));
+  await Promise.all(itens.map(async (i) => {
+    const id = i.site_id;
+    if (!id || series[id]) return;
+    if (base[id]) { series[id] = base[id]; return; }
+    if (doCat[id]) { try { series[id] = await Dados.buscarJSON('/data/catalogo/' + encodeURIComponent(id) + '.json'); } catch (e) { /* sem série */ } }
+  }));
+  linhas = itens.map((i) => {
+    const s = i.site_id && series[i.site_id];
+    const p = s && s.precos && s.precos.length ? s.precos : null;
+    const c = i.cotacao && i.cotacao.preco > 0 ? i.cotacao : null;
+    // preço de agora (API) quando houver; senão o último fechamento das séries do site; senão o do Yahoo na cópia
+    const vivo = R.aoVivo && c ? c : null;
+    const preco = vivo ? vivo.preco : p ? p[p.length - 1] : c ? c.preco : null;
+    const a12 = p && p.length > 12 ? p[p.length - 1] / p[p.length - 13] - 1 : c && c.a12 != null ? c.a12 : null;
+    const alvoDist = preco != null && i.preco_alvo ? preco / i.preco_alvo - 1 : null;
+    const moeda = i.moeda || (s && s.moeda) || null;
+    return { i, preco, a12, alvoDist, moeda, soYahoo: !vivo && !p && c ? c.data : null, foraDoSite: !p && !!c };
+  });
+  const dref = new Date(M.data_ref + 'T12:00:00');
+  const mudou = R.atualizado_em ? new Date(R.atualizado_em).toLocaleDateString('pt-BR') : '—';
+  $('#atualizacao').textContent = R.aoVivo
+    ? 'Preços de agora (Yahoo Finance; B3 com cerca de 15 minutos de atraso), atualizados a cada minuto. Última consulta às ' + new Date(R.gerado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + '. Radar mudado em ' + mudou + '.'
+    : 'Preços até ' + dref.toLocaleDateString('pt-BR') + '. Radar atualizado em ' + mudou + '.';
+}
+await montar();
 
 function situacao(x) {
   if (!x.i.preco_alvo) return { t: 'Sem alvo de preço', c: 'sem' };
@@ -83,7 +109,10 @@ function cartao(x) {
       el('span', { class: 'p alvo' }, el('span', { class: 'r', text: 'Alvo' }), el('strong', { text: i.preco_alvo ? dinheiro(i.preco_alvo, x.moeda) : '—' }))),
     el('span', { class: 'sit', text: s.t }),
     x.a12 != null ? el('span', { class: 'a12' }, '12 meses: ', el('span', { class: x.a12 > 0 ? 'pos' : x.a12 < 0 ? 'neg' : null, text: pct(x.a12) })) : null,
+    i.termometro ? el('span', { class: 'termometro', title: 'Termômetro do Bitcoin (letabuild.com/btc): média de 8 indicadores, de −2 (venda forte) a +2 (compra forte). Positivo: preço abaixo do alvo.' },
+      'Termômetro: ', el('strong', { text: (i.termometro.score > 0 ? '+' : i.termometro.score < 0 ? '−' : '') + dec(Math.abs(i.termometro.score), 2) + ' · ' + i.termometro.sinal })) : null,
     x.soYahoo ? el('span', { class: 'fonte', title: 'Ativo fora do catálogo do site: preço só do Yahoo Finance, sem conferência com segunda fonte.', text: 'Só Yahoo · fechamento de ' + new Date(x.soYahoo + 'T12:00:00').toLocaleDateString('pt-BR') }) : null,
+    !x.soYahoo && x.foraDoSite && x.i.tipo !== 'cripto' ? el('span', { class: 'fonte', title: 'Ativo fora do catálogo do site: preço só do Yahoo Finance, sem conferência com segunda fonte.', text: 'Só Yahoo' }) : null,
     i.meu ? el('span', { class: 'fonte', text: 'Adicionado por você · só neste navegador' }) : null);
   if (i.meu) {
     c.classList.add('meu');
@@ -152,4 +181,19 @@ document.addEventListener('keydown', (ev) => { if (ev.key !== 'Escape') return; 
   });
 })();
 desenhar();
+
+// com a página aberta e visível, busca o radar de novo a cada minuto (sem recarregar)
+if (R.aoVivo) {
+  setInterval(async () => {
+    if (document.visibilityState !== 'visible' || document.querySelector('.pop:not([hidden])')) return;
+    try {
+      const novo = await lerRadar();
+      if (!novo.aoVivo) return;
+      novo.itens.forEach((i) => { i.site_id = idNoSite(i); });
+      R = novo;
+      await montar();
+      desenhar();
+    } catch (e) { /* fica com o que já está na tela */ }
+  }, 60e3);
+}
 })();

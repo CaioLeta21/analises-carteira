@@ -52,6 +52,31 @@ def test_so_campos_publicos_e_codigo_do_site():
     assert itens[0]["preco_alvo"] == 500.0 and itens[2]["preco_alvo"] is None
 
 
+def test_copia_baixa_a_api_e_so_grava_campos_publicos(tmp_path, monkeypatch):
+    monkeypatch.setattr(radar, "SAIDA", str(tmp_path / "radar.json"))
+    monkeypatch.setattr(radar, "cotar", lambda itens: itens)  # sem rede
+    api = {"atualizado_em": "2026-11-15T18:00:00Z", "itens": [
+        {"codigo": "BTC", "simbolo": "BTC-USD", "tipo": "cripto", "preco_alvo": 101900, "alvo_explicacao": "termômetro",
+         "cotacao": {"preco": 64600}, "termometro": {"score": 0.88}},
+    ]}
+    radar.baixar(lambda url: api)
+    import json
+    d = json.load(open(radar.SAIDA))
+    assert d["atualizado_em"] == "2026-11-15T18:00:00Z"
+    assert d["itens"][0]["codigo"] == "BTC" and d["itens"][0]["preco_alvo"] == 101900.0
+    assert "termometro" not in d["itens"][0] and "cotacao" not in d["itens"][0]
+
+
+def test_copia_nao_apaga_com_api_vazia(tmp_path, monkeypatch):
+    import pytest
+    saida = tmp_path / "radar.json"
+    saida.write_text('{"itens": [1]}')
+    monkeypatch.setattr(radar, "SAIDA", str(saida))
+    with pytest.raises(SystemExit):
+        radar.baixar(lambda url: {"itens": []})
+    assert saida.read_text() == '{"itens": [1]}'
+
+
 def test_alvo_invalido_vira_nulo_e_texto_e_cortado():
     itens = radar.limpar([{"codigo": "X", "preco_alvo": "100", "alvo_explicacao": "a" * 5000}], set())
     assert itens[0]["preco_alvo"] is None

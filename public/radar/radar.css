@@ -30,6 +30,8 @@ h1{font-family:var(--font-serif);font-weight:400;font-size:var(--fs-title);margi
 .cartao.s-ok .sit{color:var(--color-ok);font-weight:600}
 .cartao.s-perto .sit{color:var(--color-warn);font-weight:600}
 .cartao .a12{font-size:11px;color:var(--color-fg-muted)}
+.cartao .termometro{font-size:11px;color:var(--color-fg-muted)}
+.cartao .termometro strong{color:var(--color-fg)}
 .pos{color:var(--color-ok)}.neg{color:var(--color-bad)}
 .ajuda{all:unset;box-sizing:border-box;position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;border:1px solid var(--color-border-line);background:var(--color-bg);color:var(--color-fg-muted);font-size:12px;font-weight:600;line-height:18px;text-align:center;cursor:pointer}
 .ajuda:hover,.ajuda[aria-expanded="true"]{color:var(--color-fg);border-color:var(--color-fg-muted)}

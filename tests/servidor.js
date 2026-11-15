@@ -17,6 +17,13 @@ function regras() {
 const casa = (padrao, url) => new RegExp('^' + padrao.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$').test(url);
 http.createServer((req, res) => {
   let url = decodeURIComponent(req.url.split('?')[0]);
+  // /api/radar é uma função do Pages (functions/); aqui responde com a cópia do radar, sem rede
+  if (url === '/api/radar') {
+    const copia = JSON.parse(fs.readFileSync(path.join(raiz, 'data', 'radar.json'), 'utf8'));
+    copia.gerado_em = new Date().toISOString();
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify(copia));
+  }
   let arq = path.join(raiz, url);
   if (!arq.startsWith(raiz)) { res.writeHead(403); return res.end(); }
   if (fs.existsSync(arq) && fs.statSync(arq).isDirectory()) arq = path.join(arq, 'index.html');

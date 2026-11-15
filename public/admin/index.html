@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Editar o radar</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/fontes.css">
+<link rel="stylesheet" href="/admin/admin.css">
+<link rel="icon" href="/assets/icones/icone.svg" type="image/svg+xml">
+</head>
+<body>
+<nav class="site-nav" aria-label="Páginas"><a href="/">Início</a><a href="/radar/">Radar</a><a href="/admin/" aria-current="page">Editar o radar</a></nav>
+<main class="pagina">
+  <h1>Editar o radar</h1>
+  <p class="lede">O que muda aqui aparece em <a href="/radar/">ativos.letabuild.com/radar</a> em até 1 minuto, e na carteira na próxima vez que ela abrir o radar. Sem preço-alvo, o alvo é calculado: pelo Termômetro do Bitcoin no BTC, pelo Gemini nas ações (precisa da chave do Gemini). Alvo digitado não é recalculado.</p>
+
+  <form class="add" id="f-add" novalidate>
+    <label class="campo">Ativo <input id="add-codigo" name="codigo" list="sugestoes" autocomplete="off" placeholder="Código ou nome: WEGE3, Microsoft, VOO, BTC" required></label>
+    <label class="campo curto">Preço-alvo (opcional) <input name="preco_alvo" inputmode="decimal" placeholder="vazio: calculado"></label>
+    <label class="campo largo">Como o alvo foi definido (opcional) <textarea name="alvo_explicacao" rows="2"></textarea></label>
+    <input type="hidden" name="simbolo">
+    <button type="submit">Adicionar</button>
+    <datalist id="sugestoes"></datalist>
+    <p class="msg" id="add-msg" role="status"></p>
+  </form>
+
+  <p class="atualizacao" id="estado">Carregando…</p>
+  <div id="lista"></div>
+</main>
+<script src="/admin/admin.js"></script>
+</body>
+</html>
