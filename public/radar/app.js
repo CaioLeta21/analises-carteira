@@ -87,9 +87,9 @@ async function montar() {
 await montar();
 
 function situacao(x) {
-  if (!x.i.preco_alvo) return { t: 'Sem alvo de preço', c: 'sem' };
+  if (!x.i.preco_alvo) return { t: 'Sem preço teto', c: 'sem' };
   if (x.preco == null) return { t: 'Sem cotação no site', c: 'sem' };
-  if (x.preco <= x.i.preco_alvo) return { t: 'No alvo · ' + pct(x.i.preco_alvo / x.preco - 1, false) + ' abaixo', c: 'ok' };
+  if (x.preco <= x.i.preco_alvo) return { t: 'Abaixo do teto · margem de ' + pct(x.i.preco_alvo / x.preco - 1, false), c: 'ok' };
   const falta = 1 - x.i.preco_alvo / x.preco;
   return { t: 'Falta cair ' + pct(falta, false), c: falta <= 0.05 ? 'perto' : 'longe' };
 }
@@ -106,10 +106,10 @@ function cartao(x) {
     el('span', { class: 'id' }, el('strong', { text: i.codigo }), el('span', { class: 'nome', title: i.nome || null, text: i.nome || '' })),
     el('span', { class: 'precos' },
       el('span', { class: 'p' }, el('span', { class: 'r', text: 'Hoje' }), el('strong', { text: dinheiro(x.preco, x.moeda) })),
-      el('span', { class: 'p alvo' }, el('span', { class: 'r', text: 'Alvo' }), el('strong', { text: i.preco_alvo ? dinheiro(i.preco_alvo, x.moeda) : '—' }))),
+      el('span', { class: 'p alvo' }, el('span', { class: 'r', text: 'Teto' }), el('strong', { text: i.preco_alvo ? dinheiro(i.preco_alvo, x.moeda) : '—' }))),
     el('span', { class: 'sit', text: s.t }),
     x.a12 != null ? el('span', { class: 'a12' }, '12 meses: ', el('span', { class: x.a12 > 0 ? 'pos' : x.a12 < 0 ? 'neg' : null, text: pct(x.a12) })) : null,
-    i.termometro ? el('span', { class: 'termometro', title: 'Termômetro do Bitcoin (letabuild.com/btc): média de 8 indicadores, de −2 (venda forte) a +2 (compra forte). Positivo: preço abaixo do alvo.' },
+    i.termometro ? el('span', { class: 'termometro', title: 'Termômetro do Bitcoin (letabuild.com/btc): média de 8 indicadores, de −2 (venda forte) a +2 (compra forte). Positivo: preço abaixo do teto.' },
       'Termômetro: ', el('strong', { text: (i.termometro.score > 0 ? '+' : i.termometro.score < 0 ? '−' : '') + dec(Math.abs(i.termometro.score), 2) + ' · ' + i.termometro.sinal })) : null,
     x.soYahoo ? el('span', { class: 'fonte', title: 'Ativo fora do catálogo do site: preço só do Yahoo Finance, sem conferência com segunda fonte.', text: 'Só Yahoo · fechamento de ' + new Date(x.soYahoo + 'T12:00:00').toLocaleDateString('pt-BR') }) : null,
     !x.soYahoo && x.foraDoSite && x.i.tipo !== 'cripto' ? el('span', { class: 'fonte', title: 'Ativo fora do catálogo do site: preço só do Yahoo Finance, sem conferência com segunda fonte.', text: 'Só Yahoo' }) : null,
@@ -121,8 +121,8 @@ function cartao(x) {
     c.append(b);
   } else if (i.alvo_explicacao) {
     const id = 'pop-' + i.codigo.replace(/[^\w-]/g, '_');
-    const pop = el('div', { class: 'pop', id, role: 'note', hidden: true }, el('strong', { text: 'Como o alvo foi definido' }), i.alvo_explicacao);
-    const b = el('button', { type: 'button', class: 'ajuda', 'aria-expanded': 'false', 'aria-controls': id, 'aria-label': 'Como foi definido o alvo de ' + i.codigo, title: 'Como foi definido o alvo', text: '?' });
+    const pop = el('div', { class: 'pop', id, role: 'note', hidden: true }, el('strong', { text: 'Como o preço teto foi definido' }), i.alvo_explicacao);
+    const b = el('button', { type: 'button', class: 'ajuda', 'aria-expanded': 'false', 'aria-controls': id, 'aria-label': 'Como foi definido o preço teto de ' + i.codigo, title: 'Como foi definido o preço teto', text: '?' });
     b.addEventListener('click', (ev) => { ev.stopPropagation(); const abrir = pop.hidden; fecharPops(); pop.hidden = !abrir; b.setAttribute('aria-expanded', String(abrir)); });
     c.append(b, pop);
   }
@@ -142,9 +142,9 @@ function desenhar() {
   const c = (r, v, s) => el('div', { class: 'c' }, el('div', { class: 'r', text: r }), el('div', { class: 'v', text: v }), s ? el('div', { class: 's', text: s }) : null);
   $('#resumo').replaceChildren(
     c('Ativos no radar', String(vis.length), vis.filter((x) => x.preco == null).length ? vis.filter((x) => x.preco == null).length + ' sem cotação no site' : 'todos com cotação'),
-    c('No preço-alvo', String(noAlvo.length), noAlvo.length ? noAlvo.map((x) => x.i.codigo).join(', ') : 'nenhum hoje'),
-    c('A até 5% do alvo', String(perto.length), perto.length ? perto.map((x) => x.i.codigo).join(', ') : 'nenhum hoje'),
-    c('Distância típica', mediana == null ? '—' : pct(mediana), 'mediana do preço acima do alvo'));
+    c('Abaixo do teto', String(noAlvo.length), noAlvo.length ? noAlvo.map((x) => x.i.codigo).join(', ') : 'nenhum hoje'),
+    c('A até 5% do teto', String(perto.length), perto.length ? perto.map((x) => x.i.codigo).join(', ') : 'nenhum hoje'),
+    c('Distância típica', mediana == null ? '—' : pct(mediana), 'mediana do preço acima do teto'));
   document.querySelectorAll('#filtro button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.f === filtro)));
   $('#ordem').value = ordem;
 }
@@ -174,7 +174,7 @@ document.addEventListener('keydown', (ev) => { if (ev.key !== 'Escape') return; 
     const s = alvo.value.trim().replace(/\s|R\$|US\$/g, '');
     const t = s.includes(',') ? s.replace(/\./g, '').replace(',', '.') : /^\d{1,3}(\.\d{3})+$/.test(s) ? s.replace(/\./g, '') : s;
     const v = t ? Number(t) : null;
-    if (t && !(v > 0)) { msg.textContent = 'Preço-alvo inválido. Use só números, como 25,50.'; return; }
+    if (t && !(v > 0)) { msg.textContent = 'Preço teto inválido. Use só números, como 25,50.'; return; }
     gravarMeus(lerMeus().filter((m) => m.id !== a.id).concat([{ id: a.id, alvo: v }]));
     msg.textContent = 'Adicionando ' + a.nome + '…';
     location.reload();

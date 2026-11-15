@@ -74,7 +74,7 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     const bt = p.locator('.ajuda').first();
     await bt.click(); await p.waitForTimeout(100);
     const pop = await p.$eval('.pop:not([hidden])', (e) => e.textContent).catch(() => '');
-    ok(/Como o alvo foi definido/.test(pop) && pop.length > 40 && (await bt.getAttribute('aria-expanded')) === 'true', 'radar: o "?" mostra como o alvo foi definido');
+    ok(/Como o preço teto foi definido/.test(pop) && !/\balvo\b/i.test(pop) && pop.length > 40 && (await bt.getAttribute('aria-expanded')) === 'true', 'radar: o "?" mostra como o preço teto foi definido');
     await p.keyboard.press('Escape'); await p.waitForTimeout(100);
     ok(await p.$('.pop:not([hidden])') === null, 'radar: Esc fecha a explicação');
     await p.click('#filtro [data-f="BR"]'); await p.waitForTimeout(100);

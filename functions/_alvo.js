@@ -8,14 +8,14 @@ const UA = { 'User-Agent': 'Mozilla/5.0', Accept: 'application/json' };
 // cada modelo tem cota diária própria; quando uma acaba (ou o modelo não existe), passa para o próximo
 export const MODELOS = ['gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemma-4-31b-it'];
 
-export const METODOLOGIA = `Cada alvo responde à pergunta: até que preço vale a pena aportar sem pagar caro demais?
+export const METODOLOGIA = `Cada preço teto responde à pergunta: até que preço vale a pena aportar sem pagar caro demais? (É o máximo para comprar; não é preço de venda.)
 
-REGRA GERAL (empresas lucrativas): Alvo = lucro por ação esperado para os próximos 12 meses × P/L justo.
+REGRA GERAL (empresas lucrativas): Preço teto = lucro por ação esperado para os próximos 12 meses × P/L justo.
 O P/L justo sai de três passos:
 1. Histórico: comece pela média do P/L futuro (projetado) da própria empresa nos últimos 5 a 10 anos.
 2. Crescimento: ajuste pelo PEG (P/L ÷ crescimento anual do lucro em %). Para empresas de crescimento, PEG entre 1 e 1,5. Se o crescimento desacelerou, desconto sobre a média.
 3. Risco: desconto maior para negócios cíclicos, concentrados, regulados ou com problema recente.
-Níveis: oportunidade ≈ 15–20% abaixo do alvo; pausar acima de ≈ 25–40% acima do alvo (perto do múltiplo máximo histórico).
+Níveis: oportunidade ≈ 15–20% abaixo do preço teto; pausar os aportes acima de ≈ 25–40% acima do preço teto (perto do múltiplo máximo histórico).
 Nunca use P/L de pico como "justo". Prefira ser conservador.
 
 Exemplos de P/L justo já definidos (calibração): AZO 20x (média histórica, recompra); MSFT 24x (abaixo da média pelo investimento pesado em IA); MA 28x; V 26x; TMO 22x (desaceleração); GE 30x (carteira de pedidos); SYK 22x (corte de projeção); AMD 28x (PEG≈1); AVGO 22x (semicondutor é cíclico); NVDA ~25x (PEG≈1); GOOGL 22x; AMZN 28x; COST 35x (sempre com prêmio); LLY 30x (crescimento >25%); PLTR 50x (cresce ~50% a.a.); BLK 22x; CMG ~25x (recuperação incerta); WEGE3 26x (média ~31x com desconto pela margem em queda).
@@ -61,7 +61,7 @@ export async function dadosAlvo(item, buscar = fetch) {
 }
 
 export function montarPrompt(dados) {
-  return `Você é um analista que aplica uma metodologia fixa de preço-alvo. Use SÓ os números abaixo (não invente dados; pode usar conhecimento geral sobre o negócio da empresa para julgar crescimento e risco).
+  return `Você é um analista que aplica uma metodologia fixa de preço teto (o máximo que vale pagar para comprar; não é preço de venda). Use SÓ os números abaixo (não invente dados; pode usar conhecimento geral sobre o negócio da empresa para julgar crescimento e risco).
 
 METODOLOGIA:
 ${METODOLOGIA}
@@ -75,7 +75,7 @@ Responda só com JSON neste formato:
  "multiplo": número (P/L, P/S ou P/VP justo) ou null,
  "alvo": número = base × multiplo, na moeda da cotação, ou null,
  "oportunidade": número ou null, "pausar": número ou null,
- "explicacao": "em português do Brasil, 2 a 4 frases curtas, até 600 caracteres, para um leitor leigo: qual o método, os números usados (base e múltiplo) e por que esse múltiplo (histórico, crescimento, risco). Sem recomendar compra."}`;
+ "explicacao": "em português do Brasil, 2 a 4 frases curtas, até 600 caracteres, para um leitor leigo: qual o método, os números usados (base e múltiplo) e por que esse múltiplo (histórico, crescimento, risco). Chame o valor de \"preço teto\", nunca de \"alvo\". Sem recomendar compra."}`;
 }
 
 // Confere a resposta; devolve o resultado limpo ou lança erro com o motivo.
@@ -87,9 +87,9 @@ export function validar(r, preco) {
   if (r.metodo === 'sem_alvo') return { metodo: 'sem_alvo', alvo: null, explicacao: explicacao.slice(0, 900) };
   const n = (v) => (typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : null);
   const base = n(r.base), multiplo = n(r.multiplo), alvo = n(r.alvo);
-  if (!base || !multiplo || !alvo) throw new Error('faltam base, múltiplo ou alvo');
-  if (Math.abs(base * multiplo / alvo - 1) > 0.03) throw new Error(`alvo ${alvo} ≠ base ${base} × múltiplo ${multiplo}`);
-  if (alvo < preco * 0.25 || alvo > preco * 3) throw new Error(`alvo ${alvo} longe demais do preço ${preco}`);
+  if (!base || !multiplo || !alvo) throw new Error('faltam base, múltiplo ou preço teto');
+  if (Math.abs(base * multiplo / alvo - 1) > 0.03) throw new Error(`preço teto ${alvo} ≠ base ${base} × múltiplo ${multiplo}`);
+  if (alvo < preco * 0.25 || alvo > preco * 3) throw new Error(`preço teto ${alvo} longe demais do preço ${preco}`);
   const op = n(r.oportunidade), pa = n(r.pausar);
   if ((op && op >= alvo) || (pa && pa <= alvo)) throw new Error('níveis fora de ordem');
   if (explicacao.length < 40) throw new Error('explicação curta demais');
@@ -139,7 +139,7 @@ const dataBR = (d) => d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4)
 // Para ETF e FII não calcula (a metodologia deles é aporte contínuo / P/L do índice).
 export async function calcularAlvo(item, env, buscar = fetch) {
   if (!env.GEMINI_API_KEY) throw new Error('sem GEMINI_API_KEY');
-  if (item.tipo !== 'acao') throw new Error('alvo automático só para ações');
+  if (item.tipo !== 'acao') throw new Error('preço teto automático só para ações');
   const { dados, trimestre } = await dadosAlvo(item, buscar);
   const prompt = montarPrompt(dados);
   let ultimoErro;

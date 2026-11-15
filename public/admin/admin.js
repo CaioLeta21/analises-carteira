@@ -24,7 +24,7 @@ async function api(caminho, opcoes = {}) {
 
 function origem(i) {
   let a = null; try { a = i.alvo_auto ? JSON.parse(i.alvo_auto) : null; } catch (e) { a = null; }
-  if (!a) return i.preco_alvo != null ? 'alvo digitado' : 'sem alvo';
+  if (!a) return i.preco_alvo != null ? 'teto digitado' : 'sem teto';
   if (a.erro) return 'automático falhou em ' + a.em + ': ' + a.erro;
   if (a.metodo === 'termometro_btc') return 'termômetro do BTC · ' + a.em;
   return 'Gemini (' + (a.modelo || '') + ') · ' + a.em;
@@ -32,13 +32,13 @@ function origem(i) {
 
 function item(i) {
   const f = el('form', { novalidate: true },
-    el('label', { class: 'campo' }, 'Preço-alvo (' + (i.moeda || '') + ')', el('input', { name: 'preco_alvo', inputmode: 'decimal', value: i.preco_alvo != null ? String(i.preco_alvo).replace('.', ',') : '' })),
+    el('label', { class: 'campo' }, 'Preço teto (' + (i.moeda || '') + ')', el('input', { name: 'preco_alvo', inputmode: 'decimal', value: i.preco_alvo != null ? String(i.preco_alvo).replace('.', ',') : '' })),
     el('label', { class: 'campo' }, 'Tipo', el('select', { name: 'tipo' }, ...Object.entries(TIPOS).map(([v, r]) => el('option', { value: v, selected: v === i.tipo, text: r })))),
-    el('label', { class: 'campo largo' }, 'Como o alvo foi definido (aparece no "?" do cartão)', el('textarea', { name: 'alvo_explicacao', rows: '5' }, i.alvo_explicacao || '')),
+    el('label', { class: 'campo largo' }, 'Como o preço teto foi definido (aparece no "?" do cartão)', el('textarea', { name: 'alvo_explicacao', rows: '5' }, i.alvo_explicacao || '')),
   );
   const msg = el('p', { class: 'msg', role: 'status' });
   const salvar = el('button', { type: 'submit', text: 'Salvar' });
-  const recalc = el('button', { type: 'button', class: 'sec', text: 'Recalcular o alvo' });
+  const recalc = el('button', { type: 'button', class: 'sec', text: 'Recalcular o preço teto' });
   const tirar = el('button', { type: 'button', class: 'perigo', text: 'Tirar do radar' });
   f.append(el('div', { class: 'acoes' }, salvar, (i.tipo === 'acao' || i.simbolo === 'BTC-USD') ? recalc : null, tirar), msg);
   const ocupado = (sim, t) => { [salvar, recalc, tirar].forEach((b) => { b.disabled = sim; }); msg.className = 'msg'; if (t) msg.textContent = t; };
@@ -59,7 +59,7 @@ function item(i) {
   });
   return el('details', { class: 'item', id: 'i-' + i.id },
     el('summary', null, el('strong', { text: i.codigo }), el('span', { class: 'nome', text: (i.nome || '') + ' · ' + (TIPOS[i.tipo] || i.tipo) }),
-      el('span', { class: 'alvo', text: 'Alvo ' + dinheiro(i.preco_alvo, i.moeda) }), el('span', { class: 'orig', text: origem(i) })),
+      el('span', { class: 'alvo', text: 'Teto ' + dinheiro(i.preco_alvo, i.moeda) }), el('span', { class: 'orig', text: origem(i) })),
     f);
 }
 
@@ -99,7 +99,7 @@ async function carregar(abrir) {
       const r = await api('/admin/api/radar', { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(f))) });
       const a = r.alvo_auto;
       msg.textContent = `Adicionado: ${r.nome} (${r.codigo}, ${TIPOS[r.tipo] || r.tipo}), ${dinheiro(r.preco, r.moeda)}.`
-        + (!a ? (f.preco_alvo.value.trim() ? '' : ' Sem alvo automático para esse tipo (ou falta a chave do Gemini).') : a.ok && a.preco_alvo ? ` Alvo calculado: ${dinheiro(a.preco_alvo, r.moeda)}.` : a.ok ? ' Sem alvo: dados insuficientes.' : ` O cálculo do alvo falhou (${a.erro}); é refeito amanhã.`);
+        + (!a ? (f.preco_alvo.value.trim() ? '' : ' Sem preço teto automático para esse tipo (ou falta a chave do Gemini).') : a.ok && a.preco_alvo ? ` Preço teto calculado: ${dinheiro(a.preco_alvo, r.moeda)}.` : a.ok ? ' Sem preço teto: dados insuficientes.' : ` O cálculo do preço teto falhou (${a.erro}); é refeito amanhã.`);
       f.reset(); f.simbolo.value = '';
       await carregar(r.id);
     } catch (e) { msg.className = 'msg erro'; msg.textContent = e.message; }

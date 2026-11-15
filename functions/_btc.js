@@ -203,9 +203,9 @@ export function alvoBTC(b) {
   const partes = s.partes.map(([k, v, sc]) => `${NOMES[k]} ${num(v, k === 'rhodl' ? 0 : 2)} (${sc > 0 ? '+' : ''}${sc})`).join('; ');
   const em = b.data.split('-').reverse().join('/');
   const explicacao = `Pelo Termômetro do Bitcoin (letabuild.com/btc): média de ${s.partes.length} indicadores, cada um de -2 (venda forte) a +2 (compra forte); o cartão mostra o score de agora. `
-    + `O alvo é o preço em que o score cairia para zero (neutro) só pelos indicadores de preço (média de 200 semanas, MVRV, RSI e CVDD), com Fear & Greed, SOPR e RHODL em neutro: ${usd(n.alvo)}. `
+    + `O preço teto é aquele em que o score cairia para zero (neutro) só pelos indicadores de preço (média de 200 semanas, MVRV, RSI e CVDD), com Fear & Greed, SOPR e RHODL em neutro: ${usd(n.alvo)}. `
     + `Oportunidade (score em COMPRA) até ${usd(n.oportunidade)}; pausar (score em VENDA) acima de ${usd(n.pausar)}. `
-    + `Na conta de ${em}, com o bitcoin a ${usd(b.preco)}, o score era ${s.score > 0 ? '+' : ''}${num(s.score)} (${sinal(s.score)}): ${partes}. Os indicadores saem uma vez por dia; o alvo é refeito todo dia.`;
+    + `Na conta de ${em}, com o bitcoin a ${usd(b.preco)}, o score era ${s.score > 0 ? '+' : ''}${num(s.score)} (${sinal(s.score)}): ${partes}. Os indicadores saem uma vez por dia; o preço teto é refeito todo dia.`;
   return {
     preco_alvo: n.alvo,
     alvo_explicacao: explicacao.slice(0, 1500),

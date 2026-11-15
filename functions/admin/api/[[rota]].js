@@ -28,7 +28,7 @@ export async function adicionar(env, b, buscar = fetch) {
   if (!digitado || digitado.length > 60) return [400, 'Escreva o código ou o nome. Exemplos: ITSA4, Itaúsa, VOO, Microsoft, BTC.'];
   if (b.tipo && !TIPOS.includes(b.tipo)) return [400, 'Tipo inválido.'];
   const pa = alvo(b.preco_alvo);
-  if (pa != null && !(pa > 0)) return [400, 'Preço-alvo inválido.'];
+  if (pa != null && !(pa > 0)) return [400, 'Preço teto inválido.'];
   let simbolo;
   if (b.simbolo && CODIGO.test(String(b.simbolo).toUpperCase())) simbolo = String(b.simbolo).toUpperCase();
   else { try { simbolo = (await resolver(digitado, buscar)).simbolo; } catch (e) { return [404, `${digitado}: ${e.message}.`]; } }
@@ -51,7 +51,7 @@ export async function adicionar(env, b, buscar = fetch) {
 export async function editar(env, id, b) {
   if (!b || !/^\d+$/.test(id)) return [400, 'Dados inválidos.'];
   const pa = alvo(b.preco_alvo);
-  if (pa != null && !(pa > 0)) return [400, 'Preço-alvo inválido.'];
+  if (pa != null && !(pa > 0)) return [400, 'Preço teto inválido.'];
   if (b.tipo && !TIPOS.includes(b.tipo)) return [400, 'Tipo inválido.'];
   const ex = texto(b.alvo_explicacao, 1500);
   // mexeu no alvo ou na explicação: vira alvo digitado e o automático para (no SQLite o lado direito do SET usa os valores antigos)
@@ -67,7 +67,7 @@ export async function recalcular(env, id, buscar = fetch) {
   if (!i) return [404, 'Não encontrado.'];
   let r;
   if (i.simbolo === 'BTC-USD') r = await gravarAlvoBTC(env, i.id, buscar);
-  else if (i.tipo !== 'acao') return [400, 'O alvo automático é para ações e bitcoin (ETF e FII seguem aporte contínuo).'];
+  else if (i.tipo !== 'acao') return [400, 'O preço teto automático é para ações e bitcoin (ETF e FII seguem aporte contínuo).'];
   else if (!env.GEMINI_API_KEY) return [503, 'Falta a chave do Gemini (segredo GEMINI_API_KEY do Pages ativos-letabuild).'];
   else r = await gravarAlvo(env, i.id, i, buscar);
   return r.ok ? [200, r] : [502, 'Não deu para calcular agora: ' + r.erro];

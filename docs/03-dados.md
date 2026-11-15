@@ -92,18 +92,22 @@ Retornos mensais em reais por categoria. Para meses novos:
 
 Desde 15/nov/2026 o radar mora no próprio site: banco D1 `ativos-radar` (esquema em
 `db/schema.sql`), editado pelo dono em `/admin/` (atrás do Cloudflare Access) e servido em
-`/api/radar` (público, só leitura). Só ativo, alvo e explicação do alvo; anotações e preço de
+`/api/radar` (público, só leitura). Só ativo, preço teto e explicação; anotações e preço de
 entrada ficam na carteira privada, que só espelha `/api/radar`.
+
+**Preço teto, não alvo** (nome desde 15/nov/2026): é o máximo que vale pagar para começar ou
+aumentar a posição. Não existe preço de venda na metodologia; "pausar" quer dizer parar de
+aportar. No banco e no código o campo continua `preco_alvo` (nome interno, nunca aparece).
 
 - **Preço de agora:** Yahoo "spark" (até 20 símbolos por pedido; B3 com ~15 min de atraso); o
   bitcoin, Binance ou Coinbase. A resposta inteira fica 1 minuto no cache da borda e a página
   busca de novo a cada minuto enquanto está aberta. É preço de exibição, sem segunda fonte; os
   "12 meses" dos ativos do catálogo continuam vindo das séries conferidas.
-- **Alvo automático** (`functions/_alvo.js`, `functions/_btc.js`): sem alvo digitado, o bitcoin
-  usa o Termômetro do Bitcoin (letabuild.com/btc; alvo = preço em que o score zera pelos
+- **Preço teto automático** (`functions/_alvo.js`, `functions/_btc.js`): sem teto digitado, o bitcoin
+  usa o Termômetro do Bitcoin (letabuild.com/btc; teto = preço em que o score zera pelos
   indicadores de preço) e as ações, o Gemini pela metodologia do dono (segredo
   `GEMINI_API_KEY`). A 1ª visita do dia dispara `/api/radar/recalcular`: BTC todo dia, ações
-  quando sai balanço novo. Alvo digitado (`alvo_auto` nulo) nunca é trocado. Indicadores do
+  quando sai balanço novo. Teto digitado (`alvo_auto` nulo) nunca é trocado. Indicadores do
   termômetro ficam 3 horas em cache (saem uma vez por dia); o score do cartão usa o preço de agora.
 - **Cópia no Git:** o Action diário baixa `/api/radar` e grava `public/data/radar.json`
   (`python -m pipeline.radar --baixar`). A página usa a cópia se a API falhar; ativo fora do

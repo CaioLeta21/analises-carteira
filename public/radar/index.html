@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Radar de ações e ETFs</title>
-<meta name="description" content="Ações e ETFs acompanhados, com o preço-alvo de cada um e como ele foi definido. Preços atualizados todo dia.">
+<meta name="description" content="Ações, ETFs e bitcoin acompanhados, com o preço teto de cada um (o máximo que vale pagar) e como ele foi definido.">
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="stylesheet" href="/assets/css/fontes.css">
 <link rel="stylesheet" href="/radar/radar.css">
@@ -17,7 +17,7 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Ativos · letabuild">
 <meta property="og:title" content="Radar de ações e ETFs">
-<meta property="og:description" content="Ações e ETFs acompanhados, com o preço-alvo de cada um e como ele foi definido.">
+<meta property="og:description" content="Ações, ETFs e bitcoin acompanhados, com o preço teto de cada um e como ele foi definido.">
 <meta property="og:url" content="https://ativos.letabuild.com/radar/">
 <meta property="og:image" content="https://ativos.letabuild.com/assets/og.png?v=2">
 <meta name="twitter:card" content="summary_large_image">
@@ -27,25 +27,25 @@
 <main class="pagina">
   <h1>Radar</h1>
   <p class="atualizacao" id="atualizacao">Carregando…</p>
-  <p class="lede">Ações, ETFs e bitcoin acompanhados para talvez comprar. Cada um tem um preço-alvo: até ali vale a pena aportar sem pagar caro demais. Clique no <b>?</b> de um cartão para ver como o alvo foi definido.</p>
+  <p class="lede">Ações, ETFs e bitcoin acompanhados para talvez comprar. Cada um tem um preço teto: até ali vale a pena aportar sem pagar caro demais. Não é preço de venda. Clique no <b>?</b> de um cartão para ver como o preço teto foi definido.</p>
   <div class="resumo" id="resumo"></div>
   <div class="barra">
     <span class="seg" role="group" aria-label="Quais ativos mostrar" id="filtro">
       <button type="button" data-f="todos" aria-pressed="true">Todos</button><button type="button" data-f="BR" aria-pressed="false">Brasil</button><button type="button" data-f="EXT" aria-pressed="false">Exterior</button>
     </span>
-    <label class="ordem">Ordenar por <select id="ordem"><option value="alvo">Mais perto do alvo</option><option value="a12">12 meses</option><option value="codigo">Código</option></select></label>
+    <label class="ordem">Ordenar por <select id="ordem"><option value="alvo">Mais perto do teto</option><option value="a12">12 meses</option><option value="codigo">Código</option></select></label>
     <a class="lnk" id="ver-comparador" href="/acoes-etfs/#radar=1">Ver o radar no comparador</a>
   </div>
   <form class="add" id="f-add" novalidate>
     <label class="campo">Adicionar ao radar <input id="add-codigo" list="lista-add" autocomplete="off" placeholder="Código ou nome: WEGE3, Microsoft, VOO"></label>
-    <label class="campo alvo">Preço-alvo (opcional) <input id="add-alvo" inputmode="decimal" placeholder="na moeda do ativo"></label>
+    <label class="campo alvo">Preço teto (opcional) <input id="add-alvo" inputmode="decimal" placeholder="na moeda do ativo"></label>
     <button type="submit">Adicionar</button>
     <datalist id="lista-add"></datalist>
     <p class="msg" id="add-msg" role="status"></p>
   </form>
   <div class="grade" id="grade"></div>
-  <p class="nota">Você pode adicionar ao radar qualquer ação ou ETF do comparador e do catálogo do site, com um preço-alvo seu. Eles ficam só neste navegador (nada é enviado) e saem no ×.</p>
-  <p class="nota">Preço de agora do Yahoo Finance, buscado de novo a cada minuto enquanto a página está aberta (a B3 chega com cerca de 15 minutos de atraso; o bitcoin vem da Binance ou da Coinbase). Se a consulta falhar, a página mostra o último fechamento dos dados do site. Ativos fora do catálogo, como os ETFs da bolsa de Londres, não têm conferência com segunda fonte ("Só Yahoo"). "12 meses": nos ativos do catálogo, fechamento deste mês contra o do mesmo mês do ano passado, com dividendos (séries conferidas mês a mês); nos outros, variação do preço no Yahoo. O bitcoin mostra o score de agora do Termômetro do Bitcoin (letabuild.com/btc). O alvo é o teto para começar uma posição nova e precisa ser recalculado a cada balanço, porque o lucro muda. O passado não garante o futuro. Não é recomendação de investimento.</p>
+  <p class="nota">Você pode adicionar ao radar qualquer ação ou ETF do comparador e do catálogo do site, com um preço teto seu. Eles ficam só neste navegador (nada é enviado) e saem no ×.</p>
+  <p class="nota">Preço de agora do Yahoo Finance, buscado de novo a cada minuto enquanto a página está aberta (a B3 chega com cerca de 15 minutos de atraso; o bitcoin vem da Binance ou da Coinbase). Se a consulta falhar, a página mostra o último fechamento dos dados do site. Ativos fora do catálogo, como os ETFs da bolsa de Londres, não têm conferência com segunda fonte ("Só Yahoo"). "12 meses": nos ativos do catálogo, fechamento deste mês contra o do mesmo mês do ano passado, com dividendos (séries conferidas mês a mês); nos outros, variação do preço no Yahoo. O bitcoin mostra o score de agora do Termômetro do Bitcoin (letabuild.com/btc). O preço teto é o máximo para começar ou aumentar uma posição (não é preço de venda) e precisa ser recalculado a cada balanço, porque o lucro muda. O passado não garante o futuro. Não é recomendação de investimento.</p>
 </main>
 <footer class="rodape"><a href="https://github.com/CaioLeta21/analises-carteira">Confira o código: nada sai do seu navegador.</a></footer>
 <script src="/assets/js/dados.js"></script>

@@ -14,12 +14,12 @@
 <nav class="site-nav" aria-label="Páginas"><a href="/">Início</a><a href="/radar/">Radar</a><a href="/admin/" aria-current="page">Editar o radar</a></nav>
 <main class="pagina">
   <h1>Editar o radar</h1>
-  <p class="lede">O que muda aqui aparece em <a href="/radar/">ativos.letabuild.com/radar</a> em até 1 minuto, e na carteira na próxima vez que ela abrir o radar. Sem preço-alvo, o alvo é calculado: pelo Termômetro do Bitcoin no BTC, pelo Gemini nas ações (precisa da chave do Gemini). Alvo digitado não é recalculado.</p>
+  <p class="lede">O que muda aqui aparece em <a href="/radar/">ativos.letabuild.com/radar</a> em até 1 minuto, e na carteira na próxima vez que ela abrir o radar. Sem preço teto digitado, ele é calculado: pelo Termômetro do Bitcoin no BTC, pelo Gemini nas ações (precisa da chave do Gemini). Preço teto digitado não é recalculado. O preço teto é o máximo que vale pagar para comprar; não é preço de venda.</p>
 
   <form class="add" id="f-add" novalidate>
     <label class="campo">Ativo <input id="add-codigo" name="codigo" list="sugestoes" autocomplete="off" placeholder="Código ou nome: WEGE3, Microsoft, VOO, BTC" required></label>
-    <label class="campo curto">Preço-alvo (opcional) <input name="preco_alvo" inputmode="decimal" placeholder="vazio: calculado"></label>
-    <label class="campo largo">Como o alvo foi definido (opcional) <textarea name="alvo_explicacao" rows="2"></textarea></label>
+    <label class="campo curto">Preço teto (opcional) <input name="preco_alvo" inputmode="decimal" placeholder="vazio: calculado"></label>
+    <label class="campo largo">Como o preço teto foi definido (opcional) <textarea name="alvo_explicacao" rows="2"></textarea></label>
     <input type="hidden" name="simbolo">
     <button type="submit">Adicionar</button>
     <datalist id="sugestoes"></datalist>
