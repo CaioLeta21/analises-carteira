@@ -12,6 +12,9 @@ const el = (tag, attrs, ...filhos) => {
 const TIPOS = { acao: 'Ação', etf: 'ETF', fii: 'FII', cripto: 'Cripto' };
 const dec = (v) => v.toLocaleString('pt-BR', { maximumFractionDigits: v >= 1000 ? 0 : 2 });
 const dinheiro = (v, m) => (v == null ? '—' : (m === 'BRL' ? 'R$ ' : m === 'USD' ? 'US$ ' : '') + dec(v));
+const dataBR = (d) => (d ? d.split('-').reverse().join('/') : '—');
+// mesmo critério do servidor (functions/_balancos.js)
+const balancoNovo = (i) => (i.tipo === 'acao' && i.balanco_ultimo && i.teto_balanco && i.balanco_ultimo > i.teto_balanco ? i.balanco_ultimo : null);
 
 async function api(caminho, opcoes = {}) {
   // redirect manual: com o login vencido o Access responde com redirecionamento; recarrega para logar de novo
@@ -40,8 +43,14 @@ function item(i) {
   const salvar = el('button', { type: 'submit', text: 'Salvar' });
   const recalc = el('button', { type: 'button', class: 'sec', text: 'Recalcular o preço teto' });
   const tirar = el('button', { type: 'button', class: 'perigo', text: 'Tirar do radar' });
-  f.append(el('div', { class: 'acoes' }, salvar, (i.tipo === 'acao' || i.simbolo === 'BTC-USD') ? recalc : null, tirar), msg);
-  const ocupado = (sim, t) => { [salvar, recalc, tirar].forEach((b) => { b.disabled = sim; }); msg.className = 'msg'; if (t) msg.textContent = t; };
+  const novo = balancoNovo(i);
+  const revisado = el('button', { type: 'button', class: 'sec', text: 'Teto revisado, manter' });
+  f.append(el('div', { class: 'acoes' }, salvar, i.simbolo === 'BTC-USD' ? recalc : null, novo ? revisado : null, tirar), msg);
+  const ocupado = (sim, t) => { [salvar, recalc, revisado, tirar].forEach((b) => { b.disabled = sim; }); msg.className = 'msg'; if (t) msg.textContent = t; };
+  revisado.addEventListener('click', async () => {
+    ocupado(true, 'Marcando…');
+    try { await api('/admin/api/radar/' + i.id + '/revisado', { method: 'POST' }); await carregar(i.id); } catch (e) { ocupado(false); msg.className = 'msg erro'; msg.textContent = e.message; }
+  });
   f.addEventListener('submit', async (ev) => {
     ev.preventDefault(); ocupado(true, 'Salvando…');
     try { await api('/admin/api/radar/' + i.id, { method: 'PUT', body: JSON.stringify(Object.fromEntries(new FormData(f))) }); await carregar(i.id); } catch (e) { ocupado(false); msg.className = 'msg erro'; msg.textContent = e.message; }
@@ -59,14 +68,17 @@ function item(i) {
   });
   return el('details', { class: 'item', id: 'i-' + i.id },
     el('summary', null, el('strong', { text: i.codigo }), el('span', { class: 'nome', text: (i.nome || '') + ' · ' + (TIPOS[i.tipo] || i.tipo) }),
-      el('span', { class: 'alvo', text: 'Teto ' + dinheiro(i.preco_alvo, i.moeda) }), el('span', { class: 'orig', text: origem(i) })),
+      el('span', { class: 'alvo', text: 'Teto ' + dinheiro(i.preco_alvo, i.moeda) }), el('span', { class: 'orig', text: origem(i) }),
+      balancoNovo(i) ? el('span', { class: 'aviso', text: 'Balanço novo (tri até ' + dataBR(balancoNovo(i)) + ') desde o teto' }) : null),
     f);
 }
 
 async function carregar(abrir) {
   try {
     const itens = await api('/admin/api/radar');
-    $('#estado').textContent = itens.length + ' ativos no radar. Clique num ativo para editar.';
+    const velhos = itens.filter(balancoNovo).map((i) => i.codigo);
+    $('#estado').textContent = itens.length + ' ativos no radar. Clique num ativo para editar.'
+      + (velhos.length ? ' Balanço novo desde o teto: ' + velhos.join(', ') + ' (peça ao Claude para revisar).' : ' Nenhum teto desatualizado.');
     $('#lista').replaceChildren(...itens.map(item));
     if (abrir) { const d = document.getElementById('i-' + abrir); if (d) d.open = true; }
   } catch (e) { $('#estado').textContent = e.message; }
@@ -99,7 +111,7 @@ async function carregar(abrir) {
       const r = await api('/admin/api/radar', { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(f))) });
       const a = r.alvo_auto;
       msg.textContent = `Adicionado: ${r.nome} (${r.codigo}, ${TIPOS[r.tipo] || r.tipo}), ${dinheiro(r.preco, r.moeda)}.`
-        + (!a ? (f.preco_alvo.value.trim() ? '' : ' Sem preço teto automático para esse tipo (ou falta a chave do Gemini).') : a.ok && a.preco_alvo ? ` Preço teto calculado: ${dinheiro(a.preco_alvo, r.moeda)}.` : a.ok ? ' Sem preço teto: dados insuficientes.' : ` O cálculo do preço teto falhou (${a.erro}); é refeito amanhã.`);
+        + (!a ? (f.preco_alvo.value.trim() ? '' : ' Sem preço teto ainda: peça ao Claude para calcular.') : a.ok && a.preco_alvo ? ` Preço teto calculado: ${dinheiro(a.preco_alvo, r.moeda)}.` : a.ok ? ' Sem preço teto: dados insuficientes.' : ` O cálculo do preço teto falhou (${a.erro}); é refeito amanhã.`);
       f.reset(); f.simbolo.value = '';
       await carregar(r.id);
     } catch (e) { msg.className = 'msg erro'; msg.textContent = e.message; }

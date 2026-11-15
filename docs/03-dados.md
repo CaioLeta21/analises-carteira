@@ -103,6 +103,11 @@ aportar. No banco e no código o campo continua `preco_alvo` (nome interno, nunc
   bitcoin, Binance ou Coinbase. A resposta inteira fica 1 minuto no cache da borda e a página
   busca de novo a cada minuto enquanto está aberta. É preço de exibição, sem segunda fonte; os
   "12 meses" dos ativos do catálogo continuam vindo das séries conferidas.
+- **Teto das ações: revisado pelo Claude quando o dono pede** (decisão de 15/nov/2026; o Gemini fica
+  desligado sem `GEMINI_API_KEY`). O site confere sozinho, pelo Yahoo, o último trimestre publicado
+  de cada ação (`functions/_balancos.js`, 15 por dia, cada uma a cada 3 dias) e marca "balanço novo:
+  teto em revisão" quando sai trimestre depois do que o teto levou em conta (`balanco_ultimo` >
+  `teto_balanco`). Mudar o teto na edição, ou o botão "Teto revisado, manter", tira a marca.
 - **Preço teto automático** (`functions/_alvo.js`, `functions/_btc.js`): sem teto digitado, o bitcoin
   usa o Termômetro do Bitcoin (letabuild.com/btc; teto = preço em que o score zera pelos
   indicadores de preço) e as ações, o Gemini pela metodologia do dono (segredo

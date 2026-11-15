@@ -4,7 +4,8 @@
 //   POST   /admin/api/radar            adiciona; sem alvo digitado, calcula (termômetro no BTC, Gemini nas ações)
 //   PUT    /admin/api/radar/:id        muda alvo, explicação ou tipo (alvo mexido à mão deixa de ser automático)
 //   DELETE /admin/api/radar/:id        tira do radar
-//   POST   /admin/api/radar/:id/alvo   recalcula o alvo agora
+//   POST   /admin/api/radar/:id/alvo   recalcula o teto agora (termômetro no BTC)
+//   POST   /admin/api/radar/:id/revisado   teto revisado sem mudança: passa a valer pelo último balanço
 import { resolver, buscarAtivos, tipoAuto, grafico, resumir, codigoDe } from '../../_radar.js';
 import { gravarAlvo } from '../../_alvo.js';
 import { gravarAlvoBTC } from '../../_btc.js';
@@ -55,9 +56,11 @@ export async function editar(env, id, b) {
   if (b.tipo && !TIPOS.includes(b.tipo)) return [400, 'Tipo inválido.'];
   const ex = texto(b.alvo_explicacao, 1500);
   // mexeu no alvo ou na explicação: vira alvo digitado e o automático para (no SQLite o lado direito do SET usa os valores antigos)
+  // teto novo leva em conta o último balanço já publicado (some o aviso "balanço novo desde o teto")
   const r = await env.DB.prepare(`UPDATE radar SET preco_alvo = ?, tipo = COALESCE(?, tipo), alvo_explicacao = ?, atualizado_em = datetime('now'),
-      alvo_auto = CASE WHEN preco_alvo IS ? AND COALESCE(alvo_explicacao, '') = COALESCE(?, '') THEN alvo_auto ELSE NULL END WHERE id = ?`)
-    .bind(pa, b.tipo || null, ex, pa, ex, Number(id)).run();
+      alvo_auto = CASE WHEN preco_alvo IS ? AND COALESCE(alvo_explicacao, '') = COALESCE(?, '') THEN alvo_auto ELSE NULL END,
+      teto_balanco = CASE WHEN preco_alvo IS ? THEN teto_balanco ELSE COALESCE(balanco_ultimo, teto_balanco) END WHERE id = ?`)
+    .bind(pa, b.tipo || null, ex, pa, ex, pa, Number(id)).run();
   return r.meta.changes ? [200, { ok: true }] : [404, 'Não encontrado.'];
 }
 
@@ -94,6 +97,12 @@ export async function onRequest({ request, env, params }) {
       return saida(r.meta.changes ? [200, { ok: true }] : [404, 'Não encontrado.']);
     }
     if (rota[0] === 'radar' && rota.length === 3 && rota[2] === 'alvo' && m === 'POST') return saida(await recalcular(env, rota[1]));
+    // revisado sem mudar o teto: passa a valer pelo último balanço
+    if (rota[0] === 'radar' && rota.length === 3 && rota[2] === 'revisado' && m === 'POST') {
+      if (!/^\d+$/.test(rota[1])) return erro('Dados inválidos.');
+      const r = await env.DB.prepare("UPDATE radar SET teto_balanco = balanco_ultimo, atualizado_em = datetime('now') WHERE id = ? AND balanco_ultimo IS NOT NULL").bind(Number(rota[1])).run();
+      return saida(r.meta.changes ? [200, { ok: true }] : [404, 'Sem balanço conferido para esse ativo.']);
+    }
     return erro('Rota não encontrada.', 404);
   } catch (e) {
     return erro('Erro: ' + (e.message || e), 500);

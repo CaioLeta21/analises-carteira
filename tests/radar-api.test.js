@@ -55,6 +55,26 @@ test('montarRadar: só campos públicos, cotação de agora e termômetro no bit
   assert.strictEqual(b.termometro.sinal, 'COMPRA'); assert.ok(b.termometro.score >= 0.5); assert.strictEqual(b.termometro.dados_de, '2026-11-15');
 });
 
+test('balanços: último trimestre do Yahoo, aviso só quando sai trimestre depois do teto', async () => {
+  const { ultimoBalanco, conferirBalancos, balancoNovo } = await import('../functions/_balancos.js');
+  const serie = (k, datas) => ({ meta: { type: [k] }, [k]: datas.map((d) => ({ asOfDate: d, reportedValue: { raw: 1 } })) });
+  const f = async (u) => json({ timeseries: { result: [serie('quarterlyDilutedEPS', ['2026-06-30', u.includes('/NOVO?') ? '2026-12-31' : '2026-09-30']), serie('quarterlyTotalRevenue', ['2026-09-30'])] } });
+  assert.strictEqual(await ultimoBalanco('MSFT', f), '2026-09-30');
+  const linhas = [
+    { id: 1, simbolo: 'VELHO', codigo: 'VELHO', teto_balanco: '2026-09-30' },
+    { id: 2, simbolo: 'NOVO', codigo: 'NOVO', teto_balanco: '2026-09-30' },
+    { id: 3, simbolo: 'PRIMEIRA', codigo: 'PRIMEIRA', teto_balanco: null }, // 1ª conferência: teto passa a valer pelo último balanço
+  ];
+  const updates = [];
+  const env = { DB: { prepare: (sql) => ({ bind: (...a) => ({ all: async () => { assert.match(sql, /tipo = 'acao'/); return { results: linhas }; }, run: async () => { updates.push(a); return { meta: { changes: 1 } }; } }) }) } };
+  const r = await conferirBalancos(env, f, 15, new Date('2026-11-16T12:00:00Z'));
+  assert.deepStrictEqual(r.map((x) => [x.codigo, x.novo]), [['VELHO', false], ['NOVO', true], ['PRIMEIRA', false]]);
+  assert.deepStrictEqual(updates[1], ['2026-12-31', '2026-12-31', '2026-11-16', 2]); // COALESCE no SQL mantém o teto_balanco antigo
+  assert.strictEqual(balancoNovo({ tipo: 'acao', balanco_ultimo: '2026-12-31', teto_balanco: '2026-09-30' }), '2026-12-31');
+  assert.strictEqual(balancoNovo({ tipo: 'acao', balanco_ultimo: '2026-09-30', teto_balanco: '2026-09-30' }), null);
+  assert.strictEqual(balancoNovo({ tipo: 'etf', balanco_ultimo: '2026-12-31', teto_balanco: '2026-09-30' }), null);
+});
+
 // D1 falso para a edição
 function banco() {
   const linhas = [];
@@ -66,9 +86,11 @@ function banco() {
         run: async () => {
           if (/^INSERT INTO radar/.test(sql)) { id++; linhas.push({ id, simbolo: a[0], codigo: a[1], nome: a[2], tipo: a[3], mercado: a[4], moeda: a[5], preco_alvo: a[6], alvo_explicacao: a[7], alvo_auto: null }); return { meta: { last_row_id: id, changes: 1 } }; }
           if (/^UPDATE radar SET preco_alvo = \?, tipo/.test(sql)) {
-            const l = linhas.find((x) => x.id === a[5]); if (!l) return { meta: { changes: 0 } };
+            const l = linhas.find((x) => x.id === a[6]); if (!l) return { meta: { changes: 0 } };
             const mesmo = l.preco_alvo === a[3] && (l.alvo_explicacao || '') === (a[4] || '');
-            Object.assign(l, { preco_alvo: a[0], tipo: a[1] || l.tipo, alvo_explicacao: a[2], alvo_auto: mesmo ? l.alvo_auto : null });
+            const mesmoTeto = l.preco_alvo === a[5];
+            Object.assign(l, { preco_alvo: a[0], tipo: a[1] || l.tipo, alvo_explicacao: a[2], alvo_auto: mesmo ? l.alvo_auto : null,
+              teto_balanco: mesmoTeto ? l.teto_balanco : (l.balanco_ultimo || l.teto_balanco) });
             return { meta: { changes: 1 } };
           }
           return { meta: { changes: 1 } };
@@ -93,7 +115,9 @@ test('edição: adicionar resolve o código, recusa repetido e alvo inválido; e
   linhas[0].alvo_auto = '{"metodo":"pl_futuro"}';
   await editar(env, '1', { preco_alvo: '45,50', alvo_explicacao: null, tipo: 'acao' });
   assert.ok(linhas[0].alvo_auto, 'sem mudança no alvo, o automático continua');
+  linhas[0].balanco_ultimo = '2026-12-31'; linhas[0].teto_balanco = '2026-09-30'; // saiu balanço depois do teto
   await editar(env, '1', { preco_alvo: '1.620', alvo_explicacao: 'meu', tipo: 'acao' });
   assert.strictEqual(linhas[0].preco_alvo, 1620); assert.strictEqual(linhas[0].alvo_auto, null);
+  assert.strictEqual(linhas[0].teto_balanco, '2026-12-31', 'teto novo vale pelo último balanço');
   assert.strictEqual((await editar(env, '9', { preco_alvo: '1' }))[0], 404);
 });

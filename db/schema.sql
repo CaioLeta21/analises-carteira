@@ -12,8 +12,14 @@ CREATE TABLE IF NOT EXISTS radar (
   alvo_explicacao TEXT,               -- aparece no "?" do cartão
   alvo_auto TEXT,                     -- JSON do alvo calculado (Gemini ou termômetro do BTC); NULL = digitado
   adicionado_em TEXT NOT NULL DEFAULT (datetime('now')),
-  atualizado_em TEXT NOT NULL DEFAULT (datetime('now'))
+  atualizado_em TEXT NOT NULL DEFAULT (datetime('now')),
+  -- "balanço novo desde o teto" (functions/_balancos.js): fim do último trimestre publicado, trimestre
+  -- que o teto levou em conta, e o dia da última conferência no Yahoo
+  balanco_ultimo TEXT,
+  teto_balanco TEXT,
+  balanco_conferido_em TEXT
 );
+-- (banco criado antes de 15/nov/2026 à noite: ALTER TABLE radar ADD COLUMN balanco_ultimo / teto_balanco / balanco_conferido_em)
 
 -- Marcas do dia (ex.: alvos conferidos) e resultado do último recálculo.
 CREATE TABLE IF NOT EXISTS cache (

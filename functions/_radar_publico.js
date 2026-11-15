@@ -3,8 +3,9 @@
 import { cotacoes } from './_cotacoes.js';
 import { dadosDiarios, precoAgora, comPreco, termometro } from './_btc.js';
 import { emCache } from './_comum.js';
+import { balancoNovo } from './_balancos.js';
 
-const CAMPOS = 'simbolo, codigo, nome, tipo, mercado, moeda, preco_alvo, alvo_explicacao, atualizado_em';
+const CAMPOS = 'simbolo, codigo, nome, tipo, mercado, moeda, preco_alvo, alvo_explicacao, atualizado_em, teto_balanco, balanco_ultimo';
 
 // Bitcoin: indicadores do dia guardados por 3 horas; preço de agora a cada pedido (o radar inteiro já fica 1 minuto em cache)
 export async function btcAgora(buscar = fetch, cache = emCache) {
@@ -24,8 +25,10 @@ export async function montarRadar(env, buscar = fetch, cache = emCache) {
     atualizado_em: atualizado ? atualizado.replace(' ', 'T') + 'Z' : null,
     gerado_em: new Date().toISOString(),
     itens: itens.map((i) => {
-      const { atualizado_em, ...pub } = i;
+      const { atualizado_em, teto_balanco, balanco_ultimo, ...pub } = i;
       const o = { ...pub, cotacao: cot[i.simbolo] || null };
+      const novo = balancoNovo(i);
+      if (novo) o.balanco_novo = novo; // saiu balanço depois do teto: em revisão
       if (i.simbolo === 'BTC-USD' && btc) {
         const t = termometro(btc);
         o.termometro = { score: t.score, sinal: t.sinal, dados_de: t.dados_de };
