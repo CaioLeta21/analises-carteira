@@ -30,8 +30,8 @@ h1{font-family:var(--font-serif);font-weight:400;font-size:var(--fs-title);margi
 .cartao.s-ok .sit{color:var(--color-ok);font-weight:600}
 .cartao.s-perto .sit{color:var(--color-warn);font-weight:600}
 .cartao .a12{font-size:11px;color:var(--color-fg-muted)}
-.cartao .termometro{font-size:11px;color:var(--color-fg-muted);text-decoration:underline;text-underline-offset:2px}
-.cartao .termometro:hover strong,.cartao .termometro:focus-visible strong{color:var(--color-accent)}
+.cartao .termometro{font-size:11px;color:var(--color-fg-muted);text-decoration:none}
+.cartao .termometro:hover,.cartao .termometro:hover strong,.cartao .termometro:focus-visible,.cartao .termometro:focus-visible strong{color:var(--color-accent)}
 .cartao .aviso-teto{color:var(--color-warn);font-weight:600}
 .cartao .termometro strong{color:var(--color-fg)}
 .pos{color:var(--color-ok)}.neg{color:var(--color-bad)}
