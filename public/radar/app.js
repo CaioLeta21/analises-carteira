@@ -109,7 +109,7 @@ function cartao(x) {
       el('span', { class: 'p alvo' }, el('span', { class: 'r', text: 'Teto' }), el('strong', { text: i.preco_alvo ? dinheiro(i.preco_alvo, x.moeda) : '—' }))),
     el('span', { class: 'sit', text: s.t }),
     x.a12 != null ? el('span', { class: 'a12' }, '12 meses: ', el('span', { class: x.a12 > 0 ? 'pos' : x.a12 < 0 ? 'neg' : null, text: pct(x.a12) })) : null,
-    i.termometro ? el('span', { class: 'termometro', title: 'Termômetro do Bitcoin (letabuild.com/btc): média de 8 indicadores, de −2 (venda forte) a +2 (compra forte). Positivo: preço abaixo do teto.' },
+    i.termometro ? el('a', { class: 'termometro', href: 'https://letabuild.com/btc/', target: '_blank', rel: 'noopener noreferrer', title: 'Ver os indicadores no Termômetro do Bitcoin (letabuild.com/btc): média de 8 indicadores, de −2 (venda forte) a +2 (compra forte). Positivo: preço abaixo do teto.' },
       'Termômetro: ', el('strong', { text: (i.termometro.score > 0 ? '+' : i.termometro.score < 0 ? '−' : '') + dec(Math.abs(i.termometro.score), 2) + ' · ' + i.termometro.sinal })) : null,
     i.balanco_novo ? el('span', { class: 'fonte aviso-teto', title: 'A empresa publicou um balanço depois que o preço teto foi definido. O teto vai ser revisado.', text: 'Balanço novo (trimestre até ' + new Date(i.balanco_novo + 'T12:00:00').toLocaleDateString('pt-BR') + '): teto em revisão' }) : null,
     x.soYahoo ? el('span', { class: 'fonte', title: 'Ativo fora do catálogo do site: preço só do Yahoo Finance, sem conferência com segunda fonte.', text: 'Só Yahoo · fechamento de ' + new Date(x.soYahoo + 'T12:00:00').toLocaleDateString('pt-BR') }) : null,

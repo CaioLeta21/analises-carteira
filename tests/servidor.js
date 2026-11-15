@@ -21,6 +21,8 @@ http.createServer((req, res) => {
   if (url === '/api/radar') {
     const copia = JSON.parse(fs.readFileSync(path.join(raiz, 'data', 'radar.json'), 'utf8'));
     copia.gerado_em = new Date().toISOString();
+    // a API de verdade põe o score do termômetro no bitcoin
+    for (const i of copia.itens) if (i.codigo === 'BTC') i.termometro = { score: 0.875, sinal: 'COMPRA', dados_de: '2026-11-15' };
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     return res.end(JSON.stringify(copia));
   }

@@ -77,6 +77,8 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     ok(/Como o preço teto foi definido/.test(pop) && !/\balvo\b/i.test(pop) && pop.length > 40 && (await bt.getAttribute('aria-expanded')) === 'true', 'radar: o "?" mostra como o preço teto foi definido');
     await p.keyboard.press('Escape'); await p.waitForTimeout(100);
     ok(await p.$('.pop:not([hidden])') === null, 'radar: Esc fecha a explicação');
+    const termo = await p.$eval('.cartao[aria-label="BTC"] a.termometro', (a) => ({ href: a.href, texto: a.textContent, alvo: a.target })).catch(() => null);
+    ok(termo && termo.href === 'https://letabuild.com/btc/' && /Termômetro: \+0,88 · COMPRA/.test(termo.texto) && termo.alvo === '_blank', 'radar: termômetro do BTC leva aos indicadores ' + JSON.stringify(termo));
     await p.click('#filtro [data-f="BR"]'); await p.waitForTimeout(100);
     ok((await p.$$eval('.cartao', (x) => x.length)) === radarJson.itens.filter((i) => i.mercado === 'BR').length, 'radar: filtro Brasil');
     await p.click('#filtro [data-f="todos"]');
