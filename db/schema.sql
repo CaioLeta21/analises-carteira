@@ -17,7 +17,9 @@ CREATE TABLE IF NOT EXISTS radar (
   -- que o teto levou em conta, e o dia da última conferência no Yahoo
   balanco_ultimo TEXT,
   teto_balanco TEXT,
-  balanco_conferido_em TEXT
+  balanco_conferido_em TEXT,
+  -- tese qualitativa (JSON): {"faz": "...", "tese": "...", "pros": [...], "contras": [...], "riscos": [...]}
+  tese TEXT
 );
 -- (banco criado antes de 15/nov/2026 à noite: ALTER TABLE radar ADD COLUMN balanco_ultimo / teto_balanco / balanco_conferido_em)
 

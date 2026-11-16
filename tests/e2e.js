@@ -79,13 +79,26 @@ const ok = (cond, msg) => { console.log((cond ? 'ok   ' : 'FALHA') + ' ' + msg);
     ok(await p.$('.pop:not([hidden])') === null, 'radar: Esc fecha a explicação');
     const termo = await p.$eval('.cartao[aria-label="BTC"] a.termometro', (a) => ({ href: a.href, texto: a.textContent, alvo: a.target })).catch(() => null);
     ok(termo && termo.href === 'https://letabuild.com/btc/' && /Termômetro: \+0,88 · COMPRA/.test(termo.texto) && termo.alvo === '_blank', 'radar: termômetro do BTC leva aos indicadores ' + JSON.stringify(termo));
+    // tese: clique em qualquer lugar do cartão abre a janela; Esc fecha e devolve o foco
+    await p.locator('.cartao[aria-label="MSFT"] .precos').click();
+    await p.waitForSelector('#tese[open]');
+    const tese = (await p.textContent('#tese')).replace(/\s+/g, ' ');
+    ok(/MSFT/.test(tese) && /O que faz/.test(tese) && /Tese/.test(tese) && /Prós/.test(tese) && /Contras/.test(tese) && /Riscos/.test(tese) && /Como o preço teto foi definido/.test(tese) && /Não é recomendação/.test(tese), 'radar: clicar no cartão abre a tese');
+    await p.keyboard.press('Escape');
+    ok(await p.$('#tese[open]') === null && await p.evaluate(() => document.activeElement && document.activeElement.textContent === 'MSFT'), 'radar: Esc fecha a tese e o foco volta ao cartão');
+    // pelo teclado: o código do ativo é um botão
+    await p.locator('.cartao[aria-label="IREN"] .abrir-tese').focus();
+    await p.keyboard.press('Enter');
+    ok(/IREN/.test(await p.textContent('#tese-titulo')) && /energia/i.test(await p.textContent('#tese')), 'radar: a tese abre pelo teclado');
+    await p.locator('#tese .fechar').click();
+    ok(await p.$('#tese[open]') === null, 'radar: o × fecha a tese');
     await p.click('#filtro [data-f="BR"]'); await p.waitForTimeout(100);
     ok((await p.$$eval('.cartao', (x) => x.length)) === radarJson.itens.filter((i) => i.mercado === 'BR').length, 'radar: filtro Brasil');
     await p.click('#filtro [data-f="todos"]');
     // fora do catálogo (ETFs de Londres): preço do Yahoo vindo no radar.json, com aviso
     const comCot = radarJson.itens.filter((i) => !i.site_id && i.cotacao);
     if (comCot.length) {
-      const txt = await p.locator('.cartao', { has: p.locator('.id strong', { hasText: new RegExp('^' + comCot[0].codigo.replace('.', '\\.') + '$') }) }).textContent();
+      const txt = await p.locator(`.cartao[aria-label="${comCot[0].codigo}"]`).textContent();
       ok(!/Sem cotação/.test(txt) && /Só Yahoo/.test(txt) && /12 meses/.test(txt), 'radar: ' + comCot[0].codigo + ' com preço só do Yahoo');
     }
     // visitante adiciona ao radar (só no navegador), com alvo, e tira

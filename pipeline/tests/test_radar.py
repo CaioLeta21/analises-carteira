@@ -77,6 +77,14 @@ def test_copia_nao_apaga_com_api_vazia(tmp_path, monkeypatch):
     assert saida.read_text() == '{"itens": [1]}'
 
 
+def test_tese_so_campos_conhecidos_e_textos_curtos():
+    itens = radar.limpar([{"codigo": "X", "tese": {"faz": "a" * 900, "pros": ["bom", 3, "", "b" * 500], "nota": "segredo", "riscos": "não é lista"}}], set())
+    t = itens[0]["tese"]
+    assert len(t["faz"]) == 400 and t["pros"] == ["bom", "b" * 220]
+    assert "nota" not in t and "riscos" not in t
+    assert "tese" not in radar.limpar([{"codigo": "Y", "tese": "texto solto"}], set())[0]
+
+
 def test_alvo_invalido_vira_nulo_e_texto_e_cortado():
     itens = radar.limpar([{"codigo": "X", "preco_alvo": "100", "alvo_explicacao": "a" * 5000}], set())
     assert itens[0]["preco_alvo"] is None

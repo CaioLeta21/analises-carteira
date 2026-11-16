@@ -102,8 +102,12 @@ function fecharPops() {
 function cartao(x) {
   const { i } = x;
   const s = situacao(x);
-  const c = el('article', { class: 'cartao s-' + s.c, 'aria-label': i.codigo },
-    el('span', { class: 'id' }, el('strong', { text: i.codigo }), el('span', { class: 'nome', title: i.nome || null, text: i.nome || '' })),
+  // com tese: o código vira botão (teclado e leitor de tela) e o cartão todo abre a tese com o mouse
+  const codigo = i.tese
+    ? el('button', { type: 'button', class: 'abrir-tese', 'aria-haspopup': 'dialog', title: 'Ver a tese de ' + i.codigo, text: i.codigo })
+    : el('strong', { text: i.codigo });
+  const c = el('article', { class: 'cartao s-' + s.c + (i.tese ? ' com-tese' : ''), 'aria-label': i.codigo },
+    el('span', { class: 'id' }, codigo, el('span', { class: 'nome', title: i.nome || null, text: i.nome || '' })),
     el('span', { class: 'precos' },
       el('span', { class: 'p' }, el('span', { class: 'r', text: 'Hoje' }), el('strong', { text: dinheiro(x.preco, x.moeda) })),
       el('span', { class: 'p alvo' }, el('span', { class: 'r', text: 'Teto' }), el('strong', { text: i.preco_alvo ? dinheiro(i.preco_alvo, x.moeda) : '—' }))),
@@ -127,7 +131,37 @@ function cartao(x) {
     b.addEventListener('click', (ev) => { ev.stopPropagation(); const abrir = pop.hidden; fecharPops(); pop.hidden = !abrir; b.setAttribute('aria-expanded', String(abrir)); });
     c.append(b, pop);
   }
+  if (i.tese) {
+    codigo.addEventListener('click', (ev) => { ev.stopPropagation(); abrirTese(x, codigo); });
+    c.addEventListener('click', (ev) => { if (ev.target.closest('a, button, .pop')) return; abrirTese(x, codigo); });
+  }
   return c;
+}
+
+// janela com a tese qualitativa: o que faz, tese, prós, contras, riscos e como o teto foi definido
+function abrirTese(x, voltar) {
+  const { i } = x, t = i.tese, s = situacao(x);
+  const d = $('#tese');
+  fecharPops();
+  const lista = (titulo, itens, classe) => (itens && itens.length ? el('section', { class: 'bloco ' + classe }, el('h3', { text: titulo }), el('ul', null, ...itens.map((v) => el('li', { text: v })))) : null);
+  const texto = (titulo, v) => (v ? el('section', { class: 'bloco' }, el('h3', { text: titulo }), el('p', { text: v })) : null);
+  const fechar = el('button', { type: 'button', class: 'fechar', 'aria-label': 'Fechar', text: '×' });
+  fechar.addEventListener('click', () => d.close());
+  d.replaceChildren(
+    el('div', { class: 'tese-topo' },
+      el('div', null, el('h2', { id: 'tese-titulo', text: i.codigo }), el('p', { class: 'tese-nome', text: i.nome || '' })),
+      fechar),
+    el('p', { class: 'tese-precos' }, 'Hoje ', el('strong', { text: dinheiro(x.preco, x.moeda) }), ' · Teto ', el('strong', { text: i.preco_alvo ? dinheiro(i.preco_alvo, x.moeda) : '—' }), ' · ', el('span', { class: 'sit-' + s.c, text: s.t })),
+    texto('O que faz', t.faz),
+    texto('Tese', t.tese),
+    el('div', { class: 'pros-contras' }, lista('Prós', t.pros, 'pros'), lista('Contras', t.contras, 'contras')),
+    lista('Riscos', t.riscos, 'riscos'),
+    i.alvo_explicacao ? el('details', { class: 'bloco' }, el('summary', { text: 'Como o preço teto foi definido' }), el('p', { text: i.alvo_explicacao })) : null,
+    el('p', { class: 'tese-nota', text: 'Leitura qualitativa e resumida, para contexto. Não é recomendação de investimento.' }));
+  // o navegador devolve o foco ao que estava focado antes de abrir: o código do ativo
+  if (voltar) voltar.focus({ preventScroll: true });
+  d.showModal();
+  fechar.focus();
 }
 
 let filtro = lembrar('filtro', 'todos'), ordem = lembrar('ordem', 'alvo');
@@ -182,11 +216,16 @@ document.addEventListener('keydown', (ev) => { if (ev.key !== 'Escape') return; 
   });
 })();
 desenhar();
+// janela da tese: fecha no ×, no Esc (nativo) e ao clicar fora dela
+$('#tese').addEventListener('click', (ev) => {
+  const r = ev.currentTarget.getBoundingClientRect();
+  if (ev.clientX < r.left || ev.clientX > r.right || ev.clientY < r.top || ev.clientY > r.bottom) ev.currentTarget.close();
+});
 
 // com a página aberta e visível, busca o radar de novo a cada minuto (sem recarregar)
 if (R.aoVivo) {
   setInterval(async () => {
-    if (document.visibilityState !== 'visible' || document.querySelector('.pop:not([hidden])')) return;
+    if (document.visibilityState !== 'visible' || document.querySelector('.pop:not([hidden]), #tese[open]')) return;
     try {
       const novo = await lerRadar();
       if (!novo.aoVivo) return;

@@ -53,8 +53,29 @@ def limpar(lista, ids=None):
         alvo = x.get("preco_alvo")
         item["preco_alvo"] = float(alvo) if isinstance(alvo, (int, float)) and alvo > 0 else None
         item["site_id"] = site_id(item["codigo"], ids)
+        tese = limpar_tese(x.get("tese"))
+        if tese:
+            item["tese"] = tese
         out.append(item)
     return out
+
+
+def limpar_tese(t):
+    """Tese qualitativa do cartão: só textos curtos nos campos conhecidos (igual a functions/_radar_publico.js)."""
+    if not isinstance(t, dict):
+        return None
+    out = {}
+    for k, n in (("faz", 400), ("tese", 500)):
+        v = t.get(k)
+        if isinstance(v, str) and v.strip():
+            out[k] = v.strip()[:n]
+    for k in ("pros", "contras", "riscos"):
+        v = t.get(k)
+        if isinstance(v, list):
+            lista = [x.strip()[:220] for x in v if isinstance(x, str) and x.strip()][:5]
+            if lista:
+                out[k] = lista
+    return out or None
 
 
 def cotar(itens, buscar=fontes.yahoo, hoje=None):

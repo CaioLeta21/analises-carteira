@@ -55,3 +55,32 @@ h1{font-family:var(--font-serif);font-weight:400;font-size:var(--fs-title);margi
 .add .msg{grid-column:1/-1;margin:0;font-size:12px;color:var(--color-fg-muted)}
 .add .msg:empty{display:none}
 @media (max-width:560px){.add{grid-template-columns:minmax(0,1fr) auto}.add .campo:first-child{grid-column:1/-1}}
+/* cartão com tese: clicável inteiro; o código é o botão para teclado e leitor de tela */
+.cartao.com-tese{cursor:pointer;transition:border-color .15s}
+.cartao.com-tese:hover{border-color:var(--color-fg-muted)}
+.abrir-tese{all:unset;box-sizing:border-box;font-size:15px;font-weight:700;cursor:pointer;align-self:flex-start}
+.abrir-tese:hover{color:var(--color-accent)}
+.abrir-tese:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px;border-radius:3px}
+/* janela da tese */
+.tese{width:min(36rem,calc(100vw - 32px));max-height:min(85vh,48rem);overflow:auto;box-sizing:border-box;padding:18px 20px;border:1px solid var(--color-border-line);border-radius:var(--radius);background:var(--color-panel);color:var(--color-fg);box-shadow:var(--shadow-popover)}
+.tese::backdrop{background:rgba(0,0,0,.45)}
+.tese-topo{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.tese h2{margin:0;font-size:22px}
+.tese-nome{margin:2px 0 0;font-size:13px;color:var(--color-fg-muted)}
+.tese .fechar{all:unset;box-sizing:border-box;width:28px;height:28px;border-radius:50%;border:1px solid var(--color-border-line);text-align:center;line-height:25px;font-size:18px;cursor:pointer;color:var(--color-fg-muted);flex:none}
+.tese .fechar:hover{color:var(--color-fg);border-color:var(--color-fg-muted)}
+.tese .fechar:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+.tese-precos{margin:10px 0 4px;font-size:13px;color:var(--color-fg-muted);font-variant-numeric:tabular-nums}
+.tese-precos strong{color:var(--color-fg)}
+.tese .sit-ok{color:var(--color-ok);font-weight:600}.tese .sit-perto{color:var(--color-warn);font-weight:600}
+.tese .bloco{margin-top:14px}
+.tese h3{margin:0 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--color-fg-muted)}
+.tese p{margin:0;font-size:14px;line-height:1.5}
+.tese ul{margin:0;padding-left:18px;font-size:14px;line-height:1.45}
+.tese li+li{margin-top:3px}
+.pros-contras{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+.tese .pros h3{color:var(--color-ok)}.tese .contras h3{color:var(--color-warn)}.tese .riscos h3{color:var(--color-bad)}
+.tese details summary{cursor:pointer;font-size:13px;color:var(--color-accent)}
+.tese details p{margin-top:6px;font-size:13px;color:var(--color-fg-muted)}
+.tese-nota{margin-top:16px!important;font-size:11px!important;color:var(--color-fg-muted)}
+@media (max-width:560px){.pros-contras{grid-template-columns:1fr}.tese{padding:14px 16px}}

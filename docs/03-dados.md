@@ -118,6 +118,11 @@ aportar. No banco e no código o campo continua `preco_alvo` (nome interno, nunc
   (`python -m pipeline.radar --baixar`). A página usa a cópia se a API falhar; ativo fora do
   catálogo (ex.: SGLD.L, CNDX.L) ganha ali `cotacao` = último fechamento do Yahoo ("Só Yahoo").
 
+**Tese do cartão** (coluna `tese`, JSON com `faz`, `tese`, `pros`, `contras`, `riscos`): clicar no cartão
+abre uma janela com essa leitura qualitativa curta e com a explicação do preço teto. Escrita pelo Claude
+quando o ativo entra no radar (revisar junto com o teto); só textos curtos passam (`lerTese` em
+`functions/_radar_publico.js` e `limpar_tese` em `pipeline/radar.py`).
+
 Ações e ETFs que o visitante adiciona ao radar ficam só no navegador dele (`localStorage`,
 chave `radar:meus`), como os ativos extras do comparador.
 

@@ -5,7 +5,21 @@ import { dadosDiarios, precoAgora, comPreco, termometro } from './_btc.js';
 import { emCache } from './_comum.js';
 import { balancoNovo } from './_balancos.js';
 
-const CAMPOS = 'simbolo, codigo, nome, tipo, mercado, moeda, preco_alvo, alvo_explicacao, atualizado_em, teto_balanco, balanco_ultimo';
+const CAMPOS = 'simbolo, codigo, nome, tipo, mercado, moeda, preco_alvo, alvo_explicacao, atualizado_em, teto_balanco, balanco_ultimo, tese';
+
+// tese qualitativa guardada como JSON; só passam textos curtos nos campos conhecidos
+export function lerTese(t) {
+  let o = null;
+  try { o = typeof t === 'string' ? JSON.parse(t) : t; } catch { return null; }
+  if (!o || typeof o !== 'object') return null;
+  const out = {};
+  for (const [k, n] of [['faz', 400], ['tese', 500]]) if (typeof o[k] === 'string' && o[k].trim()) out[k] = o[k].trim().slice(0, n);
+  for (const k of ['pros', 'contras', 'riscos']) {
+    const l = Array.isArray(o[k]) ? o[k].filter((x) => typeof x === 'string' && x.trim()).map((x) => x.trim().slice(0, 220)).slice(0, 5) : [];
+    if (l.length) out[k] = l;
+  }
+  return Object.keys(out).length ? out : null;
+}
 
 // Bitcoin: indicadores do dia guardados por 3 horas; preço de agora a cada pedido (o radar inteiro já fica 1 minuto em cache)
 export async function btcAgora(buscar = fetch, cache = emCache) {
@@ -25,8 +39,10 @@ export async function montarRadar(env, buscar = fetch, cache = emCache) {
     atualizado_em: atualizado ? atualizado.replace(' ', 'T') + 'Z' : null,
     gerado_em: new Date().toISOString(),
     itens: itens.map((i) => {
-      const { atualizado_em, teto_balanco, balanco_ultimo, ...pub } = i;
+      const { atualizado_em, teto_balanco, balanco_ultimo, tese, ...pub } = i;
       const o = { ...pub, cotacao: cot[i.simbolo] || null };
+      const t = lerTese(tese);
+      if (t) o.tese = t;
       const novo = balancoNovo(i);
       if (novo) o.balanco_novo = novo; // saiu balanço depois do teto: em revisão
       if (i.simbolo === 'BTC-USD' && btc) {
