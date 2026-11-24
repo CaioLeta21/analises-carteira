@@ -19,7 +19,16 @@ export function lerSpark(x) {
     const antes = pts.filter((p) => p[0] <= alvo);
     if (antes.length && antes[antes.length - 1][0] >= alvo - 7 * 86400) a12 = preco / antes[antes.length - 1][1] - 1;
   }
-  return { preco, moeda: m.currency || null, hora: quando ? new Date(quando * 1000).toISOString() : null, a12: a12 == null ? null : +a12.toFixed(6), fonte: 'Yahoo Finance' };
+  // dia: contra o último fechamento de um pregão anterior ao do preço; 52 semanas: fechamentos do último ano + o preço de agora
+  let var_dia = null, min_52s = null, max_52s = null;
+  if (quando) {
+    const dia = (t) => Math.floor((t + (m.gmtoffset || 0)) / 86400);
+    const antes = pts.filter((p) => dia(p[0]) < dia(quando));
+    if (antes.length) var_dia = +(preco / antes[antes.length - 1][1] - 1).toFixed(6);
+    const ano = pts.filter((p) => p[0] > quando - 365 * 86400).map((p) => p[1]).concat([preco]);
+    min_52s = Math.min(...ano); max_52s = Math.max(...ano);
+  }
+  return { preco, moeda: m.currency || null, hora: quando ? new Date(quando * 1000).toISOString() : null, a12: a12 == null ? null : +a12.toFixed(6), var_dia, min_52s, max_52s, fonte: 'Yahoo Finance' };
 }
 
 export async function cotacoes(simbolos, buscar = fetch) {

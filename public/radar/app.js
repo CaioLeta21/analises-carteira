@@ -76,7 +76,10 @@ async function montar() {
     const a12 = p && p.length > 12 ? p[p.length - 1] / p[p.length - 13] - 1 : c && c.a12 != null ? c.a12 : null;
     const alvoDist = preco != null && i.preco_alvo ? preco / i.preco_alvo - 1 : null;
     const moeda = i.moeda || (s && s.moeda) || null;
-    return { i, preco, a12, alvoDist, moeda, soYahoo: !vivo && !p && c ? c.data : null, foraDoSite: !p && !!c };
+    // variação do dia e faixa de 52 semanas só existem na cotação de agora (API)
+    const dia = vivo && vivo.var_dia != null ? vivo.var_dia : null;
+    const faixa = vivo && vivo.min_52s > 0 && vivo.max_52s > 0 ? { min: vivo.min_52s, max: vivo.max_52s } : null;
+    return { i, preco, a12, alvoDist, moeda, dia, faixa, soYahoo: !vivo && !p && c ? c.data : null, foraDoSite: !p && !!c };
   });
   const dref = new Date(M.data_ref + 'T12:00:00');
   const mudou = R.atualizado_em ? new Date(R.atualizado_em).toLocaleDateString('pt-BR') : '—';
@@ -99,6 +102,39 @@ function fecharPops() {
   document.querySelectorAll('.ajuda').forEach((b) => b.setAttribute('aria-expanded', 'false'));
 }
 
+// símbolo do Yahoo para o logo: o do radar; para os adicionados pelo visitante, calculado como em functions/_logo.js
+function simboloDe(i) {
+  if (i.simbolo) return i.simbolo;
+  const a = infoDe(i.site_id || i.codigo);
+  if (!a) return null;
+  return a.mercado === 'Brasil' ? a.id + '.SA' : a.tipo === 'cripto' ? a.id + '-USD' : a.id.replace('.', '-');
+}
+
+// logo servido pelo próprio site (/api/logo); sem logo, as iniciais do código
+function logo(i) {
+  const ini = el('span', { class: 'logo logo-ini', 'aria-hidden': 'true', text: i.codigo.replace(/[^A-Z0-9]/g, '').slice(0, 4) });
+  const s = simboloDe(i);
+  if (!s) return ini;
+  const img = el('img', { class: 'logo', alt: '', loading: 'lazy', decoding: 'async', src: '/api/logo/' + encodeURIComponent(s) });
+  img.addEventListener('error', () => img.replaceWith(ini));
+  return img;
+}
+
+// régua de 52 semanas: barra = mínima e máxima; ponto = preço de hoje; traço azul = preço teto
+// (a escala se abre para caber o teto quando ele está fora da faixa)
+function regua(x) {
+  const { min, max } = x.faixa, ref = x.i.preco_alvo;
+  const pts = [min, max, x.preco, ref].filter((v) => v != null && isFinite(v));
+  const lo = Math.min(...pts), hi = Math.max(...pts);
+  const pos = (v) => (hi > lo ? ((v - lo) / (hi - lo)) * 100 : 50).toFixed(1) + '%';
+  const r = el('span', { class: 'regua', role: 'img', 'aria-label': `Faixa de 52 semanas de ${dinheiro(min, x.moeda)} a ${dinheiro(max, x.moeda)}; hoje ${dinheiro(x.preco, x.moeda)}` + (ref ? `; teto ${dinheiro(ref, x.moeda)}` : '') });
+  const faixa = el('span', { class: 'regua-faixa' }); faixa.style.left = pos(min); faixa.style.width = `calc(${pos(max)} - ${pos(min)})`;
+  r.append(el('span', { class: 'regua-trilho' }), faixa);
+  if (ref) { const t = el('span', { class: 'regua-teto', title: 'Teto ' + dinheiro(ref, x.moeda) }); t.style.left = pos(ref); r.append(t); }
+  const p = el('span', { class: 'regua-preco', title: 'Hoje ' + dinheiro(x.preco, x.moeda) }); p.style.left = pos(x.preco); r.append(p);
+  return el('span', { class: 'regua-caixa' }, r, el('span', { class: 'regua-ext' }, el('span', { text: dinheiro(min, x.moeda) }), el('span', { text: dinheiro(max, x.moeda) })));
+}
+
 function cartao(x) {
   const { i } = x;
   const s = situacao(x);
@@ -107,10 +143,12 @@ function cartao(x) {
     ? el('button', { type: 'button', class: 'abrir-tese', 'aria-haspopup': 'dialog', title: 'Ver a tese de ' + i.codigo, text: i.codigo })
     : el('strong', { text: i.codigo });
   const c = el('article', { class: 'cartao s-' + s.c + (i.tese ? ' com-tese' : ''), 'aria-label': i.codigo },
-    el('span', { class: 'id' }, codigo, el('span', { class: 'nome', title: i.nome || null, text: i.nome || '' })),
+    el('span', { class: 'topo' }, logo(i), el('span', { class: 'id' }, codigo, el('span', { class: 'nome', title: i.nome || null, text: i.nome || '' }))),
     el('span', { class: 'precos' },
-      el('span', { class: 'p' }, el('span', { class: 'r', text: 'Hoje' }), el('strong', { text: dinheiro(x.preco, x.moeda) })),
+      el('span', { class: 'p' }, el('span', { class: 'r', text: 'Hoje' }), el('strong', { text: dinheiro(x.preco, x.moeda) }),
+        x.dia != null ? el('span', { class: 'var ' + (x.dia > 0 ? 'pos' : x.dia < 0 ? 'neg' : ''), title: 'Variação no dia', text: pct(x.dia) }) : null),
       el('span', { class: 'p alvo' }, el('span', { class: 'r', text: 'Teto' }), el('strong', { text: i.preco_alvo ? dinheiro(i.preco_alvo, x.moeda) : '—' }))),
+    x.faixa && x.preco != null ? regua(x) : null,
     el('span', { class: 'sit', text: s.t }),
     x.a12 != null ? el('span', { class: 'a12' }, '12 meses: ', el('span', { class: x.a12 > 0 ? 'pos' : x.a12 < 0 ? 'neg' : null, text: pct(x.a12) })) : null,
     i.termometro ? el('a', { class: 'termometro', href: 'https://letabuild.com/btc/', target: '_blank', rel: 'noopener noreferrer', title: 'Ver os indicadores no Termômetro do Bitcoin (letabuild.com/btc): média de 8 indicadores, de −2 (venda forte) a +2 (compra forte). Positivo: preço abaixo do teto.' },

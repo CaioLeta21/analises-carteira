@@ -20,6 +20,18 @@ test('lerSpark: preço, hora e 12 meses; sem histórico de um ano fica sem a12',
   assert.strictEqual(lerSpark({ symbol: 'Y', response: [] }), null);
 });
 
+test('lerSpark: variação do dia e faixa de 52 semanas', async () => {
+  const { lerSpark } = await import('../functions/_cotacoes.js');
+  const s = spark('MSFT', 150, 100);
+  const q = s.response[0].indicators.quote[0].close;
+  q[q.length - 2] = 120; q[q.length - 30] = 200; // ontem 120; pico de 200 dentro do ano
+  s.response[0].meta.regularMarketPrice = 132;
+  const c = lerSpark(s);
+  assert.strictEqual(c.var_dia, 0.1); // 132 / 120 − 1
+  assert.strictEqual(c.max_52s, 200);
+  assert.strictEqual(c.min_52s, 120); // os 100 de um ano antes ficam fora da janela
+});
+
 test('cotacoes: pede em lotes de até 20 símbolos', async () => {
   const { cotacoes } = await import('../functions/_cotacoes.js');
   const urls = [];
@@ -120,4 +132,25 @@ test('edição: adicionar resolve o código, recusa repetido e alvo inválido; e
   assert.strictEqual(linhas[0].preco_alvo, 1620); assert.strictEqual(linhas[0].alvo_auto, null);
   assert.strictEqual(linhas[0].teto_balanco, '2026-12-31', 'teto novo vale pelo último balanço');
   assert.strictEqual((await editar(env, '9', { preco_alvo: '1' }))[0], 404);
+});
+
+test('logos: símbolo do Yahoo, só imagens raster, só ativos do site', async () => {
+  const { simboloLogo, buscarLogo, permitido, SIMBOLO } = await import('../functions/_logo.js');
+  assert.strictEqual(simboloLogo({ id: 'PETR4', mercado: 'Brasil' }), 'PETR4.SA');
+  assert.strictEqual(simboloLogo({ id: 'BRK.B', mercado: 'EUA', tipo: 'acao' }), 'BRK-B');
+  assert.strictEqual(simboloLogo({ id: 'ETH', mercado: 'Global', tipo: 'cripto' }), 'ETH-USD');
+  assert.ok(SIMBOLO.test('SGLD.L') && SIMBOLO.test('BTC-USD') && !SIMBOLO.test('../x') && !SIMBOLO.test(''));
+  const img = (tipo, n = 500) => ({ ok: true, headers: { get: () => tipo }, arrayBuffer: async () => new ArrayBuffer(n) });
+  let fontes = [img('image/svg+xml'), img('image/png')];
+  const l = await buscarLogo('AMZN', async () => fontes.shift());
+  assert.strictEqual(l.tipo, 'image/png', 'SVG recusado, vale a reserva');
+  fontes = [img('text/html'), img('image/png', 50)];
+  assert.strictEqual(await buscarLogo('X', async () => fontes.shift()), null);
+  const env = {
+    DB: { prepare: () => ({ bind: (s) => ({ first: async () => (s === 'VEA' ? { ok: 1 } : null) }) }) },
+    ASSETS: { fetch: async (u) => json(String(u).endsWith('catalogo.json') ? { ativos: [{ id: 'PETR4', mercado: 'Brasil' }] } : { ativos: [] }) },
+  };
+  assert.ok(await permitido('VEA', env, 'https://x.dev/api/logo/VEA'));
+  assert.ok(await permitido('PETR4.SA', env, 'https://x.dev/api/logo/PETR4.SA'));
+  assert.ok(!(await permitido('EVIL', env, 'https://x.dev/api/logo/EVIL')));
 });

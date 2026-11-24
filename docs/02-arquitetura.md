@@ -25,7 +25,7 @@ flowchart LR
 | Site | `public/` | HTML, CSS e JS sem build. Lê `/data/*.json`. |
 | Hospedagem | Cloudflare Pages | Publica `public/` a cada push na branch principal. Aplica `public/_headers`. |
 | Carteiras | IndexedDB do navegador | Guardadas pelo `carteira-armazenamento.js`. Nunca vão para o servidor. |
-| Radar | `functions/` + D1 `ativos-radar` | `/api/radar` (público, só leitura, preço de agora) e `/admin/` (edição, só o dono, Cloudflare Access). Ver `03-dados.md`. |
+| Radar | `functions/` + D1 `ativos-radar` | `/api/radar` (público, só leitura, preço de agora, variação do dia e faixa de 52 semanas), `/api/logo/<símbolo>` (logo do cartão buscado na FMP/Parqet e servido pelo próprio site, por causa da CSP; só símbolos do radar, comparador ou catálogo; 30 dias em cache) e `/admin/` (edição, só o dono, Cloudflare Access). Ver `03-dados.md`. |
 
 ## Por que assim
 

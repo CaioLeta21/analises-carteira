@@ -23,8 +23,15 @@ http.createServer((req, res) => {
     copia.gerado_em = new Date().toISOString();
     // a API de verdade põe o score do termômetro no bitcoin
     for (const i of copia.itens) if (i.codigo === 'BTC') i.termometro = { score: 0.875, sinal: 'COMPRA', dados_de: '2026-11-15' };
+    // cotação de agora com dia e faixa de 52 semanas (régua do cartão)
+    for (const i of copia.itens) if (i.codigo === 'AMZN') i.cotacao = { preco: 250, moeda: 'USD', hora: copia.gerado_em, a12: 0.1, var_dia: -0.012, min_52s: 198.79, max_52s: 284.02, fonte: 'Yahoo Finance' };
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     return res.end(JSON.stringify(copia));
+  }
+  // /api/logo/<símbolo> também é função; aqui devolve o ícone do site (sem rede)
+  if (url.startsWith('/api/logo/')) {
+    res.writeHead(200, { 'Content-Type': 'image/png' });
+    return fs.createReadStream(path.join(raiz, 'assets', 'icones', 'favicon-32.png')).pipe(res);
   }
   let arq = path.join(raiz, url);
   if (!arq.startsWith(raiz)) { res.writeHead(403); return res.end(); }
