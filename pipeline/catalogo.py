@@ -100,6 +100,7 @@ CATALOGO = [
     {"id": "VT", "yahoo": "VT", "nome": "VT (Vanguard Total World Stock)", "tipo": "etf", "mercado": "Global", "moeda": "USD", "categoria": "rvex"},
     {"id": "SCHD", "yahoo": "SCHD", "nome": "SCHD (Schwab U.S. Dividend Equity ETF)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "VIG", "yahoo": "VIG", "nome": "VIG (Vanguard Dividend Appreciation)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
+    {"id": "NOBL", "yahoo": "NOBL", "nome": "NOBL (ProShares S&P 500 Dividend Aristocrats)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "VYM", "yahoo": "VYM", "nome": "VYM (Vanguard High Dividend Yield)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "VNQ", "yahoo": "VNQ", "nome": "VNQ (Vanguard Real Estate)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},
     {"id": "XLK", "yahoo": "XLK", "nome": "XLK (Technology Select Sector SPDR ETF)", "tipo": "etf", "mercado": "EUA", "moeda": "USD", "categoria": "rvex"},

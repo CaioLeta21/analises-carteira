@@ -126,7 +126,7 @@ quando o ativo entra no radar (revisar junto com o teto); só textos curtos pass
 Ações e ETFs que o visitante adiciona ao radar ficam só no navegador dele (`localStorage`,
 chave `radar:meus`), como os ativos extras do comparador.
 
-## Catálogo (177 ativos que o usuário escolhe)
+## Catálogo (178 ativos que o usuário escolhe)
 
 Definido em `pipeline/catalogo.py`: as ações do Ibovespa (composição oficial da B3 em
 04/nov/2026), ETFs da B3 (BOVA11, SMAL11, IVVB11, SPXI11, NASD11, ACWI11, HASH11, GOLD11),
